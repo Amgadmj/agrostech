@@ -1,0 +1,93 @@
+Estado,Cidade,Matriz,Grupo,Pipeline,Territorio
+Goias,Arapua,ATVOS,ATVOS,Rep1-GO,Goias
+Goias,Agua Emendada,ATVOS,ATVOS,Rep1-GO,Goias
+Goias,Morro Vermelho,ATVOS,ATVOS,Rep1-GO,Goias
+Goias,Rio Claro,ATVOS,ATVOS,Rep1-GO,Goias
+Goias,Itumbiara,BP Bioenergy,BP Bioenergy,Rep3-Carbono,Bioenergia
+Goias,Tropical,BP Bioenergy,BP Bioenergy,Rep3-Carbono,Bioenergia
+Goias,Crixa,Coperssucar,Coperssucar,Rep4-Cooperativas,Cooperativa
+Goias,Centralcool,Centralcool,Centralcool,Rep1-GO,Goias
+Goias,Corradinhos Bio,Corradinho Bio,Corradinho Bio,Rep1-GO,Goias
+Goias,Nacao - Rio Chapadao de Ceu,Corradinho Bio,Corradinho Bio,Rep1-GO,Goias
+Goias,Central Energetica Morrinhos - CEM,Usina Colorado,Colorado,Rep3-Carbono,Bioenergia
+Goias,Vila Boa,Companhia Bioenergetica Rondiaria - CBS,CBS,Rep3-Carbono,Bioenergia
+Goias,Nova Linda,Denasa,Denasa,Rep1-GO,Goias
+Goias,Rio Claro de Goias,Eter Bioenergia,Eter Bioenergia,Rep3-Carbono,Bioenergia
+Goias,Acacus,Grupo Farias,Grupo Farias,Rep1-GO,Goias
+Goias,Itapaci,Grupo Farias,Grupo Farias,Rep1-GO,Goias
+Goias,Itapuranga,Grupo Farias,Grupo Farias,Rep1-GO,Goias
+Goias,Goianesia,Grupo Goianesia,Grupo Goianesia,Rep1-GO,Goias
+Goias,Goias Bioenergy,Goias Bioenergy,Goias Bioenergy,Rep3-Carbono,Bioenergia
+Goias,Goiani,Goiania,Goiania,Rep1-GO,Goias
+Goias,Serranopolis,Usina IPOLUCA,IPOLUCA,Rep1-GO,Goias
+Goias,Jales Machado,Jales Machado,Jales Machado,Rep1-GO,Goias
+Goias,Outeiro Lago,Outeiro Lago,Outeiro Lago,Rep1-GO,Goias
+Goias,Rubiataba (Cooper-Rubi),Cooper-Rubi,Cooper-Rubi,Rep4-Cooperativas,Cooperativa
+Goias,CRV Goias,CRV Goias,CRV Goias,Rep4-Cooperativas,Cooperativa
+Goias,Lago Azul,Lago Azul,Lago Azul,Rep1-GO,Goias
+Goias,Santa Helena,NAOUM,NAOUM,Rep1-GO,Goias
+Goias,Indiruva,Indiruva,Indiruva,Rep1-GO,Goias
+Goias,Centroeste,Raizen,Raizen,Rep1-GO,Goias
+Goias,Rio Verde,Rio Verde,Rio Verde,Rep1-GO,Goias
+Goias,Boa Vista,Sao Martinho,Sao Martinho,Rep1-GO,Goias
+Goias,Sao Paulo (GO),Usina Sao Paulo,Usina Sao Paulo,Rep1-GO,Goias
+Goias,Serra do Calapo,Serra do Calapo,Serra do Calapo,Rep1-GO,Goias
+Goias,Rio Dourado,Cargill,Cargill,Rep1-GO,Goias
+Goias,Sao Francisco (GO),Cargill,Cargill,Rep1-GO,Goias
+Goias,Rubi Uruacu,IAPUNDI,IAPUNDI,Rep1-GO,Goias
+Goias,Carima,Vale do Verdao,Vale do Verdao,Rep1-GO,Goias
+Goias,Francesa,Vale do Verdao,Vale do Verdao,Rep1-GO,Goias
+Goias,Panorama (GO),Vale do Verdao,Vale do Verdao,Rep1-GO,Goias
+Goias,Vale do Verdao Maria,Vale do Verdao,Vale do Verdao,Rep1-GO,Goias
+Goias,Bom Sucesso,VREC,VREC,Rep1-GO,Goias
+Goias,Aponi,Nardini,Nardini,Rep1-GO,Goias
+Goias,GEM Acreuna,GEM,GEM,Rep1-GO,Goias
+Goias,VMG Bioenergy,VMG Bioenergy,VMG Bioenergy,Rep3-Carbono,Bioenergia
+Goias,Itumbiara Energetica,Itumbiara Energetica,Itumbiara Energetica,Rep3-Carbono,Bioenergia
+Sao Paulo,Sao Joao da Boa Vista,ABENIDA,ABENIDA,Rep2-SP,Sao Paulo
+Sao Paulo,Rumo - Usina Slater,Usina Slater,Slater,Rep2-SP,Sao Paulo
+Sao Paulo,Ibaira - Usina Guaira,Usina Acucar Guaira,Guaira,Rep2-SP,Sao Paulo
+Sao Paulo,Sao Manuel,Sao Manuel,Sao Manuel,Rep2-SP,Sao Paulo
+Sao Paulo,Agua Bonita,Agua Bonita,Agua Bonita,Rep2-SP,Sao Paulo
+Sao Paulo,Alta Mogiana,Alta Mogiana,Alta Mogiana,Rep2-SP,Sao Paulo
+Sao Paulo,Floralee,Floralee,Floralee,Rep2-SP,Sao Paulo
+Sao Paulo,Alto Acre,Alto Acre,Alto Acre,Rep2-SP,Sao Paulo
+Sao Paulo,Alcorast,Alcorast,Alcorast,Rep2-SP,Sao Paulo
+Sao Paulo,Ararica,Nova Ararica,Nova Ararica,Rep2-SP,Sao Paulo
+Sao Paulo,Generosa,Nova Ararica,Nova Ararica,Rep2-SP,Sao Paulo
+Sao Paulo,Figueica,Figueica,Figueica,Rep2-SP,Sao Paulo
+Sao Paulo,Atena,Atena,Atena,Rep2-SP,Sao Paulo
+Sao Paulo,Alcala,Atena,Atena,Rep2-SP,Sao Paulo
+Sao Paulo,Conceicao do Portal,Atena,Atena,Rep2-SP,Sao Paulo
+Sao Paulo,Santo Antonio,Grupo Balbo,Grupo Balbo,Rep2-SP,Sao Paulo
+Sao Paulo,Sao Francisco (SP),Grupo Balbo,Grupo Balbo,Rep2-SP,Sao Paulo
+Sao Paulo,Tabina,Balbo,Grupo Balbo,Rep2-SP,Sao Paulo
+Sao Paulo,Cerves,Usina Barriera,Barriera,Rep2-SP,Sao Paulo
+Sao Paulo,Baxari,Usina Baxari,Baxari,Rep2-SP,Sao Paulo
+Sao Paulo,Pronal,Bertola,Bertola,Rep2-SP,Sao Paulo
+Sao Paulo,Muana,BP BioEnergy,BP BioEnergy,Rep3-Carbono,Bioenergia
+Sao Paulo,Guarinhas,BP BioEnergy,BP BioEnergy,Rep3-Carbono,Bioenergia
+Sao Paulo,Ouroeste,BP BioEnergy,BP BioEnergy,Rep3-Carbono,Bioenergia
+Sao Paulo,Branca Peres,Branca Peres,Branca Peres,Rep2-SP,Sao Paulo
+Sao Paulo,Cattalcool,Cattalcool,Cattalcool,Rep2-SP,Sao Paulo
+Sao Paulo,Pauliceia,Grupo Catolicja,Catolicja,Rep2-SP,Sao Paulo
+Sao Paulo,Corola,Corola,Corola,Rep2-SP,Sao Paulo
+Sao Paulo,Cereais Brasil,Cereais Brasil,Cereais Brasil,Rep2-SP,Sao Paulo
+Sao Paulo,Peracalfs,Clenico Acucar,Clenico,Rep2-SP,Sao Paulo
+Sao Paulo,Ganamelhos,Clenico Acucar,Clenico,Rep2-SP,Sao Paulo
+Sao Paulo,Queiros,Clenico Acucar,Clenico,Rep2-SP,Sao Paulo
+Sao Paulo,Ourinhos,Coval Energia Responsavel,Coval,Rep3-Carbono,Bioenergia
+Sao Paulo,Farroupilha - Paulinia,Coval Energia Responsavel,Coval,Rep3-Carbono,Bioenergia
+Sao Paulo,Catoduina,Cofra Agr,Cofra,Rep2-SP,Sao Paulo
+Sao Paulo,Piracicaba,Cofra Agr,Cofra,Rep2-SP,Sao Paulo
+Sao Paulo,Aramere,Colinas Agro Industrio,Colinas,Rep2-SP,Sao Paulo
+Sao Paulo,Palestina,Colinas Agro Industrio,Colinas,Rep2-SP,Sao Paulo
+Sao Paulo,Carlos Marchetti,Colinas Agro Industrio,Colinas,Rep2-SP,Sao Paulo
+Sao Paulo,Colorado (SP),Usina Colorado,Colorado,Rep2-SP,Sao Paulo
+Sao Paulo,Tatu,Tatu,Tatu,Rep2-SP,Sao Paulo
+Sao Paulo,Keni,CBAA,CBAA,Rep2-SP,Sao Paulo
+Sao Paulo,Da Mota,Da Mota,Da Mota,Rep2-SP,Sao Paulo
+Sao Paulo,Dacasa,Dacaso,Dacaso,Rep2-SP,Sao Paulo
+Sao Paulo,Della,DCRO,DCRO,Rep2-SP,Sao Paulo
+Sao Paulo,Destilaria Grupo,Destilaria Grupo,Destilaria Grupo,Rep2-SP,Sao Paulo
+Sao Paulo,Balsa,Balsa,Balsa,Rep2-SP,Sao Paulo

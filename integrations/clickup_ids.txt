@@ -1,0 +1,43 @@
+# Agrostech ClickUp IDs — Complete Reference
+# Generated: 2026-06-19 | Updated with Support folder IDs
+# Use these IDs in all agent API calls
+
+TEAM_ID = 90171329645
+
+# ── SPACES ───────────────────────────────────────────────────
+SPACE_OPERATIONS     = 90176120906
+SPACE_SALES          = 90176120907
+SPACE_CLIENT_SUCCESS = 90176120908
+# NOTE: SUPPORT is a Folder inside OPERATIONS (free plan = 5 spaces max)
+FOLDER_SUPPORT       = 90179445473
+
+# ── LISTS: OPERATIONS ────────────────────────────────────────
+LIST_MISSOES_PLANEJAMENTO = 901714652089
+LIST_MISSOES_ATIVAS       = 901714652090   # Field Pilot tasks
+LIST_PROCESSAMENTO        = 901714652091   # Data Processing tasks
+LIST_MISSOES_CONCLUIDAS   = 901714652092
+
+# ── LISTS: SALES ─────────────────────────────────────────────
+LIST_PIPELINE_REP1    = 901714652093   # MT / GO territory
+LIST_PIPELINE_REP2    = 901714652094   # PR / RS territory
+LIST_PIPELINE_REP3    = 901714652095   # Carbon credits
+LIST_PIPELINE_REP4    = 901714652096   # Cooperatives
+LIST_BRIEFINGS        = 901714652097   # Daily briefings from Head of Sales Agent
+LIST_PROPOSTAS_IA     = 901714652098   # AI-generated proposals for rep review
+LIST_CAMPANHAS        = 901714652099   # Marketing campaigns
+
+# ── LISTS: CLIENT SUCCESS ────────────────────────────────────
+LIST_ONBOARDING       = 901714652100   # Account Manager onboarding tasks
+LIST_ENTREGAS         = 901714652101   # Pending deliveries
+LIST_QBR              = 901714652102   # Quarterly Business Review
+LIST_NPS              = 901714652103   # NPS tracking
+
+# ── LISTS: SUPPORT (inside FOLDER_SUPPORT) ───────────────────
+LIST_LEGAL            = 901714652193
+LIST_FINANCEIRO       = 901714652196
+LIST_CONHECIMENTO     = 901714652197
+LIST_INCIDENTES       = 901714652200
+
+# ── WORKSPACE ────────────────────────────────────────────────
+URL = https://app.clickup.com/90171329645/home
+

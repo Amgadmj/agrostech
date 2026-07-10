@@ -1,0 +1,7 @@
+{
+  "venvPath": "runner",
+  "venv": ".venv",
+  "extraPaths": [
+    "runner/.venv/Lib/site-packages"
+  ]
+}
