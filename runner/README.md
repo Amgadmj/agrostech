@@ -166,6 +166,60 @@ python deal_memory.py resultado 12 ganhou 75     # reportar via CLI
 
 ---
 
+## Motor de Prospecção Geomart (pipeline CrewAI)
+
+Prospecção outbound automatizada a partir de parcelas certificadas SIGEF, com throttle de
+5 pitches/dia por backlog. Orquestrado por `geomart_pipeline.py`, que encadeia:
+
+1. **Agent 1+2 — Extrator + Resolver Geo** (`geomart_client.py`, autenticado via
+   `geomart_auth.py` com sessão Playwright) — baixa e decodifica tiles MVT da Geomart,
+   calcula área geodésica real de cada parcela SIGEF e faz upsert em `geomart_leads.db`.
+2. **Agent 2.5 — Predição de Cultura** (`mapbiomas_client.py`) — estatística zonal do
+   raster MapBiomas sobre a geometria de cada parcela para inferir uso agrícola do solo.
+3. **Agent 3 — Resolver GTM / OSINT B2B** (`mercurius_client.py`) — identifica a empresa
+   por trás da parcela usando só fontes públicas de pessoa jurídica (CNPJ, razão social);
+   nunca automatiza login em SIGEF/SICAR nem expõe dado de pessoa física (LGPD).
+4. **Agent 4 — Redator de Pitch** (`crew_agents.write_pitch`) — gera o pitch pronto para
+   revisão humana.
+5. **Saída** — `sheets_client.py` escreve a fila diária (aba `Fila_Pitches`) numa planilha
+   Google Sheets; o histórico completo fica em `geomart_leads.db` para auditoria.
+
+```bash
+python geomart_pipeline.py
+```
+
+---
+
+## Departamentos CrewAI e Integrações Embrapa
+
+`crew_agents.py` define os 5 agentes de departamento (Ceres Agrônoma, Operações, Ceres
+Vendas, Ceres Marketing e Inteligência de Mercado) como CrewAI Agents, roteados via
+`agent_router.py` (RBAC determinístico por dicionário — nenhuma chamada de LLM é gasta
+para rotear; os departamentos LLM vivem em `crew_agents.py`, o Deal Desk permanece 100%
+determinístico). `llm_config.py` é o ponto único de criação do LLM compartilhado
+(Groq se houver `GROQ_API_KEY`, senão Gemini) e deve ser importado antes de qualquer
+`import crewai`.
+
+A Agrônoma e o time de Vendas têm acesso híbrido aos dados Embrapa AgroAPI:
+
+- **`agrofit_client.py`** — Embrapa Agrofit v1 (defensivos agrícolas registrados)
+- **`agrotermos_client.py`** — Embrapa Agrotermos v1 (zoneamento agroclimático)
+- **`smartsolos_client.py`** — Embrapa SmartSolos Expert v1 (classificação de solo)
+
+Todos os três compartilham OAuth2 (renovação automática de token), cache SQLite
+persistente (`agrofit_cache.db`) para não estourar o limite gratuito da API, e fallback
+com dados mock de alta qualidade quando as credenciais não estão configuradas.
+
+**Entrypoint único:** `start_system.py` sobe o sistema completo (checa `.env`, roda o
+seeder do banco `seed_telegram_db.py`, e inicia o Telegram Bot) — exceto WhatsApp, que
+continua sendo iniciado à parte.
+
+```bash
+python start_system.py
+```
+
+---
+
 ## Comunicação Inter-Agentes
 
 Todos os agentes podem se comunicar via `brief_other_agent()`:
@@ -224,6 +278,27 @@ runner/
 ├── ceo_agent.py           ← CEO Agent runner
 ├── sales_agent.py         ← Sales Team runner
 ├── operations_agent.py    ← Operations Team runner
+├── marketing_agent.py     ← Marketing Agent runner
+├── agent_router.py        ← Roteador CrewAI (Telegram/WhatsApp → departamento)
+├── crew_agents.py         ← 5 agentes de departamento CrewAI + ferramentas Embrapa
+├── llm_config.py          ← Ponto único de criação do LLM compartilhado (CrewAI/LiteLLM)
+├── start_system.py        ← Entrypoint: sobe seeder + Telegram Bot
+├── telegram_bot.py        ← Gateway Telegram (comandos /cotacao, /resultado, etc.)
+├── whatsapp_bot.py        ← Gateway WhatsApp
+├── deal_desk.py           ← Motor de cotação (Conselho Financeiro)
+├── deal_memory.py         ← Reaprendizado de preços a partir dos resultados reais
+├── sales_calculator.py    ← Calculadora de vendas (/calc)
+├── trend_hijacker.py      ← Geração de conteúdo de tendências
+├── geomart_auth.py        ← Sessão Playwright autenticada na Geomart
+├── geomart_client.py      ← Extrator + Resolver Geo (tiles MVT → geomart_leads.db)
+├── geomart_pipeline.py    ← Orquestrador do Motor de Prospecção Geomart (throttle 5/dia)
+├── mapbiomas_client.py    ← Predição de cultura via raster MapBiomas (estatística zonal)
+├── mercurius_client.py    ← Resolver GTM / OSINT B2B (waterfall de fontes públicas)
+├── sheets_client.py       ← Escreve a fila de pitches no Google Sheets
+├── agrofit_client.py      ← Cliente Embrapa Agrofit (defensivos agrícolas)
+├── agrotermos_client.py   ← Cliente Embrapa Agrotermos (zoneamento agroclimático)
+├── smartsolos_client.py   ← Cliente Embrapa SmartSolos (classificação de solo)
+├── seed_telegram_db.py    ← Seeder do banco de usuários/roles do Telegram
 ├── requirements.txt       ← Dependências Python
 ├── README.md              ← Este arquivo
 └── logs/                  ← Gerado automaticamente

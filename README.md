@@ -46,7 +46,8 @@ agrostech/
 │   ├── sales/
 │   │   ├── head_of_sales.md      ← 📈 Head of Sales — pipeline, proposals, alerts
 │   │   ├── sales_rep.md          ← 👔 Sales Rep persona (for human onboarding)
-│   │   └── marketing.md          ← 📣 Marketing Agent — content, campaigns, leads
+│   │   ├── marketing.md          ← 📣 Marketing Agent — content, campaigns, leads
+│   │   └── negotiation_bot.md    ← 🤝 Negotiation Bot — pitch/objection scripts
 │   ├── operations/
 │   │   ├── chief_pilot.md        ← 🚁 Chief Pilot Agent — mission planning, ANAC
 │   │   ├── field_pilot.md        ← 👷 Field Pilot (human role brief)
@@ -54,6 +55,10 @@ agrostech/
 │   ├── client-success/
 │   │   ├── account_manager.md    ← 🤝 Account Manager (human role brief)
 │   │   └── delivery.md           ← 📦 Delivery Agent — packaging, handoff
+│   ├── finance-board/            ← 💰 Deal Desk council personas (deal_desk.py)
+│   │   ├── pricing_strategist.md
+│   │   ├── unit_economics_analyst.md
+│   │   └── market_intelligence_analyst.md
 │   └── support/
 │       ├── legal_compliance.md   ← ⚖️ Legal Agent — ANAC, LGPD, contracts
 │       ├── finance.md            ← 🧾 Finance Agent — invoicing, taxes, cash flow
@@ -66,11 +71,14 @@ agrostech/
 │   ├── build_clickup.ps1         ← PowerShell: builds the full ClickUp structure via API
 │   ├── add_support.ps1           ← PowerShell: adds Support space to ClickUp
 │   ├── push_clients.ps1          ← PowerShell: pushes client DB to ClickUp CRM
+│   ├── seed_marketing_templates.ps1 ← PowerShell: seeds marketing templates to ClickUp
 │   └── keys.txt                  ← 🔑 API keys (DO NOT COMMIT — add to .gitignore)
 │
 ├── data/                         ← Structured company data
-│   └── clientes_cana.csv         ← 93 sugarcane client prospects (GO + SP)
-│                                    Allocated by: State, Group, Pipeline, Territory
+│   ├── clientes_cana.csv         ← 93 sugarcane client prospects (GO + SP)
+│   │                                Allocated by: State, Group, Pipeline, Territory
+│   ├── briefings/                ← Generated weekly/monthly sales briefings
+│   └── generated/                ← AI-generated content & ABM trigger notes
 │
 ├── playbooks/                    ← Standard Operating Procedures
 │   ├── SALES_PLAYBOOK.md         ← End-to-end sales process
@@ -86,14 +94,28 @@ agrostech/
 ├── knowledge-base/               ← Domain knowledge for AI agents
 │   ├── DRONE_REGULATIONS.md      ← ANAC, DECEA, SARPAS regulations
 │   ├── PRICING_MODEL.md          ← Service pricing (per ha, per mission, annual)
+│   ├── UNIT_ECONOMICS.md         ← Real COGS, margin floors — Deal Desk source of truth
+│   ├── MARKET_INTELLIGENCE.md    ← Competitive/market data — Deal Desk source of truth
 │   ├── CARBON_CREDITS.md         ← REDD+, VCS, MRV, voluntary carbon market
 │   └── GLOSSARY.md               ← Technical glossary (PT-BR/EN)
 │
-└── runner/                       ← Python agent runners (executable AI agents)
+└── runner/                       ← Python agent runners (CrewAI, executable AI agents)
     ├── base_agent.py             ← Base class for all agents
-    ├── ceo_agent.py              ← CEO agent runner
-    ├── sales_agent.py            ← Sales agent runner
-    ├── operations_agent.py       ← Operations agent runner
+    ├── llm_config.py             ← Shared CrewAI/LiteLLM LLM config (Groq/Gemini)
+    ├── agent_router.py           ← CrewAI router: Telegram/WhatsApp → department crew
+    ├── crew_agents.py            ← 5 CrewAI department agents + Embrapa tools
+    ├── ceo_agent.py / sales_agent.py / operations_agent.py / marketing_agent.py
+    ├── deal_desk.py               ← Deal Desk quoting engine (finance-board council)
+    ├── deal_memory.py             ← Price recalibration from real deal outcomes
+    ├── geomart_client.py / geomart_auth.py / geomart_pipeline.py
+    │                              ← Motor de Prospecção Geomart (SIGEF parcel prospecting)
+    ├── mapbiomas_client.py       ← Crop prediction via MapBiomas raster
+    ├── mercurius_client.py       ← OSINT B2B company resolver (public sources only)
+    ├── sheets_client.py          ← Writes daily pitch queue to Google Sheets
+    ├── agrofit_client.py / agrotermos_client.py / smartsolos_client.py
+    │                              ← Embrapa AgroAPI clients (pesticides, agroclimate, soil)
+    ├── telegram_bot.py / whatsapp_bot.py ← Messaging gateways
+    ├── start_system.py           ← Master launcher (env check → DB seed → Telegram Bot)
     ├── requirements.txt          ← Python dependencies
     └── README.md                 ← Runner setup instructions
 ```
@@ -185,18 +207,33 @@ agrostech/
   - `Rep4-Cooperativas` → Cooperatives pipeline (Coperssucar, Cooper-Rubi, CRV)
 - Script ready to push all clients into ClickUp CRM (`push_clients.ps1`)
 
+### ✅ Phase 5 — CrewAI Migration & Messaging Gateways (LIVE)
+- Full stack migrated to CrewAI 1.15.2 (`runner/crew_agents.py`, `runner/agent_router.py`)
+- Telegram Bot live (`runner/telegram_bot.py`) with RBAC-scoped commands (`/cotacao`, `/resultado`, `/aprendizado`, `/calc`)
+- WhatsApp Bot live (`runner/whatsapp_bot.py`)
+- Deal Desk (`runner/deal_desk.py`) — deterministic quoting engine + LLM finance-board council, with margin floors and outcome-based price recalibration (`runner/deal_memory.py`)
+- `runner/start_system.py` — single entrypoint to launch env checks, DB seeding, and the Telegram gateway
+
+### ✅ Phase 6 — Motor de Prospecção Geomart (LIVE)
+- Automated outbound pipeline from certified SIGEF land parcels, throttled to 5 pitches/day
+- `geomart_client.py` + `geomart_auth.py` — extracts and geo-resolves parcels from Geomart's vector tiles
+- `mapbiomas_client.py` — crop-use prediction via MapBiomas raster zonal statistics
+- `mercurius_client.py` — OSINT B2B company resolver (public-sources-only, LGPD-conscious by design)
+- `crew_agents.write_pitch` — generates the outbound pitch for human review
+- `sheets_client.py` — publishes the daily pitch queue to Google Sheets
+- Embrapa AgroAPI integrations (`agrofit_client.py`, `agrotermos_client.py`, `smartsolos_client.py`) feed the Agronomist and Sales department agents with pesticide, agroclimate, and soil data
+
 ---
 
 ## 🔜 Next Steps (Roadmap for CTO)
 
 | Phase | Status | Action Required |
 |-------|--------|-----------------|
-| **Telegram Bot** | 🔜 Next | See `integrations/telegram_integration.md` — needs bot token + server |
 | **Push Clients to ClickUp** | 🔜 Ready | Run `integrations/push_clients.ps1` with valid API key |
-| **Python Agent Runners** | 🔜 Next | Wire `runner/` agents to a real LLM API (OpenAI / Gemini / Claude) |
 | **Webhook Listener** | 🔜 Future | Deploy a server to receive ClickUp webhooks → trigger AI agents |
 | **Web Dashboard** | 🔜 Future | Real-time monitoring of pipeline, missions, OKRs |
 | **CRM / ERP Integration** | 🔜 Future | Connect to real CRM or ERP for live client data sync |
+| **Geomart Prospecting Scale-Up** | 🔜 Ongoing | Expand backlog beyond SP/MG as pitch throughput allows |
 
 ---
 
@@ -214,13 +251,15 @@ agrostech/
 cd runner/
 pip install -r requirements.txt
 
-# Set your LLM API key
-export OPENAI_API_KEY="sk-..."   # or GOOGLE_API_KEY / ANTHROPIC_API_KEY
+# Set your LLM API key in runner/.env (Groq preferred, Gemini fallback)
+# GROQ_API_KEY=...
+# GEMINI_API_KEY=...
 
-# Run the CEO agent
+# Launch the full system (env check → DB seed → Telegram Bot)
+python start_system.py
+
+# Or run an individual agent runner
 python ceo_agent.py
-
-# Run the sales agent
 python sales_agent.py
 ```
 
