@@ -46,7 +46,21 @@ logs/
 # Runtime databases (dados de clientes/deals — não versionar)
 runner/*.db
 
+# Geomart / Google Sheets — sessão e credenciais de serviço
+runner/geomart_storage_state.json
+runner/*service-account*.json
+runner/*credentials*.json
+
 # Temp files
 ~$*
 *.tmp
 *.bak
+runner/tmp_*.py
+
+# Rasters MapBiomas (arquivos grandes, dados geo — não versionar)
+runner/data/mapbiomas/*.tif
+runner/data/mapbiomas/*.tiff
+
+# Dados de clientes — não versionar (repo público)
+Carteiras de clientes/
+Propostas Commercias/

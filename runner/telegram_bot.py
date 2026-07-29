@@ -1,6 +1,6 @@
 """
 Agrostech Digital Twin — Telegram Bot Runner v2
-Powered by LangGraph agent routing — every command dispatched to a
+Powered by CrewAI agent routing — every command dispatched to a
 specialized AI agent (Agronomist, Operations, Sales, Marketing, Intel).
 
 Prerequisites:
@@ -31,14 +31,14 @@ from telegram.ext import (
     filters,
 )
 
-# ── New: LangGraph agent router + lead agent ──────────────────────────────────
+# ── CrewAI agent router + lead agent ──────────────────────────────────────────
 try:
-    from agent_router import handle_command
+    from agent_router import handle_command, handle_natural_chat
     from lead_agent import buscar_leads
-    LANGGRAPH_ENABLED = True
+    CREWAI_ENABLED = True
 except ImportError as e:
-    logging.warning(f"LangGraph not available, falling back to legacy handlers: {e}")
-    LANGGRAPH_ENABLED = False
+    logging.warning(f"CrewAI not available, falling back to legacy handlers: {e}")
+    CREWAI_ENABLED = False
 
 # Load env variables
 load_dotenv(Path(__file__).parent / ".env")
@@ -123,7 +123,7 @@ def check_permission(permission: str):
                 await update.message.reply_text(
                     "🚫 Acesso não autorizado.\n"
                     "Seu ID do Telegram não está registrado no sistema Agrostech.\n"
-                    f"Seu ID: `{user_id}`\n"
+                    f"Seu ID: {user_id}\n"
                     "Informe seu supervisor para liberar seu acesso."
                 )
                 return
@@ -162,13 +162,13 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             "👋 Olá! Bem-vindo ao Bot da Agrostech.\n\n"
             "Este canal é restrito para funcionários da Agrostech.\n"
-            f"Seu ID do Telegram é: `{user_id}`.\n"
+            f"Seu ID do Telegram é: {user_id}.\n"
             "Envie este ID ao Administrador para cadastrar seu perfil."
         )
     else:
         await update.message.reply_text(
             f"👋 Olá, {name}!\n"
-            f"Você está conectado como: *{role.upper()}*.\n\n"
+            f"Você está conectado como: **{role.upper()}**.\n\n"
             "Use o comando /ajuda para ver as funções disponíveis para seu papel."
         )
 
@@ -176,8 +176,8 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE, name: str, role: str):
     """View assigned tasks (Unified status)."""
     await update.message.reply_text(
-        f"📋 *Suas Tarefas Ativas — {name}*\n"
-        "-------------------------------------\n"
+        f"📋 **Suas Tarefas Ativas — {name}**\n"
+        "──────────────────\n"
         "🟢 [Campanha Julho] Carrossel - NDVI (Fase: Geração)\n"
         "🟡 [Campanha Julho] Reel - Drone vs Olho (Fase: Roteiro)\n"
         "🔴 [Campanha Julho] TikTok - ROI (Fase: Revisão de Marca)\n\n"
@@ -317,14 +317,14 @@ async def cmd_gerar_mkt(update: Update, context: ContextTypes.DEFAULT_TYPE, name
     month_year = " ".join(args)
     
     await update.message.reply_text(
-        f"🚀 *Iniciando Geração de Conteúdo para {month_year}*\n\n"
+        f"🚀 **Iniciando Geração de Conteúdo para {month_year}**\n"
+        "──────────────────\n"
         "Este processo orquestra 5 agentes digitais:\n"
         "1. Marketing Agent (Estratégia)\n"
         "2. Content Director (Briefing)\n"
         "3. Creators (Imagem, Reels, TikTok)\n"
         "4. Visual Identity (Brand Check)\n\n"
-        "⏳ *Por favor, aguarde alguns minutos...*", 
-        parse_mode="Markdown"
+        "⏳ Por favor, aguarde alguns minutos..."
     )
     
     try:
@@ -339,16 +339,15 @@ async def cmd_gerar_mkt(update: Update, context: ContextTypes.DEFAULT_TYPE, name
             doc = BytesIO(content.encode('utf-8'))
             doc.name = f"conteudo_{month_year.replace(' ', '_').lower()}.md"
             await update.message.reply_document(
-                document=doc, 
-                caption=f"✅ *Conteúdo de {month_year} gerado com sucesso!*\n(Enviado como arquivo pois excede o limite de texto)",
-                parse_mode="Markdown"
+                document=doc,
+                caption=f"✅ **Conteúdo de {month_year} gerado com sucesso!**\n(Enviado como arquivo pois excede o limite de texto)"
             )
         else:
-            await update.message.reply_text(f"✅ *Conteúdo Finalizado:*\n\n{content}")
+            await update.message.reply_text(f"✅ **Conteúdo Finalizado:**\n\n{content}")
 
         # Send generated images if any
         if image_paths:
-            await update.message.reply_text("🖼️ *Enviando imagens geradas automaticamente via Google Imagen...*")
+            await update.message.reply_text("🖼️ Enviando imagens geradas automaticamente via Google Imagen...")
             for img_path in image_paths:
                 if os.path.exists(img_path):
                     with open(img_path, 'rb') as photo:
@@ -358,7 +357,7 @@ async def cmd_gerar_mkt(update: Update, context: ContextTypes.DEFAULT_TYPE, name
                         )
         
         if image_err:
-            await update.message.reply_text(f"⚠️ *Aviso sobre Imagens:* {image_err}")
+            await update.message.reply_text(f"⚠️ **Aviso sobre Imagens:** {image_err}")
             
     except Exception as e:
         await update.message.reply_text(f"❌ Ocorreu um erro ao gerar o conteúdo: {e}")
@@ -368,7 +367,7 @@ async def cmd_calc(update: Update, context: ContextTypes.DEFAULT_TYPE, name: str
     """Calculadora rápida de vendas."""
     args = context.args
     if not args or len(args) < 1:
-        await update.message.reply_text("⚠️ Uso: `/calc [área_ha] [tipo (opcional: orto/ndvi/completo/enterprise)]`\nEx: `/calc 500 ndvi`", parse_mode="Markdown")
+        await update.message.reply_text("⚠️ Uso: /calc [área_ha] [tipo (opcional: orto/ndvi/completo/enterprise)]\nEx: /calc 500 ndvi")
         return
     
     try:
@@ -384,11 +383,12 @@ async def cmd_calc(update: Update, context: ContextTypes.DEFAULT_TYPE, name: str
         
         if tipo == "enterprise":
             res = calc.simulate_proposal(area_ha, is_enterprise=True, farms=1)
-            msg = (f"💼 *Cotação Enterprise* (Área Base: {res['area_total_ha']} ha)\n"
+            msg = (f"💼 **Cotação Enterprise** (Área Base: {res['area_total_ha']} ha)\n"
+                   f"──────────────────\n"
                    f"Fazendas: {res['numero_fazendas']}\n"
                    f"Valor Bruto: R$ {res['valor_bruto_anual']:,.2f}\n"
                    f"Desconto: {res['desconto_aplicado']}\n"
-                   f"**Valor Final Anual: R$ {res['valor_final_anual']:,.2f}**\n")
+                   f"💰 **Valor Final Anual: R$ {res['valor_final_anual']:,.2f}**\n")
         else:
             if tipo in ["orto", "ortofoto"]:
                 res = calc.simulate_proposal(area_ha, service_type="ortofoto")
@@ -397,12 +397,13 @@ async def cmd_calc(update: Update, context: ContextTypes.DEFAULT_TYPE, name: str
             else:
                 res = calc.simulate_proposal(area_ha, service_type="completo")
                 
-            msg = (f"📊 *Cotação Rápida*\n"
+            msg = (f"📊 **Cotação Rápida**\n"
+                   f"──────────────────\n"
                    f"Serviço: {res['servico']}\n"
                    f"Área: {res['area_ha']} ha\n"
-                   f"**Valor Estimado: R$ {res['valor']:,.2f}**")
-                   
-        await update.message.reply_text(msg, parse_mode="Markdown")
+                   f"💰 **Valor Estimado: R$ {res['valor']:,.2f}**")
+
+        await update.message.reply_text(msg)
     except Exception as e:
         await update.message.reply_text(f"❌ Erro na calculadora: {e}")
 
@@ -410,15 +411,16 @@ async def cmd_calc(update: Update, context: ContextTypes.DEFAULT_TYPE, name: str
 async def cmd_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE, name: str, role: str):
     """Comandos criativos e opções pro time de mkt BR."""
     msg = (
-        "📸 *Opções Criativas do Instagram Agrostech*\n\n"
+        "📸 **Opções Criativas do Instagram Agrostech**\n"
+        "──────────────────\n"
         "Use comandos diretos para o bot gerar suas ideias e artes da melhor qualidade do mundo:\n"
-        "• `/gerar_mkt [mês]` - Orquestra a campanha completa (textos e imagens).\n"
-        "• `/trends` - Sugere tendências virais do TikTok/Reels.\n"
-        "• `/briefing_mkt` - Mostra a pauta da semana.\n"
-        "• `/aprovar_mkt [id]` - Envia para a fila de publicação!\n\n"
-        "💡 *Dica:* A Agrostech busca o melhor design (estilo Apple/Tesla do Agro) com alto impacto visual e copy direto!"
+        "• /gerar_mkt [mês] - Orquestra a campanha completa (textos e imagens).\n"
+        "• /trends - Sugere tendências virais do TikTok/Reels.\n"
+        "• /briefing_mkt - Mostra a pauta da semana.\n"
+        "• /aprovar_mkt [id] - Envia para a fila de publicação!\n\n"
+        "💡 **Dica:** A Agrostech busca o melhor design (estilo Apple/Tesla do Agro) com alto impacto visual e copy direto!"
     )
-    await update.message.reply_text(msg, parse_mode="Markdown")
+    await update.message.reply_text(msg)
 
 async def cmd_ajuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Print list of commands for current user's role."""
@@ -431,7 +433,7 @@ async def cmd_ajuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
     perms = ROLE_PERMISSIONS.get(role, [])
     
-    help_text = f"💡 <b>Comandos disponíveis para seu papel ({role.upper()}):</b>\n\n"
+    help_text = f"💡 **Comandos disponíveis para seu papel ({role.upper()}):**\n──────────────────\n"
     
     if "*" in perms:
         help_text += "Você tem acesso irrestrito de Admin:\n"
@@ -463,10 +465,10 @@ async def cmd_ajuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
             elif p == "gerar_mkt":
                 help_text += "• /gerar_mkt [Mês Ano] - Orquestrar geração de conteúdo\n"
                 
-    await update.message.reply_text(help_text, parse_mode="HTML")
+    await update.message.reply_text(help_text)
 
 # ─────────────────────────────────────────────
-# LangGraph-Powered Unified Dispatcher
+# CrewAI-Powered Unified Dispatcher
 # ─────────────────────────────────────────────
 
 async def send_long_message(update: Update, text: str, parse_mode: str = None):
@@ -488,13 +490,13 @@ async def send_long_message(update: Update, text: str, parse_mode: str = None):
         except Exception:
             await update.message.reply_text(chunk)
 
-async def langgraph_dispatch(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def agent_dispatch(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
-    Unified handler for all LangGraph-powered commands.
+    Unified handler for all CrewAI-powered commands.
     Routes to the correct AI agent based on RBAC and command type.
     """
-    if not LANGGRAPH_ENABLED:
-        await update.message.reply_text("⚠️ Sistema de agentes não disponível. Verifique a instalação do LangGraph.")
+    if not CREWAI_ENABLED:
+        await update.message.reply_text("⚠️ Sistema de agentes não disponível. Verifique a instalação do CrewAI.")
         return
 
     user_id = update.effective_user.id
@@ -506,24 +508,71 @@ async def langgraph_dispatch(update: Update, context: ContextTypes.DEFAULT_TYPE)
     if cmd_name == "buscar_leads":
         await update.message.reply_text("🔍 Iniciando busca de leads... aguarde!")
         if len(args) < 2:
-            await update.message.reply_text("⚠️ Uso: `/buscar_leads <estado> <cultura>`\nEx: `/buscar_leads Paraná soja`", parse_mode="Markdown")
+            await update.message.reply_text("⚠️ Uso: /buscar_leads <estado> <cultura>\nEx: /buscar_leads Paraná soja")
             return
         estado, cultura = args[0], args[1]
         response = await buscar_leads(estado, cultura, user_id)
-        await send_long_message(update, response, parse_mode="HTML")
+        await send_long_message(update, response)
         return
 
-    # All other commands: run through LangGraph
-    await update.message.reply_text("Processando...")
+    # All other commands: run through the CrewAI departments
+    await update.message.reply_text("Pensando...")
     response = await handle_command(user_id, command, args)
-    await send_long_message(update, response, parse_mode="HTML")
+    await send_long_message(update, response)
+
+
+async def handle_telegram_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Catch-all handler for normal non-command conversational text messages.
+    Invokes the LLM NLU Intent Classifier and dispatches the request accordingly.
+    """
+    user_id = update.effective_user.id
+    username = update.effective_user.username or "unknown"
+    message_text = update.message.text
+    
+    # Check if user is registered/authorized
+    role, name = get_user_role(user_id)
+    if not role:
+        # Fallback: treat unregistered users as external clients / prospects
+        role = "client"
+        name = update.effective_user.first_name or "Visitante"
+
+    await update.message.reply_text("Pensando...")
+    
+    try:
+        # Run natural chat NLU processing
+        response = await handle_natural_chat(user_id, message_text, default_name=name)
+        
+        # Check if response matches legacy command classification markers
+        if response == "__CLASSIFIED_STATUS__":
+            await cmd_status(update, context, name, role)
+        elif response.startswith("__CLASSIFIED_CALC__"):
+            # Extract arguments from classifier marker
+            args = response.replace("__CLASSIFIED_CALC__", "").split()
+            # Set arguments in context to emulate CommandHandler
+            context.args = args
+            await cmd_calc(update, context)
+        elif response == "__CLASSIFIED_INSTAGRAM__":
+            await cmd_instagram(update, context, name, role)
+        elif response == "__CLASSIFIED_AJUDA__":
+            await cmd_ajuda(update, context)
+        elif response == "__CLASSIFIED_START__":
+            await cmd_start(update, context)
+        else:
+            # Direct text response from agent nodes
+            await send_long_message(update, response)
+            
+        log_audit(user_id, username, "natural_chat", "NLU_SUCCESS")
+    except Exception as e:
+        logger.exception("Error in handle_telegram_message")
+        await update.message.reply_text(f"⚠️ Erro ao processar mensagem: {e}")
 
 
 # ─────────────────────────────────────────────
 # Main Loop
 # ─────────────────────────────────────────────
 
-LANGGRAPH_COMMANDS = [
+AGENT_COMMANDS = [
     # Agronomist Agent
     "copiloto", "diagnostico", "ndvi", "monitorar", "adubar",
     # Operations Agent
@@ -545,7 +594,7 @@ def main():
         print("   Set it in runner/.env or export it in your shell.")
         return
 
-    mode = "LangGraph v2" if LANGGRAPH_ENABLED else "Legacy"
+    mode = "CrewAI v3" if CREWAI_ENABLED else "Legacy"
     print(f"[START] Launching Agrostech Telegram Bot gateway — Mode: {mode}")
     application = Application.builder().token(TOKEN).build()
 
@@ -560,11 +609,15 @@ def main():
     application.add_handler(CommandHandler("criativo", cmd_instagram))
     application.add_handler(CommandHandler("gerar_mkt", cmd_gerar_mkt))  # keep legacy (has file send logic)
 
-    # LangGraph-powered commands (new intelligent agents)
-    if LANGGRAPH_ENABLED:
-        for cmd in LANGGRAPH_COMMANDS:
-            application.add_handler(CommandHandler(cmd, langgraph_dispatch))
-        print(f"[AGENTS] {len(LANGGRAPH_COMMANDS)} commands wired to LangGraph agents [OK]")
+    # CrewAI-powered commands (new intelligent agents)
+    if CREWAI_ENABLED:
+        for cmd in AGENT_COMMANDS:
+            application.add_handler(CommandHandler(cmd, agent_dispatch))
+        print(f"[AGENTS] {len(AGENT_COMMANDS)} commands wired to CrewAI agents [OK]")
+        
+        # Conversational NLU handler for non-command messages
+        application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_telegram_message))
+        print("[NLU] Conversational NLU message handler registered [OK]")
     else:
         # Fallback to legacy handlers
         application.add_handler(CommandHandler("missoes", cmd_missoes))

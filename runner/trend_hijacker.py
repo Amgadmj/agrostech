@@ -9,21 +9,14 @@ try:
 except ImportError:
     requests = None
 
-# Attempt to load LLM
-try:
-    from langchain_core.messages import HumanMessage
-    if os.getenv("GROQ_API_KEY"):
-        from langchain_groq import ChatGroq
-        llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"), temperature=0.3)
-    elif os.getenv("GEMINI_API_KEY"):
-        from langchain_google_genai import ChatGoogleGenerativeAI
-        llm = ChatGoogleGenerativeAI(model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"), google_api_key=os.getenv("GEMINI_API_KEY"), temperature=0.3)
-    else:
-        llm = None
-except ImportError:
-    llm = None
-
 load_dotenv(Path(__file__).parent / ".env")
+
+# Attempt to load LLM (após load_dotenv — o llm_config compartilhado lê as chaves do .env)
+try:
+    from llm_config import get_llm
+    llm = get_llm()
+except Exception:
+    llm = None
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -71,7 +64,7 @@ def inject_trend_to_content_director(news_items):
     """
     
     try:
-        response = llm.invoke([HumanMessage(content=prompt)]).content
+        response = llm.call(prompt)
         if "NADA_URGENTE" not in response:
             logger.info("🔥 URGENT TREND DETECTED! Injecting to Content Director queue.")
             # In a real app, this would push to ClickUp or a database queue for the Content Director.

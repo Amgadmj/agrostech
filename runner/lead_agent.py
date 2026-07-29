@@ -196,7 +196,7 @@ async def buscar_leads(estado: str, cultura: str, telegram_id: int = None) -> st
     source = "Firecrawl" if FIRECRAWL_API_KEY else "base de dados demo"
 
     lines = [
-        f"<b>{len(leads)} leads encontrados</b> — {cultura.title()} em {estado}",
+        f"**{len(leads)} leads encontrados** — {cultura.title()} em {estado}",
         f"Fonte: {source} | {created}/{len(leads)} tarefas criadas no ClickUp\n",
     ]
 
@@ -205,7 +205,7 @@ async def buscar_leads(estado: str, cultura: str, telegram_id: int = None) -> st
         phone_str = lead.get("phone", "N/D")
         email_str = lead.get("email", "N/D")
         lines.append(
-            f"<b>{i}. {lead.get('name', 'N/D')}</b>\n"
+            f"**{i}. {lead.get('name', 'N/D')}**\n"
             f"  {lead.get('address', 'N/D')}{area_str}\n"
             f"  Tel: {phone_str} | {email_str}"
         )

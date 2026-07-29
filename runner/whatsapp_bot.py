@@ -1,3 +1,4 @@
+import asyncio
 import os
 import sqlite3
 import logging
@@ -9,10 +10,10 @@ import requests
 
 try:
     from agent_router import handle_command
-    LANGGRAPH_ENABLED = True
+    CREWAI_ENABLED = True
 except ImportError as e:
-    logging.warning(f"LangGraph not available: {e}")
-    LANGGRAPH_ENABLED = False
+    logging.warning(f"CrewAI not available: {e}")
+    CREWAI_ENABLED = False
 
 load_dotenv(Path(__file__).parent / ".env")
 
@@ -88,19 +89,21 @@ async def handle_internal_command(phone: str, role: str, name: str, text: str):
         send_whatsapp_message(phone, f"🚫 Permissão negada para o comando '{cmd}'.")
         return
 
-    # Route to LangGraph if enabled
-    if LANGGRAPH_ENABLED:
+    # Route to the CrewAI agent router if enabled
+    if CREWAI_ENABLED:
         try:
             response = await handle_command(phone, f"/{cmd}", args) # Pass with slash for compatibility
-            # Adapt HTML/Markdown for WhatsApp (basic adaptation)
+            # Adapt plain-text markdown para o negrito nativo do WhatsApp (*texto*)
+            response = response.replace("**", "*")
+            # Legado: remove tags HTML caso alguma saída antiga ainda as contenha
             response = response.replace("<b>", "*").replace("</b>", "*")
             response = response.replace("<i>", "_").replace("</i>", "_")
-            response = response.replace("<code>", "`").replace("</code>", "`")
+            response = response.replace("<code>", "").replace("</code>", "")
             send_whatsapp_message(phone, response)
         except Exception as e:
             send_whatsapp_message(phone, f"❌ Erro ao processar comando: {str(e)}")
     else:
-        send_whatsapp_message(phone, f"Comando '{cmd}' recebido, mas LangGraph está desativado.")
+        send_whatsapp_message(phone, f"Comando '{cmd}' recebido, mas o sistema de agentes está desativado.")
 
 # For simplicity, we'll keep conversation state in memory per phone number
 conversation_states = {}
@@ -112,44 +115,42 @@ async def handle_client_message(phone: str, text: str):
     if phone not in conversation_states:
         prompt_path = Path(__file__).parent.parent / "agents" / "sales" / "negotiation_bot.md"
         system_prompt = prompt_path.read_text(encoding="utf-8") if prompt_path.exists() else "Você é o SDR da Agrostech."
-        
-        # Initialize LLM
-        from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
-        if os.getenv("GROQ_API_KEY"):
-            from langchain_groq import ChatGroq
-            llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"), temperature=0.3)
-        elif os.getenv("GEMINI_API_KEY"):
-            from langchain_google_genai import ChatGoogleGenerativeAI
-            llm = ChatGoogleGenerativeAI(model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"), google_api_key=os.getenv("GEMINI_API_KEY"), temperature=0.3)
-        else:
+
+        # Initialize LLM (CrewAI/LiteLLM compartilhado)
+        try:
+            from llm_config import get_llm
+            llm = get_llm()
+        except EnvironmentError:
             send_whatsapp_message(phone, "Nosso sistema está indisponível no momento.")
             return
 
         conversation_states[phone] = {
             "llm": llm,
-            "messages": [SystemMessage(content=system_prompt)]
+            "messages": [{"role": "system", "content": system_prompt}]
         }
-    
+
     state = conversation_states[phone]
-    
+
     # Very basic deal desk integration: If user says a number > 10 and "ha" or "hectares", run a quick quote
     import re
     area_match = re.search(r"(\d+)\s*(ha|hectare|hectares)", text.lower())
     if area_match:
         area = float(area_match.group(1))
         import deal_desk
-        research = deal_desk.research_client("") 
+        research = deal_desk.research_client("")
         quote = deal_desk.build_quote(area, research=research)
         feat = quote["featured"]
         context_msg = f"SISTEMA (Invisível para o cliente): A cotação para {area}ha foi gerada. O preço recomendado é R$ {feat.price_recommended}/ha. O limite máximo de desconto (NUNCA ABAIXO) é R$ {feat.price_walkaway}/ha. Apresente o preço recomendado ao cliente."
-        state["messages"].append(SystemMessage(content=context_msg))
+        # Nota: injetado como "user" — o LiteLLM consolida mensagens "system" no
+        # system_instruction do Gemini, o que reordenaria esta instrução no meio da conversa.
+        state["messages"].append({"role": "user", "content": context_msg})
 
-    state["messages"].append(HumanMessage(content=text))
-    
+    state["messages"].append({"role": "user", "content": text})
+
     try:
-        response = state["llm"].invoke(state["messages"])
-        state["messages"].append(AIMessage(content=response.content))
-        send_whatsapp_message(phone, response.content)
+        reply = await asyncio.to_thread(state["llm"].call, state["messages"])
+        state["messages"].append({"role": "assistant", "content": reply})
+        send_whatsapp_message(phone, reply)
     except Exception as e:
         logger.error(f"Negotiation Bot Error: {e}")
         send_whatsapp_message(phone, "Tivemos um problema técnico. Um humano falará com você em breve.")

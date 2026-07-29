@@ -30,12 +30,13 @@ from typing import Optional
 # ─────────────────────────────────────────────
 
 try:
-    import google.generativeai as genai
+    from google import genai
+    from google.genai import types
     BACKEND = "gemini"
 except ImportError:
     BACKEND = "mock"
     print("[WARNING] No LLM backend found. Running in mock mode.")
-    print("   Install: google-generativeai")
+    print("   Install: google-genai")
 
 
 AGENTS_ROOT = Path(__file__).parent.parent / "agents"
@@ -112,13 +113,15 @@ class AgrostechAgent:
                 print(f"[WARNING] No GEMINI_API_KEY found. Falling back to mock backend for [{self.agent_id}].")
                 self.current_backend = "mock"
                 return
-            genai.configure(api_key=key)
+            self._client = genai.Client(api_key=key)
             default_model = os.getenv("GEMINI_MODEL") or "gemini-2.5-flash"
-            self._model = genai.GenerativeModel(
-                model_name=self.model or default_model,
-                system_instruction=self.system_prompt,
+            model_name = self.model or default_model
+            self._chat = self._client.chats.create(
+                model=model_name,
+                config=types.GenerateContentConfig(
+                    system_instruction=self.system_prompt,
+                )
             )
-            self._chat = self._model.start_chat(history=[])
 
 
 
@@ -207,8 +210,15 @@ class AgrostechAgent:
     def reset_conversation(self):
         """Reset conversation history (useful for new sessions)."""
         self.conversation_history = []
-        if BACKEND == "gemini":
-            self._chat = self._model.start_chat(history=[])
+        if self.current_backend == "gemini":
+            default_model = os.getenv("GEMINI_MODEL") or "gemini-2.5-flash"
+            model_name = self.model or default_model
+            self._chat = self._client.chats.create(
+                model=model_name,
+                config=types.GenerateContentConfig(
+                    system_instruction=self.system_prompt,
+                )
+            )
         print(f"[RESET] Agent [{self.agent_id}] conversation reset")
 
     def __repr__(self) -> str:

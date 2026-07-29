@@ -36,6 +36,7 @@ FACTOR_DOWN = 0.93           # perdendo por preço -> cede 7% (clampado no piso)
 
 VALID_STATUS = ("ganhou", "perdeu", "negociando")
 PRICE_LOSS_KEYWORDS = ("preço", "preco", "caro", "concorrente", "barato", "desconto")
+PENDING_TTL_MINUTES = 30     # validade da descoberta consultiva pendente do /cotacao
 
 
 # ── Infra ─────────────────────────────────────────────────────────────────────
@@ -65,6 +66,15 @@ def _conn() -> sqlite3.Connection:
             reason TEXT
         )
     """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS pending_quotes (
+            user_id TEXT PRIMARY KEY,
+            area_ha REAL NOT NULL,
+            client TEXT,
+            raw_text TEXT,
+            created_at TEXT NOT NULL
+        )
+    """)
     return conn
 
 
@@ -92,7 +102,7 @@ def record_outcome(quote_id: int, status: str, final_price: float | None = None,
     """Grava a resposta do cliente. Retorna confirmação formatada (HTML leve)."""
     status = status.lower().strip()
     if status not in VALID_STATUS:
-        return ("⚠️ Status inválido. Use: <b>ganhou</b>, <b>perdeu</b> ou <b>negociando</b>.\n"
+        return ("⚠️ Status inválido. Use: **ganhou**, **perdeu** ou **negociando**.\n"
                 "Ex.: /resultado 12 ganhou 75  |  /resultado 12 perdeu preço concorrente")
 
     with _conn() as conn:
@@ -119,8 +129,52 @@ def record_outcome(quote_id: int, status: str, final_price: float | None = None,
         lines.append(f"Motivo: {reason}")
     elif status == "negociando" and final_price:
         lines.append(f"Contra-proposta do cliente: {_brl(final_price)}/ha")
-    lines.append("<i>O Conselho aprende com isso na próxima cotação. Obrigado! 📈</i>")
+    lines.append("O Conselho aprende com isso na próxima cotação. Obrigado! 📈")
     return "\n".join(lines)
+
+
+# ── Descoberta consultiva pendente (/cotacao sem serviço definido) ───────────
+def save_pending(user_id: str | int, area_ha: float, client: str, raw_text: str = "") -> None:
+    """Guarda o contexto do /cotacao enquanto o vendedor responde qual serviço o cliente quer."""
+    with _conn() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO pending_quotes (user_id, area_ha, client, raw_text, created_at) "
+            "VALUES (?,?,?,?,?)",
+            (str(user_id), area_ha, client, raw_text, datetime.now().isoformat()),
+        )
+
+
+def get_pending(user_id: str | int) -> dict | None:
+    """Contexto pendente do usuário, ou None se não existe/expirou (30 min)."""
+    with _conn() as conn:
+        row = conn.execute(
+            "SELECT area_ha, client, raw_text, created_at FROM pending_quotes WHERE user_id=?",
+            (str(user_id),),
+        ).fetchone()
+    if not row:
+        return None
+    area_ha, client, raw_text, created_at = row
+    try:
+        expired = datetime.now() - datetime.fromisoformat(created_at) > timedelta(minutes=PENDING_TTL_MINUTES)
+    except ValueError:
+        expired = True
+    if expired:
+        clear_pending(user_id)
+        return None
+    return {"area_ha": area_ha, "client": client or "", "raw_text": raw_text or ""}
+
+
+def clear_pending(user_id: str | int) -> None:
+    with _conn() as conn:
+        conn.execute("DELETE FROM pending_quotes WHERE user_id=?", (str(user_id),))
+
+
+def pop_pending(user_id: str | int) -> dict | None:
+    """Consome (lê e apaga) o contexto pendente."""
+    pending = get_pending(user_id)
+    if pending:
+        clear_pending(user_id)
+    return pending
 
 
 # ── Estatísticas e calibração ────────────────────────────────────────────────
@@ -252,15 +306,15 @@ def learning_report(days: int = LEARNING_WINDOW_DAYS) -> str:
             ORDER BY o.id DESC LIMIT 5
         """, (since,)).fetchall()
 
-    out = [f"<b>🧠 APRENDIZADO DO CONSELHO</b> (últimos {days} dias)",
-           f"📨 Cotações emitidas: <b>{total_quotes}</b>"]
+    out = [f"🧠 **APRENDIZADO DO CONSELHO** (últimos {days} dias)",
+           f"📨 Cotações emitidas: **{total_quotes}**"]
 
     if not total_quotes:
         out.append("\nAinda não há cotações registradas. Use /cotacao e depois "
                    "reporte a resposta do cliente com /resultado.")
         return "\n".join(out)
 
-    out.append("\n<b>📊 Resposta dos clientes por plano</b>")
+    out.append("\n📊 **Resposta dos clientes por plano**")
     any_stats = False
     for p in sorted(plans):
         s = plan_stats(p, days)
@@ -268,8 +322,8 @@ def learning_report(days: int = LEARNING_WINDOW_DAYS) -> str:
             continue
         any_stats = True
         wr = f"{s['win_rate']:.0%}" if s["win_rate"] is not None else "—"
-        out.append(f"\n• <b>{p}</b>: 🏆 {s['wins']} | ❌ {s['losses']} | 🤝 {s['negotiating']} "
-                   f"| win rate <b>{wr}</b>")
+        out.append(f"\n• **{p}**: 🏆 {s['wins']} | ❌ {s['losses']} | 🤝 {s['negotiating']} "
+                   f"| win rate **{wr}**")
         if s["avg_close_ratio"]:
             out.append(f"  Fechamento médio: {s['avg_close_ratio']:.0%} do preço cotado")
         factor, why = calibration(p)
@@ -279,16 +333,16 @@ def learning_report(days: int = LEARNING_WINDOW_DAYS) -> str:
         out.append("Nenhum resultado reportado ainda — peça ao time para usar /resultado.")
 
     if recent_losses:
-        out.append("\n<b>❌ Motivos de perda recentes</b>")
+        out.append("\n❌ **Motivos de perda recentes**")
         for (r,) in recent_losses:
             out.append(f"• {r[:80]}")
 
     if pending:
-        out.append("\n<b>⏳ Cotações sem resposta (cobre o cliente!)</b>")
+        out.append("\n⏳ **Cotações sem resposta (cobre o cliente!)**")
         for qid, client, plan, rec, rep in pending:
             out.append(f"• #{qid} {client or 'sem nome'} — {plan} {_brl(rec)}/ha"
                        f"{' (' + rep + ')' if rep else ''}")
-        out.append("\n<i>Reporte com: /resultado &lt;id&gt; ganhou|perdeu|negociando [preço/motivo]</i>")
+        out.append("\nReporte com: /resultado <id> ganhou|perdeu|negociando [preço/motivo]")
 
     return "\n".join(out)
 

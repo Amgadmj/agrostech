@@ -9,13 +9,23 @@ python-dotenv>=1.0.0
 requests>=2.31.0
 
 # ── LLM & Agent Orchestration ───────────────────
-google-generativeai>=0.7.0
-langchain-google-genai>=1.0.0
-langchain-core>=0.3.0
-langgraph>=0.2.0
+google-genai>=0.1.0           # base_agent.py direct usage
+crewai==1.15.2                # pinned: build verified against Windows App Control
 
 # ── Lead Generation ─────────────────────────────
 firecrawl-py>=0.0.16          # LLM-ready web scraper for lead discovery
+
+# ── Geomart Prospecting Engine (Mercurius GTM) ──
+playwright>=1.45.0            # geomart_auth.py — sessão logada persistente
+mapbox-vector-tile==1.2.1     # geomart_client.py — decodifica tiles MVT (protobuf)
+                               # pinned: 2.x exige protobuf>=6.31, que quebra o
+                               # protobuf<6 exigido por google-generativeai (base_agent.py).
+                               # geomart_client.py também seta PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+                               # (workaround oficial do Google p/ o _pb2.py antigo empacotado na 1.2.1).
+shapely>=2.0.0                # geomart_client.py — geometria/área geodésica
+pyproj>=3.6.0                 # geomart_client.py — projeção métrica p/ área em ha
+gspread>=6.1.0                # sheets_client.py — escrita no Google Sheets
+google-auth>=2.30.0           # sheets_client.py — auth service account
 
 # ── Geospatial / NDVI (Phase 2) ─────────────────
 # geemap>=0.34.0              # Uncomment for /ndvi command (Google Earth Engine)
