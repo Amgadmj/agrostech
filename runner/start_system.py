@@ -16,6 +16,15 @@ from pathlib import Path
 RUNNER_DIR = Path(__file__).parent.resolve()
 sys.path.insert(0, str(RUNNER_DIR))
 
+# stdout/stderr herdam a codepage do console (cp1252 no Windows) quando não
+# há terminal UTF-8 anexado — ex.: processo em background, saída redirecionada
+# para arquivo/pipe. O header abaixo usa emoji (🚁), que cp1252 não consegue
+# codificar, derrubando o launcher antes de qualquer log útil. UTF-8 explícito
+# evita isso independente de como o processo foi iniciado.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 # Color codes for high-tech visual feedback
 GREEN = "\033[92m"
 BLUE = "\033[94m"
@@ -94,7 +103,12 @@ def launch_telegram_bot():
         # Start telegram_bot.py as a persistent process
         # We let stdout/stderr stream directly to the main terminal so the user sees all incoming bot traffic!
         print(f"\n{GREEN}{BOLD}>>> SYSTEM ACTIVE. Streaming Telegram Bot logs below:{RESET}\n")
-        subprocess.run([sys.executable, str(bot_script)], check=True)
+        # PYTHONIOENCODING evita a mesma UnicodeEncodeError (cp1252 x emoji) que
+        # derrubava este launcher, agora também no processo filho — sem isso,
+        # basta um print com emoji em telegram_bot.py (ou algo que ele importe)
+        # pra derrubar o bot em produção do mesmo jeito.
+        child_env = {**os.environ, "PYTHONIOENCODING": "utf-8", "PYTHONUNBUFFERED": "1"}
+        subprocess.run([sys.executable, str(bot_script)], check=True, env=child_env)
     except KeyboardInterrupt:
         print(f"\n\n[{YELLOW}INFO{RESET}] System shutdown initiated by user (Ctrl+C).")
         print(f"[{GREEN}OK{RESET}] Agrostech OS safely stopped. Have a productive day!")
