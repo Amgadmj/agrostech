@@ -109,11 +109,25 @@ agrostech/
     ├── deal_memory.py             ← Price recalibration from real deal outcomes
     ├── geomart_client.py / geomart_auth.py / geomart_pipeline.py
     │                              ← Motor de Prospecção Geomart (SIGEF parcel prospecting)
-    ├── mapbiomas_client.py       ← Crop prediction via MapBiomas raster
+    ├── mapbiomas_client.py       ← Crop prediction via MapBiomas raster (fixed: pyogrio-free)
+    ├── geo_zonal.py              ← Shared zonal-stats helper (rasterio-only, avoids blocked pyogrio)
     ├── mercurius_client.py       ← OSINT B2B company resolver (public sources only)
     ├── sheets_client.py          ← Writes daily pitch queue to Google Sheets
     ├── agrofit_client.py / agrotermos_client.py / smartsolos_client.py
     │                              ← Embrapa AgroAPI clients (pesticides, agroclimate, soil)
+    ├── agrobr_client.py          ← Resilient wrapper over agrobr (40 BR ag data sources)
+    ├── ceres_cubo/                ← Fase 1 (CEO-approved): data cube + GEOBIA + SVM crop classifier
+    │   ├── datacube.py            ← Sentinel-2 STAC fetch + NDVI/NDWI/SAVI
+    │   ├── segmentation.py        ← Geo-object segmentation (open-source GEOBIA substitute)
+    │   ├── features.py            ← Temporal + GLCM texture + geometric attributes
+    │   ├── classify.py            ← SVM classifier (StandardScaler + CalibratedClassifierCV)
+    │   ├── evaluate.py            ← OA/UA/PA accuracy assessment (paper's methodology)
+    │   └── pipeline.py            ← End-to-end CLI, compares against mapbiomas_client baseline
+    ├── marketing_alerts.py       ← Pre-call "Alerta de Safra" (drought) / "Alerta de Incêndio"
+    ├── farm_snapshot.py          ← "Raio-X da Fazenda" — real Sentinel-2 image per lead
+    ├── credit_insurance_context.py ← Pré-laudo de Crédito/Seguro (agrobr PSR context)
+    ├── pre_call_drip.py          ← Assembles the 3-touch pre-call value sequence per lead
+    ├── tests/test_pure_logic.py  ← Regression tests for deterministic logic (no network)
     ├── telegram_bot.py / whatsapp_bot.py ← Messaging gateways
     ├── start_system.py           ← Master launcher (env check → DB seed → Telegram Bot)
     ├── requirements.txt          ← Python dependencies

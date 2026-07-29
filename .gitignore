@@ -64,3 +64,7 @@ runner/data/mapbiomas/*.tiff
 # Dados de clientes — não versionar (repo público)
 Carteiras de clientes/
 Propostas Commercias/
+
+# Conteúdo gerado por lead (Raio-X/drip nomeiam fazenda real — mesma regra acima)
+data/generated/raiox/
+data/generated/pre_call_drip_*.md

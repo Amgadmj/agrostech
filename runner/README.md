@@ -190,6 +190,88 @@ python geomart_pipeline.py
 
 ---
 
+## Ceres Cubo — Classificação de Cultura (Fase 1, aprovada 2026-07-29)
+
+Piloto técnico do motor de classificação de cultura por data cube + GEOBIA (ver a proposta
+"Duas Alavancas de Dados" e Chaves et al., *AgriEngineering* 2025, 7, 19, DOI
+10.3390/agriengineering7010019 — 95% de acurácia geral, MODIS + GEOBIA + SVM). Adaptado
+para Sentinel-2 (10m, adequado ao tamanho real dos talhões) e 100% open-source (sem
+licença eCognition), pacote `ceres_cubo/`:
+
+1. **`datacube.py`** — busca Sentinel-2 L2A via STAC público sem chave (Element84 Earth
+   Search) e lê só a janela de pixels da AOI por HTTP range request — nunca baixa a cena
+   inteira. Calcula NDVI/NDWI/SAVI por data.
+2. **`segmentation.py`** — segmenta a composição mediana da série em geo-objetos
+   (`skimage.segmentation.felzenszwalb`, substituto aberto do MRS do eCognition).
+3. **`features.py`** — 32 atributos por geo-objeto: estatística-resumo temporal por índice
+   (média/desvio/mín/máx/amplitude/tendência), 6 texturas GLCM, 8 atributos geométricos.
+4. **`classify.py`** — SVM (mesma escolha do artigo) com `StandardScaler` +
+   `CalibratedClassifierCV` para confiança por predição.
+5. **`evaluate.py`** — acurácia por hold-out estratificado (UA/PA/OA), mesmo desenho do
+   artigo original — pronto para uso assim que houver amostras de campo reais.
+6. **`pipeline.py`** — CLI que orquestra tudo sobre uma AOI (bbox direta ou união dos leads
+   reais do Geomart num município) e compara contra o baseline atual (`mapbiomas_client.py`).
+
+```bash
+# AOI a partir de leads reais do Geomart (bbox de um município inteiro pode exceder uma
+# cena Sentinel-2 — o CLI recusa com erro claro nesse caso; use --bbox para uma AOI menor)
+python -m ceres_cubo.pipeline --bbox -48.29 -18.68 -48.24 -18.63 --start 2026-05-01 --end 2026-07-28
+
+# Com amostras de campo rotuladas (treina + avalia — sem isso, roda em modo exploratório
+# via KMeans, só para checar se o cubo+segmentação captura estrutura real)
+python -m ceres_cubo.pipeline --bbox ... --labels-csv amostras.csv --save-model modelo.joblib
+```
+
+**Estado real (não maquiado):** hoje não há amostras de campo/referência para nossas
+regiões (GO/MG/PR/RS) — sem elas, `pipeline.py` roda em modo exploratório (clustering, não
+classificação de cultura). Levantar essas amostras é o próximo passo da Fase 1, não algo
+que este código possa inventar sozinho.
+
+---
+
+## Alertas e Conteúdo Pré-Call de Marketing
+
+Entrega valor a um lead antes da ligação comercial (ver proposta "Duas Alavancas de
+Dados"): `agrobr_client.py` é a camada fina e resiliente sobre `agrobr.sync.datasets` (ver
+`.claude/skills/agrobr/SKILL.md`) usada por:
+
+- **`marketing_alerts.py`** — "Alerta de Safra" (queda de precipitação mês-a-mês vs. a
+  média recente — não há granularidade diária sem `AGROBR_INMET_TOKEN`) e "Alerta de
+  Incêndio" (`queimadas` do agrobr 1.1.0 tem um bug de contrato real e reproduzível — o
+  INPE usa -999 como sentinela de "sem dado" em `risco_fogo`, o schema do agrobr rejeita
+  valores negativos — `agrobr_client` absorve isso, mas o alerta não produz resultado até
+  o bug ser corrigido upstream ou contornado).
+- **`farm_snapshot.py`** — "Raio-X da Fazenda": imagem PNG (true-color + NDVI colorizado)
+  de um lead específico, direto de Sentinel-2 via `ceres_cubo.datacube`. Usa Pillow, não
+  matplotlib (`ft2font` é bloqueado pela mesma política de Application Control que bloqueia
+  `pyogrio` — ver nota em `requirements.txt`).
+- **`credit_insurance_context.py`** — contexto agregado (não por produtor — o agrobr não
+  identifica CNPJ) de apólices de seguro rural (PSR) por município/cultura, para o pitch
+  "laudo técnico fortalece seu dossiê de crédito/seguro".
+- **`pre_call_drip.py`** — orquestra os três num sequência de 3 toques por lead, grava em
+  `data/generated/pre_call_drip_<sigef_uuid>.md` (mesmo espírito dos `abm_trigger_*.md`
+  já existentes). Camada de conteúdo pura — o envio real continua sendo dos bots
+  (`telegram_bot.py`/`whatsapp_bot.py`).
+
+```bash
+python farm_snapshot.py --sigef-uuid <uuid> --out raiox.png
+python pre_call_drip.py --sigef-uuid <uuid>
+```
+
+---
+
+## Testes
+
+```bash
+python tests/test_pure_logic.py
+```
+
+Cobre a lógica determinística (zonal stats, limiares de alerta, segmentação/atributos,
+classificador) sem precisar de rede — os caminhos de I/O (STAC, agrobr, Geomart) foram
+validados manualmente contra dados reais durante o desenvolvimento de cada módulo.
+
+---
+
 ## Departamentos CrewAI e Integrações Embrapa
 
 `crew_agents.py` define os 5 agentes de departamento (Ceres Agrônoma, Operações, Ceres

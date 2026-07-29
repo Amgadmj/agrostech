@@ -27,9 +27,26 @@ pyproj>=3.6.0                 # geomart_client.py — projeção métrica p/ ár
 gspread>=6.1.0                # sheets_client.py — escrita no Google Sheets
 google-auth>=2.30.0           # sheets_client.py — auth service account
 
-# ── Geospatial / NDVI (Phase 2) ─────────────────
-# geemap>=0.34.0              # Uncomment for /ndvi command (Google Earth Engine)
-# rasterio>=1.3.0             # Uncomment for drone imagery processing
+# ── Geospatial / NDVI ────────────────────────────
+rasterio>=1.5.0                # mapbiomas_client.py, geo_zonal.py, ceres_cubo/ — leitura de raster
+                                # NÃO usar rasterstats: sua dependência pyogrio (bindings GDAL p/
+                                # I/O vetorial) é bloqueada por Application Control no Windows desta
+                                # equipe ("An Application Control policy has blocked this file",
+                                # confirmado em teste real). geo_zonal.py reimplementa zonal stats
+                                # só com rasterio.mask — mesmo resultado, sem essa dependência.
+
+# ── Ceres Cubo — Fase 1 (aprovada 2026-07-29): data cube + GEOBIA + SVM ──
+pystac-client>=0.9.0            # busca STAC (Element84 Earth Search, Sentinel-2 L2A, sem chave)
+scikit-image>=0.26.0            # segmentação geo-objeto (felzenszwalb/slic) + GLCM + regionprops
+scikit-learn>=1.9.0             # classificador SVM + StandardScaler + CalibratedClassifierCV
+Pillow>=12.0.0                  # farm_snapshot.py — matplotlib é bloqueado (ft2font) na mesma
+                                 # política de Application Control acima; Pillow não tem esse problema
+
+# ── agrobr — Fase 0 (entregue, custo zero): 40 fontes de dados agro BR ──
+agrobr>=1.1.0                   # ver .claude/skills/agrobr/SKILL.md — CEPEA e outras fontes têm
+                                 # licença CC BY-NC, uso interno OK, checar Jurídico antes de
+                                 # expor a cliente. agrobr_client.py absorve falhas de fonte/contrato
+                                 # (3 bugs reais do pacote 1.1.0 encontrados e documentados lá).
 
 # ── Utilities ───────────────────────────────────
 pathlib2>=2.3.7

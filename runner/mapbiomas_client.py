@@ -32,10 +32,10 @@ import logging
 from pathlib import Path
 
 from pyproj import Transformer
-from rasterstats import zonal_stats
 from shapely.geometry import shape
 from shapely.ops import transform as shp_transform
 
+import geo_zonal
 import geomart_client
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -105,7 +105,7 @@ def predict_crops(tiff_path: str, municipio: str | None = None) -> int:
         geom = shape(json.loads(lead["geometry_geojson"]))
         geom_proj = shp_transform(transformer.transform, geom)
 
-        stats = zonal_stats([geom_proj], tiff_path, categorical=True)[0]
+        stats = geo_zonal.categorical_zonal_stats(tiff_path, geom_proj)
         total_px = sum(stats.values())
         if not total_px:
             skipped_no_data += 1
