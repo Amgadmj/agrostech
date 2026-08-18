@@ -68,3 +68,7 @@ Propostas Commercias/
 # Conteúdo gerado por lead (Raio-X/drip nomeiam fazenda real — mesma regra acima)
 data/generated/raiox/
 data/generated/pre_call_drip_*.md
+
+# Captura de eventos (/event no Telegram) — dados reais de lead capturados em campo
+# (ao reusar event_capture.py num próximo evento, adicionar a nova pasta aqui)
+runner/data/AvAg2026/

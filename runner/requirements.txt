@@ -26,6 +26,8 @@ shapely>=2.0.0                # geomart_client.py — geometria/área geodésica
 pyproj>=3.6.0                 # geomart_client.py — projeção métrica p/ área em ha
 gspread>=6.1.0                # sheets_client.py — escrita no Google Sheets
 google-auth>=2.30.0           # sheets_client.py — auth service account
+google-api-python-client>=2.140.0  # drive_client.py — espelho opcional do /event no Google Drive
+                               # (só é chamado se GOOGLE_DRIVE_SYNC=true no .env; ver drive_client.py)
 
 # ── Geospatial / NDVI ────────────────────────────
 rasterio>=1.5.0                # mapbiomas_client.py, geo_zonal.py, ceres_cubo/ — leitura de raster

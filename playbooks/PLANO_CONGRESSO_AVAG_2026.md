@@ -210,13 +210,12 @@ Para cada lead qualificado, ainda na noite do mesmo dia:
 ## 9. Checklist operacional
 
 - [ ] Link de WhatsApp Business ativo e **QR Code impresso no crachá/camiseta**
-- [ ] Oferta A e Oferta B em **PDF de 1 página cada**, no celular de todos
-- [ ] Termo de intenção de parceria em 1 página, editável no celular
-- [ ] Planilha compartilhada de captura (Nome · Empresa · Cargo · WhatsApp · UF · ha · Cultura · Perfil 🔴🔵🟢 · Próximo passo · Dia)
-- [ ] Ninguém anota em papel — tudo direto na planilha, na hora
+- [x] Oferta A e Oferta B em **PDF de 1 página cada**, no celular de todos — `data/templates/avag2026/oferta_a_piloto_avag.pdf` e `oferta_b_parceiro_avag.pdf`
+- [x] Termo de Intenção de Parceria em 1 página — `data/templates/avag2026/termo_intencao_parceria_avag.pdf`
+- [x] Captura de lead pelo Telegram, sem planilha: `/event novo <nome>` abre o lead e tudo que o rep manda depois — texto, foto do crachá, documento — vira ficha automaticamente (ver `integrations/telegram_integration.md` §4.6). Ninguém para pra digitar formulário.
 - [ ] Bateria extra / powerbank (o campo não tem tomada)
 - [ ] Roupa de campo — o evento é em condomínio aeronáutico, não em centro de convenções
-- [ ] Debrief diário às 19h, sem exceção, com follow-up disparado antes de dormir
+- [ ] Debrief diário às 19h, sem exceção: `/event lista` mostra tudo capturado no dia, `/event followup` gera o texto de fechamento por lead
 - [ ] Registrar tudo no ClickUp CRM ao fim de cada dia
 
 ---
