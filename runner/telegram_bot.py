@@ -32,11 +32,16 @@ from telegram.ext import (
 )
 
 # ── CrewAI agent router + lead agent ──────────────────────────────────────────
+# OSError também é pego aqui: agent_router/crew_agents instanciam o LLM (via
+# llm_config.get_llm()) no import do módulo, e llm_config levanta OSError —
+# não ImportError — se GROQ_API_KEY/GEMINI_API_KEY não estiver no .env. Sem
+# isso, faltar a chave derrubava o processo inteiro em vez de cair pro modo
+# Legacy (que é exatamente o que esse try/except existe pra fazer).
 try:
     from agent_router import handle_command, handle_natural_chat
     from lead_agent import buscar_leads
     CREWAI_ENABLED = True
-except ImportError as e:
+except (ImportError, OSError) as e:
     logging.warning(f"CrewAI not available, falling back to legacy handlers: {e}")
     CREWAI_ENABLED = False
 
@@ -645,8 +650,15 @@ async def handle_telegram_message(update: Update, context: ContextTypes.DEFAULT_
         await update.message.reply_text("📝 Anotado na ficha.")
         return
 
+    if not CREWAI_ENABLED:
+        await update.message.reply_text(
+            "🤖 Assistente de linguagem natural não está ativo (CrewAI não configurado).\n"
+            "Use /ajuda para ver os comandos diretos disponíveis."
+        )
+        return
+
     await update.message.reply_text("Pensando...")
-    
+
     try:
         # Run natural chat NLU processing
         response = await handle_natural_chat(user_id, message_text, default_name=name)
@@ -766,15 +778,17 @@ def main():
     if EVENT_CAPTURE_ENABLED:
         print("[EVENT] Captura Inteligente de Evento (/event) registrada [OK]")
 
+    # Handler de texto livre: registrado sempre, não só com CrewAI ligado —
+    # a Captura de Evento (checada primeiro, dentro da função) não pode
+    # depender do CrewAI estar instalado/configurado para funcionar.
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_telegram_message))
+    print("[TEXT] Handler de texto livre registrado (NLU via CrewAI: %s) [OK]" % ("ligado" if CREWAI_ENABLED else "desligado"))
+
     # CrewAI-powered commands (new intelligent agents)
     if CREWAI_ENABLED:
         for cmd in AGENT_COMMANDS:
             application.add_handler(CommandHandler(cmd, agent_dispatch))
         print(f"[AGENTS] {len(AGENT_COMMANDS)} commands wired to CrewAI agents [OK]")
-        
-        # Conversational NLU handler for non-command messages
-        application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_telegram_message))
-        print("[NLU] Conversational NLU message handler registered [OK]")
     else:
         # Fallback to legacy handlers
         application.add_handler(CommandHandler("missoes", cmd_missoes))
