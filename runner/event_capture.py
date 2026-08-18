@@ -8,8 +8,10 @@ Este módulo transforma esse fluxo bagunçado em uma ficha organizada por
 lead, sem exigir nenhum passo extra do rep além de abrir o lead uma vez.
 
 Fluxo no Telegram:
-    /event novo Fazenda Progresso   -> abre (ou reabre) o lead "Fazenda Progresso"
-    <qualquer texto/foto/documento> -> some vira ficha e log daquele lead, até:
+    /event novo Fazenda Progresso   -> abre (ou reabre) o lead "Fazenda Progresso" e a IA já
+                                        responde com um gancho de conversa específico daquela
+                                        empresa, pra puxar assunto com o representante na hora
+    <qualquer texto/foto/documento> -> tudo vira ficha e log daquele lead, até:
     /event fechar                   -> fecha o lead ativo e mostra o resumo
     /event lista                    -> lista todos os leads já capturados no evento
     /event resumo                   -> mostra a ficha do lead ativo (ou do último fechado)
@@ -31,6 +33,7 @@ completo.
 """
 from __future__ import annotations
 
+import csv
 import json
 import logging
 import re
@@ -43,6 +46,7 @@ logger = logging.getLogger(__name__)
 
 RUNNER_DIR = Path(__file__).parent
 DATA_ROOT = RUNNER_DIR / "data"
+CARTEIRA_CSV = RUNNER_DIR.parent / "data" / "clientes_cana.csv"
 
 # Código do evento ativo — trocar aqui (ou tornar dinâmico) para reusar este
 # módulo no próximo congresso/feira sem duplicar código.
@@ -64,6 +68,33 @@ FICHA_FIELDS = [
 ]
 
 _FICHA_TEMPLATE = "\n".join(f"{label}: " for label, _ in FICHA_FIELDS)
+
+# Resumo estático da doutrina comercial (knowledge-base/MARKET_INTELLIGENCE.md +
+# as duas ofertas do evento) — mantido curto de propósito para o insight sair
+# rápido. Atualizar aqui se a doutrina mudar de verdade, não a cada detalhe.
+DOCTRINE_CHEATSHEET = """
+- Reframe central: "não competimos com o avião — dizemos a ele onde voar."
+  Nunca soar como substituição de aeronave.
+- Oferta A (Piloto AvAg, R$ 3.500): voo de até 100ha, 5 produtos, 48h, credita
+  100% em contrato de safra. Para produtor/usina/fazenda.
+- Oferta B (Parceiro AvAg, 10% indicação + 5% recorrência, ou white-label a
+  partir de R$ 30/ha): para operador aeroagrícola/piloto — ele continua
+  vendendo hora de voo, a Agrostech entra como camada de dados por trás.
+- Concorrência conhecida: ARPAC (8 bases SP/GO/MG, ~70 mil ha, forte em cana);
+  XMobots (sócia Embraer, ~60% do sucroenergético via "Cana Solution").
+  Se o prospect é usina/fornecedor de cana em SP/GO/MG, ele provavelmente já
+  tem contrato de pulverização com um desses — não tentar desalojar, vender
+  por cima (auditoria de produção, laudo bancável, MRV de carbono).
+- Se o prospect usa NDVI grátis (satélite/SATVeg/FieldView), nunca competir
+  direto — o satélite vigia, o drone comprova (conta planta, acha falha de
+  plantio, MDE centimétrico).
+- Diferencial sem concorrente publicado: laudo técnico com padrão aceito por
+  banco e por certificadora de carbono (Verra/Gold Standard).
+"""
+
+
+def _norm(s: str) -> str:
+    return unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().strip().lower()
 
 
 # ─────────────────────────────────────────────
@@ -198,9 +229,94 @@ def record_media(user_id: int, sender_label: str, kind: str, filename: str, data
     return dest
 
 
+def record_system_note(lead_dir: Path, note: str) -> None:
+    """Anexa uma nota do sistema (ex.: o insight gerado ao abrir o lead) ao
+    log.md — sem disparar re-extração de ficha, é só registro histórico."""
+    with (lead_dir / "log.md").open("a", encoding="utf-8") as f:
+        f.write(f"\n[{_now()}] [Agrostech IA] {note}\n")
+    _drive_sync_lead(lead_dir)
+
+
 # ─────────────────────────────────────────────
 # Inteligência — extração de campos e follow-up
 # ─────────────────────────────────────────────
+
+def _lookup_carteira(lead_name: str) -> list[dict]:
+    """Confere se o nome bate com algo já mapeado na carteira de cana GO/SP
+    (data/clientes_cana.csv). Local, instantâneo — sem chamada de rede.
+    Casa por substring nos dois sentidos (nome digitado <-> Grupo/Matriz),
+    pra pegar tanto "ATVOS" quanto "Usina ATVOS Rio Claro"."""
+    if not CARTEIRA_CSV.exists():
+        return []
+    alvo = _norm(lead_name)
+    if not alvo:
+        return []
+    hits = []
+    try:
+        with CARTEIRA_CSV.open(encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                grupo = _norm(row.get("Grupo", ""))
+                matriz = _norm(row.get("Matriz", ""))
+                if not grupo and not matriz:
+                    continue
+                if grupo in alvo or alvo in grupo or matriz in alvo or alvo in matriz:
+                    hits.append(row)
+    except OSError as exc:
+        logger.warning("Não consegui ler a carteira (%s): %s", CARTEIRA_CSV, exc)
+        return []
+    return hits[:6]
+
+
+def compose_company_insight(lead_name: str) -> str:
+    """Gera o gancho de conversa específico da empresa, pra mandar assim que
+    o rep abre o lead — enquanto ele ainda está de pé na frente do
+    representante. Cruza a carteira de cana (fato local, se houver match)
+    com a doutrina comercial; nunca inventa dado que não veio de nenhuma
+    das duas fontes."""
+    import llm_config
+
+    carteira_hits = _lookup_carteira(lead_name)
+    if carteira_hits:
+        cidades = ", ".join(sorted({h.get("Cidade", "") for h in carteira_hits if h.get("Cidade")}))
+        territorio = carteira_hits[0].get("Territorio", "")
+        pipeline = carteira_hits[0].get("Pipeline", "")
+        contexto_carteira = (
+            f"JÁ MAPEADO NA CARTEIRA DE CANA DA AGROSTECH: {len(carteira_hits)} unidade(s) "
+            f"em {cidades or 'localização não registrada'} (território {territorio}, hoje na "
+            f"fila de {pipeline}). Avise o rep que isso já é uma conta conhecida."
+        )
+    else:
+        contexto_carteira = (
+            "Não está na carteira de cana GO/SP já mapeada — é uma empresa nova para a Agrostech "
+            "neste evento."
+        )
+
+    prompt = f"""Você é o copiloto de vendas da Agrostech (drones agrícolas + créditos de
+carbono) no estande do Congresso AvAg 2026. Um rep acabou de abrir um lead
+chamado "{lead_name}" — ele está de pé, agora, na frente do representante
+dessa empresa, e precisa de um gancho de conversa bom nos próximos 10 segundos.
+
+{contexto_carteira}
+
+DOUTRINA COMERCIAL:
+{DOCTRINE_CHEATSHEET}
+
+Escreva uma mensagem curta (3-5 linhas) com:
+1. Um insight ou fato específico sobre "{lead_name}" que puxe conversa —
+   use o dado da carteira se houver; se não houver, infira com cautela pelo
+   nome (é usina/fornecedor de cana? operador aeroagrícola? cooperativa?) e
+   diga isso como hipótese a confirmar, nunca como fato inventado.
+2. Uma pergunta de abertura pronta pra usar, natural, não robótica.
+3. Se der pra saber o perfil, uma dica de 1 linha de qual oferta puxar
+   (Piloto AvAg pra produtor/usina, Parceiro AvAg pra operador/piloto).
+
+Nunca invente número, contrato ou nome de pessoa. Se não souber algo, diga
+que não sabe e sugira o que perguntar pra descobrir. Responda só com a
+mensagem, pronta pra ler no celular, sem título."""
+
+    llm = llm_config.get_llm(temperature=0.5)
+    return llm.call(prompt).strip()
+
 
 def _update_ficha(lead_dir: Path, new_text: str) -> None:
     """Atualiza _ficha.md a partir da nova mensagem, via LLM. Best-effort — nunca

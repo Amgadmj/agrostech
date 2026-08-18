@@ -453,6 +453,16 @@ async def cmd_event(update: Update, context: ContextTypes.DEFAULT_TYPE, name: st
             "`/event fechar`"
         )
 
+        # Gancho de conversa específico da empresa — sai rápido, enquanto o
+        # rep ainda está de pé na frente do representante. Best-effort: se
+        # falhar, a captura do lead já está garantida de qualquer forma.
+        try:
+            insight = event_capture.compose_company_insight(info["lead_name"])
+            await update.message.reply_text(f"💡 *Gancho de conversa — {info['lead_name']}*\n\n{insight}")
+            event_capture.record_system_note(info["path"], f"Insight enviado ao rep: {insight}")
+        except Exception as e:
+            logger.warning("Falha ao gerar insight de empresa para %r: %s", info["lead_name"], e)
+
     elif sub == "fechar":
         closed = event_capture.close_active(user_id)
         if not closed:
