@@ -1,0 +1,151 @@
+/* ============================================================
+   Agrostech — Folha de estilo de marca para documentos impressos
+   Fonte: agents/sales/marketing/visual_identity_agent.md (Brand Style Guide v1.0)
+   Uso: Oferta A/B e Termo de Intenção — Congresso AvAg 2026
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --verde-terra:#2D5016;
+  --verde-terra-escuro:#1E3810;
+  --laranja-cerrado:#E87722;
+  --branco-nevoa:#F8F6F0;
+  --azul-ceu:#1A6B9A;
+  --amarelo-safra:#F5C842;
+  --marrom-terra:#6B4423;
+  --verde-ndvi:#4CAF50;
+  --vermelho-alerta:#D32F2F;
+  --linha:#E1DCC9;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Inter',-apple-system,sans-serif;
+  color:var(--marrom-terra);
+  background:var(--branco-nevoa);
+  font-size:10.6pt;
+  line-height:1.55;
+}
+.page{
+  width:210mm;
+  min-height:297mm;
+  position:relative;
+  padding:0 0 20mm 0;
+  background:var(--branco-nevoa);
+}
+.body{padding:0 16mm}
+
+h1,h2,h3,.disp{font-family:'Montserrat',sans-serif;color:var(--verde-terra);margin:0}
+p{margin:0}
+strong{color:var(--verde-terra-escuro);font-weight:700}
+em.hook{font-style:italic;color:var(--marrom-terra);opacity:.82}
+
+/* ---------- masthead ---------- */
+.mast{
+  background:linear-gradient(135deg,#6B4423 0%,#E87722 100%);
+  color:var(--branco-nevoa);
+  padding:11mm 16mm 9mm;
+  display:flex;
+  align-items:center;
+  gap:5mm;
+}
+.mark{flex:0 0 auto}
+.mast .id{flex:1 1 auto}
+.wordmark{
+  font-family:'Montserrat',sans-serif;font-weight:900;
+  font-size:18pt;letter-spacing:.02em;color:#fff;line-height:1;
+}
+.mast .kicker{
+  font-family:'Inter',sans-serif;font-weight:600;font-size:8pt;
+  letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.86);
+  margin-top:1.6mm;
+}
+.mast .evt{
+  flex:0 0 auto;text-align:right;font-family:'Inter',sans-serif;
+  font-size:7.6pt;color:rgba(255,255,255,.88);line-height:1.5;
+}
+.mast .evt b{display:block;font-family:'Montserrat',sans-serif;font-weight:700;font-size:9pt;color:#fff}
+
+/* ---------- doc title band ---------- */
+.doctitle{
+  background:var(--verde-terra);color:#fff;
+  padding:6mm 16mm;display:flex;justify-content:space-between;align-items:baseline;gap:4mm;
+}
+.doctitle h1{color:#fff;font-size:16.5pt;font-weight:900;text-wrap:balance}
+.doctitle .price{
+  font-family:'Montserrat',sans-serif;font-weight:900;font-size:15pt;color:var(--amarelo-safra);white-space:nowrap;
+}
+
+/* ---------- section ---------- */
+.sec{margin-top:6.5mm}
+.sec h2{font-size:11.5pt;font-weight:700;border-bottom:1.1pt solid var(--linha);padding-bottom:1.6mm;margin-bottom:3mm}
+.sec h2 .n{color:var(--laranja-cerrado);font-weight:900;margin-right:1.6mm}
+
+/* ---------- lists ---------- */
+ul.check{list-style:none;margin:0;padding:0}
+ul.check li{position:relative;padding:1.1mm 0 1.1mm 6.5mm;font-size:10pt}
+ul.check li::before{
+  content:"";position:absolute;left:0;top:2.6mm;width:3.6mm;height:3.6mm;
+  border-radius:50%;background:var(--verde-ndvi);
+}
+
+/* ---------- callout / hook box ---------- */
+.callout{
+  background:#fff;border:1pt solid var(--linha);border-left:2.6mm solid var(--laranja-cerrado);
+  border-radius:1.5mm;padding:3.6mm 5mm;margin-top:4mm;
+}
+.callout .lbl{
+  font-family:'Inter',sans-serif;font-weight:700;font-size:7.4pt;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--laranja-cerrado);display:block;margin-bottom:1.4mm;
+}
+
+.stat-row{display:flex;gap:4mm;margin-top:4mm}
+.stat{
+  flex:1 1 0;background:#fff;border:1pt solid var(--linha);border-radius:1.5mm;
+  padding:3.4mm 3.6mm;text-align:left;
+}
+.stat .v{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14.5pt;color:var(--verde-terra);line-height:1.05}
+.stat .l{font-size:8pt;color:var(--marrom-terra);margin-top:1mm;line-height:1.3}
+
+table.tbl{width:100%;border-collapse:collapse;margin-top:3mm;font-size:9.6pt}
+table.tbl th{
+  text-align:left;background:var(--verde-terra);color:#fff;font-family:'Inter',sans-serif;
+  font-weight:600;font-size:8pt;letter-spacing:.05em;text-transform:uppercase;padding:2.4mm 3mm;
+}
+table.tbl td{padding:2.2mm 3mm;border-bottom:.75pt solid var(--linha)}
+table.tbl tr:nth-child(even) td{background:#FCFAF4}
+
+/* ---------- offer box (final price) ---------- */
+.offerbox{
+  margin-top:5mm;background:var(--verde-terra);color:#fff;border-radius:2mm;
+  padding:5mm 6mm;display:flex;align-items:center;gap:5mm;
+}
+.offerbox .big{
+  font-family:'Montserrat',sans-serif;font-weight:900;font-size:20pt;color:var(--amarelo-safra);white-space:nowrap;
+}
+.offerbox .txt{font-size:9.4pt;line-height:1.45}
+.offerbox .txt b{color:#fff}
+
+.cta{
+  margin-top:5mm;text-align:center;background:var(--laranja-cerrado);color:#fff;
+  border-radius:2mm;padding:4mm 5mm;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11pt;
+}
+.cta small{display:block;font-family:'Inter',sans-serif;font-weight:400;font-size:8pt;margin-top:1.2mm;opacity:.92}
+
+/* ---------- footer ---------- */
+.foot{
+  position:absolute;left:0;right:0;bottom:0;
+  background:var(--verde-terra-escuro);color:rgba(255,255,255,.82);
+  padding:4mm 16mm;display:flex;justify-content:space-between;align-items:center;
+  font-size:7.4pt;font-family:'Inter',sans-serif;
+}
+.foot .valid{color:var(--amarelo-safra);font-weight:600}
+
+.signrow{display:flex;gap:8mm;margin-top:10mm}
+.sigbox{flex:1 1 0}
+.sigline{border-top:1pt solid var(--marrom-terra);margin-top:14mm;padding-top:1.6mm;font-size:8.4pt}
+.sigline .l{font-weight:600;color:var(--verde-terra)}
+
+.fillline{border-bottom:.8pt dotted #A9A38C;display:inline-block;min-width:32mm;padding:0 1mm}

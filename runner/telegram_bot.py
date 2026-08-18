@@ -40,6 +40,14 @@ except ImportError as e:
     logging.warning(f"CrewAI not available, falling back to legacy handlers: {e}")
     CREWAI_ENABLED = False
 
+# ── Captura Inteligente de Evento (/event) ────────────────────────────────────
+try:
+    import event_capture
+    EVENT_CAPTURE_ENABLED = True
+except ImportError as e:
+    logging.warning(f"event_capture not available, /event disabled: {e}")
+    EVENT_CAPTURE_ENABLED = False
+
 # Load env variables
 load_dotenv(Path(__file__).parent / ".env")
 
@@ -56,10 +64,10 @@ logger = logging.getLogger(__name__)
 # RBAC Matrix matching integrations/telegram_integration.md
 ROLE_PERMISSIONS = {
     "admin": ["*"],
-    "chief_pilot": ["status", "missoes", "briefing", "iniciar_remoto", "incidente", "relatorio", "briefing_mkt", "trends", "post_status"],
-    "field_pilot": ["status", "missoes", "briefing", "iniciar", "concluir", "incidente"],
+    "chief_pilot": ["status", "missoes", "briefing", "iniciar_remoto", "incidente", "relatorio", "briefing_mkt", "trends", "post_status", "event"],
+    "field_pilot": ["status", "missoes", "briefing", "iniciar", "concluir", "incidente", "event"],
     "data_processing": ["status", "missoes", "processando", "qa_ok", "concluir"],
-    "sales": ["status", "pipeline", "lead", "concluir"],
+    "sales": ["status", "pipeline", "lead", "concluir", "event"],
     "content_director": ["status", "briefing_mkt", "trends", "aprovar_mkt", "post_status", "relatorio", "concluir", "gerar_mkt"],
     "instagram_image": ["status", "briefing_mkt", "revisar_mkt", "post_status", "concluir"],
     "instagram_reels": ["status", "briefing_mkt", "revisar_mkt", "post_status", "concluir"],
@@ -422,6 +430,96 @@ async def cmd_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE, name
     )
     await update.message.reply_text(msg)
 
+@check_permission("event")
+async def cmd_event(update: Update, context: ContextTypes.DEFAULT_TYPE, name: str, role: str):
+    """Captura Inteligente de Evento — abre/fecha leads e organiza tudo que
+    o rep manda (texto, foto, documento) numa ficha por lead. Ver event_capture.py."""
+    if not EVENT_CAPTURE_ENABLED:
+        await update.message.reply_text("⚠️ Captura de evento não disponível (event_capture.py não carregou).")
+        return
+
+    user_id = update.effective_user.id
+    args = context.args or []
+    sub = args[0].lower() if args else ""
+
+    if sub == "novo" and len(args) > 1:
+        lead_name = " ".join(args[1:])
+        info = event_capture.open_lead(user_id, name, lead_name)
+        status = "🆕 Novo lead aberto" if info["is_new"] else "🔁 Lead reaberto"
+        await update.message.reply_text(
+            f"{status}: *{info['lead_name']}*\n\n"
+            "Agora é só mandar texto, foto do crachá/fazenda ou documento — tudo "
+            "cai automaticamente na ficha desse lead. Quando terminar a conversa:\n"
+            "`/event fechar`"
+        )
+
+        # Gancho de conversa específico da empresa — sai rápido, enquanto o
+        # rep ainda está de pé na frente do representante. Best-effort: se
+        # falhar, a captura do lead já está garantida de qualquer forma.
+        try:
+            insight = event_capture.compose_company_insight(info["lead_name"])
+            await update.message.reply_text(f"💡 *Gancho de conversa — {info['lead_name']}*\n\n{insight}")
+            event_capture.record_system_note(info["path"], f"Insight enviado ao rep: {insight}")
+        except Exception as e:
+            logger.warning("Falha ao gerar insight de empresa para %r: %s", info["lead_name"], e)
+
+    elif sub == "fechar":
+        closed = event_capture.close_active(user_id)
+        if not closed:
+            await update.message.reply_text("Nenhum lead ativo no momento. Abra um com `/event novo <nome>`.")
+            return
+        ficha = (closed["path"] / "_ficha.md").read_text(encoding="utf-8")
+        await update.message.reply_text(f"✅ Lead *{closed['lead_name']}* fechado.\n\n{ficha}")
+
+    elif sub == "lista":
+        leads = event_capture.list_leads()
+        if not leads:
+            await update.message.reply_text("Nenhum lead capturado ainda no evento.")
+            return
+        linhas = [f"📋 *{len(leads)} leads capturados — {event_capture.EVENT_CODE}*", "──────────────────"]
+        for lead in leads:
+            titulo = lead["ficha"].split("\n", 1)[0].lstrip("# ").strip()
+            linhas.append(f"• {titulo}")
+        await send_long_message(update, "\n".join(linhas))
+
+    elif sub == "resumo":
+        active = event_capture.get_active(user_id)
+        if not active:
+            await update.message.reply_text("Nenhum lead ativo. Use `/event novo <nome>` ou `/event lista`.")
+            return
+        ficha = (active["path"] / "_ficha.md").read_text(encoding="utf-8")
+        await update.message.reply_text(ficha)
+
+    elif sub == "followup":
+        active = event_capture.get_active(user_id)
+        if not active:
+            await update.message.reply_text(
+                "Nenhum lead ativo. Abra o lead (`/event novo <nome>`) ou reabra o que você quer "
+                "fechar a noite antes de gerar o follow-up."
+            )
+            return
+        await update.message.reply_text("✍️ Escrevendo o follow-up...")
+        try:
+            texto = event_capture.compose_followup(active["path"])
+            await update.message.reply_text(f"📲 *Cole isso no WhatsApp de {active['lead_name']}:*\n\n{texto}")
+        except Exception as e:
+            await update.message.reply_text(f"⚠️ Não consegui gerar o follow-up agora: {e}")
+
+    else:
+        active = event_capture.get_active(user_id)
+        status_line = f"🟢 Lead ativo: *{active['lead_name']}*" if active else "⚪ Nenhum lead ativo agora"
+        await update.message.reply_text(
+            f"🎪 *Captura de Evento — {event_capture.EVENT_CODE}*\n"
+            f"{status_line}\n"
+            "──────────────────\n"
+            "`/event novo <nome>` — abre um lead/piloto/organização e passa a capturar tudo que você mandar\n"
+            "`/event fechar` — fecha o lead ativo e mostra a ficha\n"
+            "`/event resumo` — mostra a ficha do lead ativo\n"
+            "`/event lista` — lista todos os leads já capturados\n"
+            "`/event followup` — a IA escreve o texto de fechamento pro WhatsApp"
+        )
+
+
 async def cmd_ajuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Print list of commands for current user's role."""
     user_id = update.effective_user.id
@@ -464,7 +562,10 @@ async def cmd_ajuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 help_text += "• /aprovar_mkt [ID] - Aprovar post final\n"
             elif p == "gerar_mkt":
                 help_text += "• /gerar_mkt [Mês Ano] - Orquestrar geração de conteúdo\n"
-                
+            elif p == "event":
+                help_text += "• /event novo [nome] - Abrir lead de evento (tudo que você mandar depois é capturado)\n"
+                help_text += "• /event fechar / lista / resumo / followup - Ver Captura de Evento\n"
+
     await update.message.reply_text(help_text)
 
 # ─────────────────────────────────────────────
@@ -529,13 +630,20 @@ async def handle_telegram_message(update: Update, context: ContextTypes.DEFAULT_
     user_id = update.effective_user.id
     username = update.effective_user.username or "unknown"
     message_text = update.message.text
-    
+
     # Check if user is registered/authorized
     role, name = get_user_role(user_id)
     if not role:
         # Fallback: treat unregistered users as external clients / prospects
         role = "client"
         name = update.effective_user.first_name or "Visitante"
+
+    # Captura de Evento tem prioridade: se o rep tem um lead aberto, toda
+    # mensagem de texto vira ficha/log daquele lead em vez de ir pro NLU.
+    if EVENT_CAPTURE_ENABLED and event_capture.get_active(user_id):
+        event_capture.record_text(user_id, name, message_text)
+        await update.message.reply_text("📝 Anotado na ficha.")
+        return
 
     await update.message.reply_text("Pensando...")
     
@@ -566,6 +674,46 @@ async def handle_telegram_message(update: Update, context: ContextTypes.DEFAULT_
     except Exception as e:
         logger.exception("Error in handle_telegram_message")
         await update.message.reply_text(f"⚠️ Erro ao processar mensagem: {e}")
+
+
+async def handle_event_media(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Salva fotos/documentos/áudios no lead de evento ativo do remetente, se houver.
+    Se não houver lead ativo, não faz nada — não interfere no resto do bot."""
+    if not EVENT_CAPTURE_ENABLED:
+        return
+
+    user_id = update.effective_user.id
+    if not event_capture.get_active(user_id):
+        return
+
+    role, name = get_user_role(user_id)
+    name = name or update.effective_user.first_name or "Visitante"
+
+    msg = update.message
+    try:
+        if msg.photo:
+            tg_file = await msg.photo[-1].get_file()
+            data = bytes(await tg_file.download_as_bytearray())
+            event_capture.record_media(user_id, name, "foto", f"foto_{msg.photo[-1].file_unique_id}.jpg", data)
+        elif msg.document:
+            tg_file = await msg.document.get_file()
+            data = bytes(await tg_file.download_as_bytearray())
+            event_capture.record_media(user_id, name, "documento", msg.document.file_name or "documento", data)
+        elif msg.voice or msg.audio:
+            audio = msg.voice or msg.audio
+            tg_file = await audio.get_file()
+            data = bytes(await tg_file.download_as_bytearray())
+            event_capture.record_media(user_id, name, "audio", f"audio_{audio.file_unique_id}.ogg", data)
+        else:
+            return
+
+        if msg.caption:
+            event_capture.record_text(user_id, name, msg.caption)
+
+        await msg.reply_text("📎 Salvo na ficha.")
+    except Exception as e:
+        logger.exception("Erro ao salvar mídia de evento")
+        await msg.reply_text(f"⚠️ Não consegui salvar esse arquivo: {e}")
 
 
 # ─────────────────────────────────────────────
@@ -608,6 +756,15 @@ def main():
     application.add_handler(CommandHandler("instagram", cmd_instagram))
     application.add_handler(CommandHandler("criativo", cmd_instagram))
     application.add_handler(CommandHandler("gerar_mkt", cmd_gerar_mkt))  # keep legacy (has file send logic)
+
+    # Captura Inteligente de Evento (/event) — funciona independente do CrewAI
+    application.add_handler(CommandHandler("event", cmd_event))
+    application.add_handler(MessageHandler(
+        filters.PHOTO | filters.Document.ALL | filters.VOICE | filters.AUDIO,
+        handle_event_media,
+    ))
+    if EVENT_CAPTURE_ENABLED:
+        print("[EVENT] Captura Inteligente de Evento (/event) registrada [OK]")
 
     # CrewAI-powered commands (new intelligent agents)
     if CREWAI_ENABLED:

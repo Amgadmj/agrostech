@@ -92,6 +92,7 @@ O Telegram é uma plataforma robusta para conectar funcionários ao sistema digi
 
 | Comando | field_pilot | data_processing | sales | content_director | visual_identity | admin |
 |---------|-------------|----------------|-------|------------------|-----------------|-------|
+| `/event` — Captura Inteligente de Evento (ver §4.6) | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
 | `/status` — ver minhas tasks | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | `/missoes` — listar missões do dia | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ |
 | `/briefing [ID]` — ver briefing completo | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
@@ -259,6 +260,88 @@ Bot: ✅ @novopiloto adicionado como field_pilot
      Eles receberão uma mensagem de boas-vindas.
      Acesso liberado para: /status /missoes /briefing /iniciar /concluir /incidente
 ```
+
+---
+
+### 4.6 Sales Rep / Chief Pilot — Captura Inteligente de Evento (`/event`)
+
+> Implementado em `runner/event_capture.py` (lógica) + `runner/drive_client.py`
+> (espelho opcional no Google Drive). Nasceu para o Congresso AvAg 2026
+> (`playbooks/PLANO_CONGRESSO_AVAG_2026.md`), mas o código é genérico —
+> troque `EVENT_CODE` em `event_capture.py` para reusar no próximo evento.
+
+**Problema que resolve:** no estande, ninguém para pra preencher formulário.
+O rep fala, fotografa o crachá, solta o cartão de visita e segue andando.
+O `/event` transforma esse fluxo bagunçado numa ficha organizada por lead,
+sem nenhum passo extra além de abrir o lead uma vez.
+
+**O que acontece ao abrir um lead novo:** assim que o nome da empresa entra
+(`/event novo <nome>`), o bot cruza esse nome com a carteira de cana GO/SP já
+mapeada (`data/clientes_cana.csv`, checagem local e instantânea) e com a
+doutrina comercial (`event_capture.DOCTRINE_CHEATSHEET` — ARPAC/XMobots,
+Oferta A vs. Oferta B, judô de satélite) para gerar um **gancho de conversa
+específico daquela empresa** — não um script genérico. Se a empresa já é
+conhecida, o rep é avisado ali mesmo. Isso sai como uma segunda mensagem
+(`💡 Gancho de conversa`), fica registrado no `log.md` do lead, e a partir
+daí a captura normal continua.
+
+```
+Rep: /event novo Fazenda Progresso
+
+Bot: 🆕 Novo lead aberto: Fazenda Progresso
+     Agora é só mandar texto, foto do crachá/fazenda ou documento — tudo
+     cai automaticamente na ficha desse lead. Quando terminar a conversa:
+     /event fechar
+
+Bot: 💡 Gancho de conversa — Fazenda Progresso
+
+     Não está na carteira de cana GO/SP já mapeada — é uma empresa nova
+     para a Agrostech. Pelo nome, pode ser produtor ou fazenda; vale
+     confirmar a cultura logo de cara.
+
+     Abertura sugerida: "Quantos hectares vocês tocam hoje sem nenhuma
+     imagem de cima?" — se for produtor/fazenda, puxe pra Oferta Piloto
+     AvAg (R$ 3.500, credita no contrato de safra).
+
+Rep: Produtor João, 500ha de soja, WhatsApp 62999998888, Rio Verde GO
+
+Bot: 📝 Anotado na ficha.
+
+Rep: [envia foto do crachá]
+
+Bot: 📎 Salvo na ficha.
+
+Rep: /event fechar
+
+Bot: ✅ Lead Fazenda Progresso fechado.
+
+     Nome: João
+     Empresa_Fazenda: Fazenda Progresso
+     WhatsApp: 62999998888
+     UF_Cidade: Rio Verde, GO
+     Area_ha: 500
+     Cultura: Soja
+     Perfil: 🟢 Usina-fazenda-cooperativa
+     Interesse: (vazio)
+     Proximo_passo: (vazio)
+
+Rep: /event followup
+
+Bot: ✍️ Escrevendo o follow-up...
+     📲 Cole isso no WhatsApp de Fazenda Progresso:
+
+     "Boa noite, João! Foi ótimo te conhecer hoje no AvAg..."
+```
+
+**Onde fica salvo:** `runner/data/AvAg2026/<slug-do-lead>/` — um `_ficha.md`
+(cartão estruturado, atualizado por IA a cada mensagem nova), um `log.md`
+(histórico bruto, nunca sobrescrito) e uma pasta `midia/` com tudo que foi
+enviado. Se `GOOGLE_DRIVE_SYNC=true` estiver configurado no `.env`, a mesma
+árvore é espelhada dentro de uma pasta **Agrostech → AvAg2026 → `<lead>`**
+no Google Drive (ver o cabeçalho de `drive_client.py` para o setup).
+
+Sem lead ativo, `/event` não interfere em nada — foto/documento/texto seguem
+o comportamento normal do bot (NLU/CrewAI).
 
 ---
 
