@@ -230,4 +230,18 @@ Para cada lead qualificado, ainda na noite do mesmo dia:
 
 ---
 
+## 11. Resultados reais do evento (registrado 22/08/2026)
+
+> Registro completo em `knowledge-base/decisions/2026-08-22_fabio-avag-ecossistema-carbono.md`. Esta seção fecha o loop da oportunidade **"4. Carbono / MRV + regulatório"** (§4 acima).
+
+- **Contexto anterior ao evento:** projeto entregue e **pago** pelo cliente Fabio, imediatamente antes da viagem ao AvAg.
+- **Conversa institucional:** encontro com **Tales**, sócio do Fabio, no evento. Pauta: o **evento da Câmara Árabe em 26/08/2026** — Tales foi **convidado**. Ação pendente: falar com o **embaixador do Sudão** sobre isso antes do dia 26.
+- **Aula de créditos de carbono:** modelo de parceria "ecossistema" (terra improdutiva → vendedora de créditos, sem custo ao proprietário; split 20% ecossistema / 1,5% engenheiro do projeto / 4% indicação). Detalhado em `knowledge-base/CARBON_CREDITS.md` §8.
+- **Fabio concordou em testar** o modelo como piloto — a Agrostech no papel de engenheiro do projeto (MRV).
+- **Pendências:** nome formal do parceiro "ecossistema" e materiais do evento (imagens) ainda a incorporar.
+
+**Leitura vs. a meta original do §7:** a meta do evento era "certificadoras, traders e o próprio SINDAG estão na sala" (linha KR4.3). O resultado real foi diferente do esperado — não uma certificadora clássica, mas um modelo de parceria de ecossistema com split de receita definido — e já tem um piloto de teste acordado (Fabio), o que é uma abertura concreta para KR4.1.
+
+---
+
 *Agrostech — Plano Congresso AvAg 2026 | Confidencial — Uso Interno*

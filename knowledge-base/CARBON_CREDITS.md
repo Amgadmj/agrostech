@@ -92,6 +92,38 @@ Carbono (tCO₂e/ha) = AGB × 0,47 × 3,67
 4. **Relatório de monitoramento periódico** (anual ou biannual)
 5. **Laudo técnico para certificadora** (formato específico por padrão)
 
+### Referência externa — metodologia Tropical Carbon (MET TC 001 v1.0)
+
+**Fonte:** slides adicionais da aula de carbono no AvAg 2026, identificados no rodapé como "Tropical Carbon · MET TC 001 v1.0" — o documento de metodologia formal do parceiro (ver §8). Dois pontos técnicos relevantes para comparar/enriquecer o MRV da Agrostech:
+
+**Mensuração por convergência multi-sensor (9 bases espaciais independentes)** — a tese do slide é que "nenhuma fonte isolada" basta; a biomassa é estimada cruzando:
+
+| Fonte | Resolução | O que entrega | Provedor |
+|---|---|---|---|
+| Sentinel-2 | 10 m | Óptico, 13 bandas · NDVI/EVI/NBR | ESA · Copernicus |
+| Sentinel-1 | 10 m | Radar SAR banda C (VV, VH) — funciona sob nuvens | ESA · Copernicus |
+| GEDI | 25 m | LiDAR orbital — altura do dossel, estrutura 3D | NASA · ISS |
+| MapBiomas | 30 m | Cobertura e uso da terra, série desde 1985 | Rede Brasileira · anual |
+| ESA CCI Biomass | 100 m | Biomassa aérea global (AGB), referência global v6.0 | ESA |
+| SRTM | 30 m | Relevo — elevação, declividade, aspecto | NASA |
+| FORTY | 25 m | Tipologia de fitofisionomias do Brasil | Referência nacional |
+| ALOS PALSAR | 25 m | Radar SAR banda L — penetra o dossel | JAXA (Japão) |
+| AlphaEarth | 10 m | Embeddings de IA — camada de refinamento | Google DeepMind |
+
+Isso complementa (não substitui) o drone: o drone entrega resolução centimétrica pontual; essas 9 bases dão a camada de satélite/IA que calibra e escala a estimativa. Vale avaliar quais dessas fontes (Sentinel-2/1, MapBiomas e SRTM já são gratuitas e amplamente usadas) a Agrostech pode incorporar ao próprio laudo de MRV para ganhar credibilidade técnica frente a certificadoras.
+
+**Manejo Florestal IFM (Improved Forest Management)** — práticas que aceleram o sequestro em floresta de baixa produtividade (metodologia Verra VM0042, já citada em §2):
+
+| Prática | Ganho (tCO₂e/ha/ano) |
+|---|---|
+| Remoção de árvores mortas/doentes | +2 a 3 |
+| Controle de espécies invasoras | +1,5 a 3 |
+| Ativação de luz para sub-bosque | +2 a 4 |
+| Restrição de acesso animal | +1 a 2 |
+| Enriquecimento com nativas | +3 a 5 |
+
+Manejo integrado (todas as práticas combinadas) pode multiplicar a taxa de sequestro em **2–3×**, elevando de 3–4 para **8–12 tCO₂e/ha/ano** em florestas tropicais/subtropicais. Adicionalidade quantificada como o diferencial entre área tratada e área controle. Benefícios citados: reduz o tempo de compensação, aumenta a capacidade de sequestro, melhora a resiliência a distúrbios climáticos, e reduz risco de reversão via monitoramento contínuo.
+
 ---
 
 ## 5. Marco Legal do Carbono no Brasil (Lei 15.042/2024)
@@ -132,10 +164,60 @@ Carbono (tCO₂e/ha) = AGB × 0,47 × 3,67
 | South Pole | Trader internacional com presença no Brasil |
 | MCTI | Ministério de Ciência: política de carbono |
 | IBAMA | Licenciamento e laudos ambientais |
+| **Tropical Carbon** | Certificação e registro de créditos de carbono — parceiro do "ecossistema" apresentado no AvAg 2026 (ver §8) |
+| **SafeCarbon** ("safe neutral carbon") | Parceiro de neutralização/comercialização de carbono — junto à Tropical Carbon, forma o "ecossistema" do AvAg 2026 (ver §8) |
 
 ---
 
-## 8. Glossário de Carbono
+## 8. Modelo de Parceria "Ecossistema" — Tropical Carbon + SafeCarbon (AvAg 2026)
+
+**Fonte:** aula sobre créditos de carbono assistida no Congresso AvAg 2026 (18–20/08), com prints das telas de apresentação. Ver registro completo (incluindo as fotos-fonte) em `knowledge-base/decisions/2026-08-22_fabio-avag-ecossistema-carbono.md`.
+
+**Parceiros do "ecossistema":** **Tropical Carbon** (certificação e registro) + **SafeCarbon** ("safe neutral carbon"). Modelo de negócio: converte terra improdutiva em vendedora de créditos de carbono (florestal e agrícola), **sem custo para o proprietário da terra** — o ecossistema assume PDD, registro, certificação e comercialização.
+
+### 8.1 Split do "Modelo de Negócio" (slide oficial)
+
+A "Regularização do t(CO₂)e" — o corte total do ecossistema — é **20%**, dividido internamente assim:
+
+| Componente (dentro dos 20%) | % da receita |
+|---|---|
+| Assessoria Adm e Operacional | 5,0% |
+| Tropical Carbon | 5,0% |
+| SafeCarbon | 5,0% |
+| Projeto | 3,0% |
+| Governança | 2,0% |
+| **Total (Regularização do t(CO₂)e)** | **20,0%** |
+
+**Fora desses 20%**, a apresentação também traz duas linhas de remuneração adicionais (é aqui que a Agrostech entra):
+
+| Parte | % da receita |
+|---|---|
+| **Projeto** (papel técnico/engenheiro do projeto — onde a Agrostech encaixaria, MRV) | 1,5% |
+| **Indicação** (referral padrão de cliente) | 4,0% |
+
+> ⚠️ Nota de precisão: a foto da tabela "Previsão de Ganhos" (§8.2) mostra uma coluna final de R$ que equivale a **27,5%** do valor bruto do projeto — não bate com uma soma simples de 20% + 1,5% + 4% (25,5%). A reconciliação exata dos percentuais não ficou 100% legível/clara nas fotos do evento. **Confirmar diretamente com Tropical Carbon/SafeCarbon antes de usar esses números em qualquer proposta comercial.**
+
+### 8.2 Exemplo de "Previsão de Ganhos" (slide oficial, preço-base R$ 5,00/tCO₂e)
+
+| Ha | tCO₂e | Valor bruto (R$ 5,00/tCO₂e) | Projeto (1,5%) | Indicação (4,0%) | Total comissão (R$) |
+|---|---|---|---|---|---|
+| 284,80 | 32.517,61 | R$ 162.588,05 | R$ 2.438,82 | R$ 6.503,52 | R$ 44.711,71 |
+| 1.009,58 | 189.269,72 | R$ 946.348,60 | R$ 14.195,23 | R$ 37.853,94 | R$ 260.245,87 |
+| 3.021,82 | 547.895,54 | R$ 2.739.477,70 | R$ 41.092,17 | R$ 109.579,11 | R$ 753.356,37 |
+| 10.068,20 | 2.127.462,52 | R$ 10.637.312,60 | R$ 159.559,69 | R$ 425.492,50 | R$ 2.925.260,97 |
+| 160.442,49 | 34.633.309,49 | R$ 173.166.547,45 | R$ 2.597.498,21 | R$ 6.926.661,90 | R$ 47.620.800,55 |
+
+### 8.3 Exemplo de metodologia MRV usado na aula (referência, não é o caso Fabio)
+
+Slide de exemplo (não identificado como sendo a terra do Fabio) mostrando a linha de base de carbono de uma propriedade de **9.735,07 ha**, com grid de amostragem de 100×100 m (9.738 células), estoque médio de 11,31 tonC/ha (mín. 1,02, máx. 79,86 tonC/ha). Projeção de remoções em 20 anos por 8 estratos (área 181 a 6.780 ha por estrato), somando **584.435 tonC** de potencial → **2.144.879 tCO₂e** (fator 3,67) → **1.715.903 tCO₂e** após buffer de risco de −20% → **85.795,15 tCO₂e/ano** de remoção média ao longo de 20 anos. Essa é uma boa referência de metodologia (bate com a equação de biomassa já documentada em §4) — pode servir de benchmark para o dimensionamento do piloto com o Fabio assim que a área dele for definida.
+
+**Onde a Agrostech encaixa:** no papel de **"Projeto"** (engenheiro/técnico de MRV — drone, NDVI, biomassa, laudo técnico), com possibilidade de acumular o papel de **"Indicação"** quando ela mesma traz o proprietário da terra como cliente (ex.: caso Fabio, piloto de teste em estruturação).
+
+**Status:** piloto de teste acordado com um cliente (Fabio) em 22/08/2026 — escopo, área e cronograma ainda a desenhar. Contribui diretamente para **KR4.1** (2 projetos-piloto de MRV de carbono) e potencialmente **KR4.3** (parceria com certificadora/trader), das OKRs da empresa.
+
+---
+
+## 9. Glossário de Carbono
 
 | Termo | Definição |
 |-------|-----------|
@@ -153,6 +235,6 @@ Carbono (tCO₂e/ha) = AGB × 0,47 × 3,67
 
 ---
 
-*Base de Conhecimento — Créditos de Carbono v1.0*
-*Última atualização: Junho 2026 | Owner: Knowledge Agent*
-*Próxima revisão: quando houver atualização do decreto regulamentador do SBCE*
+*Base de Conhecimento — Créditos de Carbono v1.1*
+*Última atualização: 22/08/2026 | Owner: Knowledge Agent*
+*Próxima revisão: quando houver atualização do decreto regulamentador do SBCE, ou quando o piloto com Fabio avançar*
