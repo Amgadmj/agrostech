@@ -135,7 +135,25 @@ Carbono (tCO₂e/ha) = AGB × 0,47 × 3,67
 
 ---
 
-## 8. Glossário de Carbono
+## 8. Modelo de Parceria "Ecossistema" — aprendido no AvAg 2026
+
+**Fonte:** aula sobre créditos de carbono assistida no Congresso AvAg 2026 (18–20/08). Ver registro completo em `knowledge-base/decisions/2026-08-22_fabio-avag-ecossistema-carbono.md`.
+
+Modelo de negócio de um "ecossistema" (nome formal da organização ainda não capturado) que converte terra improdutiva em vendedora de créditos de carbono, **sem custo para o proprietário da terra**. O ecossistema assume o desenvolvimento do projeto (PDD, registro, certificação, comercialização) e reparte a receita:
+
+| Parte | % da receita |
+|---|---|
+| Ecossistema (plataforma/operador) | 20% |
+| Engenheiro do projeto (papel técnico/MRV) | 1,5% |
+| Indicação padrão de cliente (referral) | 4% |
+
+**Onde a Agrostech encaixa:** no papel de **engenheiro do projeto** (MRV — drone, NDVI, biomassa, laudo técnico), com possibilidade de acumular o papel de **indicação** quando ela mesma traz o proprietário da terra como cliente (ex.: caso Fabio, piloto de teste em estruturação).
+
+**Status:** piloto de teste acordado com um cliente (Fabio) em 22/08/2026 — escopo e cronograma ainda a desenhar. Contribui diretamente para **KR4.1** (2 projetos-piloto de MRV de carbono) e potencialmente **KR4.3** (parceria com certificadora/trader), das OKRs da empresa.
+
+---
+
+## 9. Glossário de Carbono
 
 | Termo | Definição |
 |-------|-----------|
@@ -153,6 +171,6 @@ Carbono (tCO₂e/ha) = AGB × 0,47 × 3,67
 
 ---
 
-*Base de Conhecimento — Créditos de Carbono v1.0*
-*Última atualização: Junho 2026 | Owner: Knowledge Agent*
-*Próxima revisão: quando houver atualização do decreto regulamentador do SBCE*
+*Base de Conhecimento — Créditos de Carbono v1.1*
+*Última atualização: 22/08/2026 | Owner: Knowledge Agent*
+*Próxima revisão: quando houver atualização do decreto regulamentador do SBCE, ou quando o piloto com Fabio avançar*
