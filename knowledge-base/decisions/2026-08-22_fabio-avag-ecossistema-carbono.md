@@ -30,12 +30,16 @@ Imagens do evento/aula foram anunciadas pelo usuário para análise complementar
   - Ver detalhamento completo, tabela de "Previsão de Ganhos" (preço-base R$ 5,00/tCO₂e) e exemplo de metodologia MRV (linha de base + estimativa de remoções em 20 anos) em `knowledge-base/CARBON_CREDITS.md` §8.
   - **Nota:** a matemática exata entre o split de 20% e as linhas de Projeto/Indicação não fechou 100% a partir das fotos (coluna final de R$ na Previsão de Ganhos bate com 27,5%, não com a soma simples de 25,5%) — confirmar direto com Tropical Carbon/SafeCarbon antes de levar números a proposta.
 - **Fabio concordou em testar** esse modelo (piloto a estruturar).
-- **Fotos-fonte do evento** (5 imagens, anexadas em 22/08/2026) salvas em `knowledge-base/decisions/assets/2026-08-22_avag-carbon-class/`:
+- **Fotos-fonte do evento — lote 1** (5 imagens, anexadas em 22/08/2026) salvas em `knowledge-base/decisions/assets/2026-08-22_avag-carbon-class/`:
   1. `01_ecossistemas-parceiros.jpg` — logos Tropical Carbon + SafeCarbon
   2. `02_modelo-de-negocio-split.jpg` — split dos 20% (Regularização do t(CO₂)e)
   3. `03_previsao-de-ganhos.jpg` — tabela de ganhos por escala (ha → tCO₂e → R$)
   4. `04_linha-de-base-mrv.jpg` — exemplo de linha de base de carbono (grid 100×100m)
   5. `05_estimativa-remocoes.jpg` — exemplo de estimativa de remoções em 20 anos, 8 estratos
+- **Fotos-fonte do evento — lote 2** (4 imagens, mesmo dia; arquivos não persistidos localmente — conteúdo transcrito diretamente para `CARBON_CREDITS.md` §4):
+  6. Slide "Tipos de Manejo Florestal IFM" — 5 práticas de manejo com ganho em tCO₂e/ha/ano cada (remoção de árvores mortas +2–3, controle de invasoras +1,5–3, luz para sub-bosque +2–4, restrição de acesso animal +1–2, enriquecimento com nativas +3–5); manejo integrado pode levar de 3–4 para 8–12 tCO₂e/ha/ano
+  7. Slide "Mensuração: Convergência Multi-sensor e Machine Learning" — 9 bases espaciais (Sentinel-1/2, GEDI, MapBiomas, ESA CCI Biomass, SRTM, FORTY, ALOS PALSAR, AlphaEarth). Rodapé identifica a fonte: **"Tropical Carbon · MET TC 001 v1.0"** — nome/versão do documento de metodologia oficial do parceiro
+  8–9. Repetições das mesmas telas "Resultados da Estimativa das Remoções" e "Linha de Base" do lote 1 (já registradas acima) — confirmam que pertencem ao mesmo documento MET TC 001 v1.0
 
 ---
 
@@ -68,6 +72,7 @@ Imagens do evento/aula foram anunciadas pelo usuário para análise complementar
 ## 5. Observações
 
 - Nomes confirmados via fotos do evento (22/08/2026): **Tropical Carbon** (certificação/registro) e **SafeCarbon** (safe neutral carbon). Contato comercial direto ainda não capturado.
+- Documento-fonte identificado: **Tropical Carbon · MET TC 001 v1.0** (metodologia própria do parceiro) — vale pedir o PDF completo a Tales/Fabio para consulta, em vez de depender só das fotos de slide.
 - A reconciliação matemática entre o split de 20% (§2) e a coluna final de R$ na "Previsão de Ganhos" (27,5% observado vs. 25,5% esperado pela soma simples) não fechou nas fotos — tratar como pendência, não como erro confirmado.
 - O exemplo de metodologia MRV (linha de base + estimativa de remoções) mostrado na aula **não é a terra do Fabio** — é um caso de exemplo/genérico usado para ilustrar o método.
 - Este é o primeiro registro em `knowledge-base/decisions/` — segue o padrão `[data]_[decisão].md` descrito em `agents/support/knowledge.md`.

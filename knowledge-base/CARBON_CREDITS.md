@@ -92,6 +92,38 @@ Carbono (tCO₂e/ha) = AGB × 0,47 × 3,67
 4. **Relatório de monitoramento periódico** (anual ou biannual)
 5. **Laudo técnico para certificadora** (formato específico por padrão)
 
+### Referência externa — metodologia Tropical Carbon (MET TC 001 v1.0)
+
+**Fonte:** slides adicionais da aula de carbono no AvAg 2026, identificados no rodapé como "Tropical Carbon · MET TC 001 v1.0" — o documento de metodologia formal do parceiro (ver §8). Dois pontos técnicos relevantes para comparar/enriquecer o MRV da Agrostech:
+
+**Mensuração por convergência multi-sensor (9 bases espaciais independentes)** — a tese do slide é que "nenhuma fonte isolada" basta; a biomassa é estimada cruzando:
+
+| Fonte | Resolução | O que entrega | Provedor |
+|---|---|---|---|
+| Sentinel-2 | 10 m | Óptico, 13 bandas · NDVI/EVI/NBR | ESA · Copernicus |
+| Sentinel-1 | 10 m | Radar SAR banda C (VV, VH) — funciona sob nuvens | ESA · Copernicus |
+| GEDI | 25 m | LiDAR orbital — altura do dossel, estrutura 3D | NASA · ISS |
+| MapBiomas | 30 m | Cobertura e uso da terra, série desde 1985 | Rede Brasileira · anual |
+| ESA CCI Biomass | 100 m | Biomassa aérea global (AGB), referência global v6.0 | ESA |
+| SRTM | 30 m | Relevo — elevação, declividade, aspecto | NASA |
+| FORTY | 25 m | Tipologia de fitofisionomias do Brasil | Referência nacional |
+| ALOS PALSAR | 25 m | Radar SAR banda L — penetra o dossel | JAXA (Japão) |
+| AlphaEarth | 10 m | Embeddings de IA — camada de refinamento | Google DeepMind |
+
+Isso complementa (não substitui) o drone: o drone entrega resolução centimétrica pontual; essas 9 bases dão a camada de satélite/IA que calibra e escala a estimativa. Vale avaliar quais dessas fontes (Sentinel-2/1, MapBiomas e SRTM já são gratuitas e amplamente usadas) a Agrostech pode incorporar ao próprio laudo de MRV para ganhar credibilidade técnica frente a certificadoras.
+
+**Manejo Florestal IFM (Improved Forest Management)** — práticas que aceleram o sequestro em floresta de baixa produtividade (metodologia Verra VM0042, já citada em §2):
+
+| Prática | Ganho (tCO₂e/ha/ano) |
+|---|---|
+| Remoção de árvores mortas/doentes | +2 a 3 |
+| Controle de espécies invasoras | +1,5 a 3 |
+| Ativação de luz para sub-bosque | +2 a 4 |
+| Restrição de acesso animal | +1 a 2 |
+| Enriquecimento com nativas | +3 a 5 |
+
+Manejo integrado (todas as práticas combinadas) pode multiplicar a taxa de sequestro em **2–3×**, elevando de 3–4 para **8–12 tCO₂e/ha/ano** em florestas tropicais/subtropicais. Adicionalidade quantificada como o diferencial entre área tratada e área controle. Benefícios citados: reduz o tempo de compensação, aumenta a capacidade de sequestro, melhora a resiliência a distúrbios climáticos, e reduz risco de reversão via monitoramento contínuo.
+
 ---
 
 ## 5. Marco Legal do Carbono no Brasil (Lei 15.042/2024)
