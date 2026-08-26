@@ -1,0 +1,9 @@
+# This file must exist.
+#
+# Without a .vercelignore, the Vercel CLI falls back to .gitignore, and
+# assets/.gitignore excludes video/ from version control. The deploy would then
+# ship without hero-desktop.mp4 and hero-mobile.mp4 and the hero would be black.
+# Declaring the ignore rules here overrides that fallback entirely.
+
+# Cloudflare Pages header file, unused on Vercel (vercel.json handles headers).
+_headers
