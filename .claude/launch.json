@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "agrostech-site",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["serve_site.py", "4173"],
+      "port": 4173
+    }
+  ]
+}

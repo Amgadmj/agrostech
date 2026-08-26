@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<!-- Required. Without it the browser renders in quirks mode, document.scrollingElement
+     becomes <body>, documentElement.scrollTop goes inert, and Lenis writes its scroll
+     position into a dead property: the wheel is captured and the page never moves. -->
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agrostech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ------------------------------------------------------------------
+   THE SCENE
+   A soy and corn producer in western Minas, at the farm office desk
+   after dark, the cerrado black outside the window and the sodium lamp
+   over the machine shed the only colour left, scrolling his own land to
+   decide where next season's money goes.
+   Dark. Every token below is drawn from that room, not from "agtech".
+   ------------------------------------------------------------------ */
+:root{
+  /* --- the four tokens --- */
+  --bg:     oklch(0.190 0.018 152);   /* ground seen at night, tinted to the brand green */
+  --ink:    oklch(0.945 0.009 120);   /* paper under a desk lamp, chroma pulled back near L=1 */
+  --muted:  oklch(0.680 0.014 150);   /* dry sage; mid lightness carries a little more chroma */
+  --accent: oklch(0.780 0.152 75);    /* the sodium lamp. The only saturated thing on the page. */
+
+  /* --- derived, all tinted toward the brand hue, all quiet --- */
+  --surface:oklch(0.235 0.017 152);
+  --rule:   oklch(0.945 0.009 120 / .14);
+
+  /* legend colours from the declividade map: data, not decoration,
+     so they sit below the accent in chroma and never compete with it */
+  --plano:  oklch(0.720 0.090 140);   /* 0 a 5% */
+  --forte:  oklch(0.640 0.125 25);    /* acima de 14%, lifted to clear AA at data size */
+
+  --display:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Public Sans',system-ui,sans-serif;
+  --data:'IBM Plex Mono',ui-monospace,monospace;
+
+  --pad:clamp(1.25rem,5vw,5rem);
+  --max:76rem;
+}
+
+*{box-sizing:border-box}
+/* overflow-x lives on html and uses clip, not hidden: `hidden` on body would
+   make body the scroll container and ScrollTrigger would read window scroll as 0. */
+html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--body); font-size:clamp(1rem,.55vw + .88rem,1.12rem);
+  line-height:1.6; overflow-x:clip;
+}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.wrap{max-width:var(--max);margin:0 auto;padding-inline:var(--pad)}
+.band{padding-block:clamp(5rem,13vh,10rem);border-top:1px solid var(--rule)}
+
+/* ---------- signature: altitude rail ---------- */
+.rail{
+  position:fixed; left:clamp(.75rem,2vw,1.75rem); top:50%;
+  transform:translateY(-50%); z-index:50;
+  display:flex; align-items:center; gap:.7rem;
+  font-family:var(--data); font-size:.68rem; letter-spacing:.1em;
+  color:var(--muted); pointer-events:none;
+}
+.rail-track{position:relative;width:1px;height:min(34vh,15rem);background:var(--rule)}
+.rail-fill{position:absolute;left:0;right:0;top:0;height:0%;background:var(--accent)}
+.rail-read{writing-mode:vertical-rl;text-orientation:mixed}
+.rail-read b{color:var(--ink);font-weight:500}
+@media(max-width:900px){.rail{display:none}}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative; min-height:100svh; display:flex; flex-direction:column;
+  justify-content:flex-end; padding:var(--pad); overflow:hidden;
+}
+.hero-media{position:absolute;inset:0;z-index:0;will-change:transform}
+/* Bottom fade only: enough to seat the hero into the page, nothing more.
+   The type is protected by its own halo rather than by flattening the footage. */
+.hero-media::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,
+    oklch(0.190 0.018 152 / .34) 0%,
+    oklch(0.190 0.018 152 / .10) 28%,
+    oklch(0.190 0.018 152 / .55) 74%,
+    var(--bg) 100%);
+}
+/* A soft halo anchored under the words. It follows the text block instead of
+   dimming the whole frame, so the river stays bright and the type never washes out. */
+.hero-halo{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:radial-gradient(122% 94% at 24% 80%,
+    oklch(0.175 0.018 152 / .94) 0%,
+    oklch(0.180 0.018 152 / .80) 30%,
+    oklch(0.185 0.018 152 / .42) 56%,
+    oklch(0.190 0.018 152 / 0) 80%);
+}
+.hero-inner{position:relative;z-index:3;max-width:var(--max);margin-inline:auto;width:100%}
+.mark{
+  font-family:var(--display); font-weight:700; font-size:.95rem;
+  letter-spacing:.22em; text-transform:uppercase;
+  position:absolute; top:var(--pad); left:var(--pad); z-index:2;
+}
+.hero h1{
+  font-family:var(--display); font-weight:700;
+  font-size:clamp(2.1rem,6.4vw,5.2rem); line-height:.98;
+  letter-spacing:-.035em; margin:0 0 1.75rem; max-width:19ch;
+}
+.hero h1 b{color:var(--accent);font-weight:700}
+.hero .lede{
+  font-size:clamp(1.05rem,1.45vw,1.35rem); line-height:1.5;
+  color:var(--muted); margin:0; max-width:46ch;
+  border-top:1px solid var(--rule); padding-top:1.5rem;
+}
+.hero .lede b{color:var(--ink);font-weight:500}
+
+/* ---------- feature blocks ---------- */
+.feature{display:grid;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+/* The two features are not mirrors of each other: the satellite block gives the
+   argument more room, the drone block gives the aircraft more room. */
+@media(min-width:900px){
+  .feature{grid-template-columns:1.22fr .78fr}
+  .feature.flip{grid-template-columns:.82fr 1.18fr}
+  .feature.flip .feature-media{order:-1}
+}
+.feature h2{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(1.9rem,4.2vw,3.3rem); line-height:1.02;
+  letter-spacing:-.03em; margin:0 0 1.25rem; max-width:14ch;
+}
+.feature p{color:var(--muted);margin:0;max-width:42ch}
+.feature p b{color:var(--ink);font-weight:500}
+
+/* ---------- hero video ---------- */
+.hero-video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block;
+}
+
+/* ---------- aircraft ---------- */
+/* The fixed wing crosses the hero as you descend: it is the same airframe
+   that appears in the field photo below, so it reads as ours, not stock. */
+/* Two layers on purpose: the wrapper is driven by scroll, the image inside
+   drifts on its own. That way the aircraft is already flying before anyone
+   touches the wheel, and the scroll tween has nothing to fight with. */
+.fly{
+  position:absolute;z-index:2;pointer-events:none;
+  width:clamp(150px,26vw,420px);
+  right:0;top:34%;
+}
+.fly img{
+  display:block;width:100%;height:auto;opacity:.92;
+  filter:drop-shadow(0 18px 30px oklch(0.190 0.018 152 / .55));
+  animation:drift 9s ease-in-out infinite alternate;
+  transform-origin:60% 50%;
+}
+@keyframes drift{
+  from{transform:translate3d(0,-2.2%,0) rotate(-1.4deg)}
+  to  {transform:translate3d(-2.5%,2.6%,0) rotate(1.1deg)}
+}
+@media(prefers-reduced-motion:reduce){ .fly img{animation:none} }
+/* Rotors hold station. Quads hover, so they never sit perfectly still. */
+.hoverdrone{
+  display:block;width:100%;height:auto;
+  animation:hoverbob 6s ease-in-out infinite alternate;
+  filter:drop-shadow(0 22px 34px oklch(0.190 0.018 152 / .5));
+}
+.hoverdrone.slow{animation-duration:8s;animation-delay:-2s}
+@keyframes hoverbob{
+  from{transform:translateY(-1.2%) rotate(-.5deg)}
+  to  {transform:translateY(3.2%)  rotate(.6deg)}
+}
+.cta-drone{max-width:min(360px,60vw);margin:0 auto 2.5rem}
+.row-drone{max-width:min(300px,55vw);margin-top:1.75rem}
+
+@media(prefers-reduced-motion:reduce){
+  .hoverdrone{animation:none}
+}
+
+/* ---------- placeholders ---------- */
+.ph{
+  position:relative;display:grid;place-content:center;gap:.5rem;
+  text-align:center;padding:2rem;
+  border:1px dashed oklch(0.780 0.152 75 / .45);
+  background:
+    repeating-linear-gradient(135deg,oklch(0.780 0.152 75 / .05) 0 10px,transparent 10px 20px),
+    var(--surface);
+  font-family:var(--data);color:var(--accent);
+}
+.ph b{display:block;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500}
+.ph span{font-size:.72rem;color:var(--muted);letter-spacing:.04em;max-width:34ch}
+.ph.v{aspect-ratio:16/10}
+.ph.i{aspect-ratio:4/3}
+/* hero placeholder label sits high so the headline never runs through it */
+.ph.hero-ph{
+  position:absolute;inset:clamp(.75rem,1.5vw,1.25rem);border-style:dashed;
+  place-content:start center;padding-top:clamp(4rem,16vh,9rem);
+}
+
+/* ---------- campo ----------
+   Three frames from one day, set at three different sizes and three different
+   heights. Deliberately not a grid: equal columns would turn field evidence
+   into a product gallery, and every frame would read as interchangeable. */
+.campo{display:grid;gap:clamp(1.5rem,4vw,3rem);grid-template-columns:1fr}
+.campo figure{margin:0}
+.campo img{width:100%;height:auto;display:block}
+.campo figcaption{
+  font-family:var(--data);font-size:.72rem;letter-spacing:.1em;
+  color:var(--muted);padding-top:.8rem;
+}
+.campo figcaption b{color:var(--accent);font-weight:500}
+
+@media(min-width:820px){
+  .campo{grid-template-columns:repeat(12,1fr);align-items:start}
+  /* Selectors are figure-qualified on purpose: `.campo figure{margin:0}` above is
+     (0,1,1) and would otherwise cancel these offsets. */
+  .campo figure.campo-lead{grid-column:6 / 13}                                  /* 7 cols */
+  .campo figure.campo-near{grid-column:1 / 6;margin-top:clamp(3rem,9vh,7rem)}   /* 5 cols */
+}
+.gal figcaption{
+  font-family:var(--data);font-size:.72rem;letter-spacing:.1em;
+  color:var(--muted);padding-top:.7rem;
+}
+.gal figcaption b{color:var(--accent);font-weight:500}
+
+/* ---------- numbered detail rows ---------- */
+.row{
+  display:grid;gap:clamp(1.25rem,4vw,3.5rem);align-items:start;
+  padding-block:clamp(2.5rem,6vh,4.5rem);border-top:1px solid var(--rule);
+}
+/* Rows alternate so three of them never read as three copies of one card. */
+@media(min-width:900px){
+  .row{grid-template-columns:5rem .85fr 1.15fr}
+  .row.rev{grid-template-columns:5rem 1.15fr .85fr}
+  /* every child is pinned: leaving the marker to auto-placement lands it in the
+     text column and pushes the copy onto a second row */
+  .row.rev > :first-child{grid-column:1;grid-row:1}
+  .row.rev > :nth-child(2){grid-column:3;grid-row:1}
+  .row.rev > :last-child{grid-column:2;grid-row:1;order:-1}
+  .row .hoverdrone{max-width:min(100%,13rem);margin-inline:auto}
+}
+.num{
+  font-family:var(--data);font-size:.78rem;letter-spacing:.14em;
+  color:var(--accent);padding-top:.45rem;
+}
+.row h3{
+  font-family:var(--display);font-weight:600;
+  font-size:clamp(1.35rem,2.4vw,1.95rem);line-height:1.08;
+  letter-spacing:-.02em;margin:0 0 .75rem;
+}
+.row p{color:var(--muted);margin:0;max-width:44ch}
+.row p b{color:var(--ink);font-weight:500}
+.row .plano{color:var(--plano)}
+.row .forte{color:var(--forte)}
+.row img.half{width:50%;height:auto;margin-inline:auto}
+
+/* Two views of the same problem: the whole talhão, then the rows up close.
+   Overlapped and offset rather than set side by side, so it reads as one
+   composed pair instead of two interchangeable tiles. */
+.collage{position:relative;padding-bottom:12%}
+.collage img{display:block;width:100%;height:auto}
+.collage .collage-a{width:84%}
+.collage .collage-b{
+  position:absolute;right:0;bottom:0;width:54%;
+  border:clamp(5px,.5vw,9px) solid var(--bg);
+}
+@media(max-width:640px){
+  .collage{padding-bottom:18%}
+  .collage .collage-a{width:88%}
+  .collage .collage-b{width:62%}
+}
+
+/* ---------- cta ---------- */
+.cta{text-align:center;padding-block:clamp(6rem,18vh,12rem)}
+.cta p{
+  font-family:var(--display);font-weight:600;
+  font-size:clamp(1.7rem,4.2vw,3.2rem);line-height:1.06;letter-spacing:-.03em;
+  margin:0 auto 2.5rem;max-width:17ch;
+}
+.btn{
+  display:inline-block;font-family:var(--data);font-size:.78rem;
+  letter-spacing:.16em;text-transform:uppercase;text-decoration:none;
+  color:var(--bg);background:var(--accent);
+  padding:1.05rem 2.25rem;transition:transform .25s ease,background .25s ease;
+}
+.btn:hover{transform:translateY(-2px);background:var(--ink)}
+
+footer{
+  border-top:1px solid var(--rule);padding:2rem var(--pad);
+  font-family:var(--data);font-size:.68rem;letter-spacing:.1em;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:.75rem 2rem;justify-content:space-between;
+}
+
+/* Lenis ships required styles that are not in the JS bundle. Without them the
+   library takes over the wheel and the page will not scroll at all. */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto !important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
+.lenis.lenis-scrolling iframe{pointer-events:none}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}
+</style>
+
+<aside class="rail" aria-hidden="true">
+  <div class="rail-track"><div class="rail-fill" id="railFill"></div></div>
+  <div class="rail-read"><b id="alt">922</b> m · altitude</div>
+</aside>
+
+<!-- ============ HERO: thesis, lede ============ -->
+<header class="hero">
+  <div class="hero-media" id="heroMedia">
+    <video id="heroVideo" class="hero-video" muted playsinline preload="metadata" aria-hidden="true"></video>
+  </div>
+  <div class="hero-halo" aria-hidden="true"></div>
+  <div class="fly" id="fly" aria-hidden="true"><img src="assets/drone-asafixa.png" alt=""></div>
+  <div class="mark">Agrostech</div>
+  <div class="hero-inner">
+    <h1 data-reveal>Dado real de cada hectare: o dono decide, o <b>agrônomo prova</b>.</h1>
+    <p class="lede" data-reveal>O satélite erra a sua divisa em até dez metros e chuta a declividade da encosta. <b>O nosso voo mede um ponto de altitude a cada metro quadrado da sua terra.</b></p>
+  </div>
+</header>
+
+<!-- ============ FEATURE 01 ============ -->
+<section class="band wrap">
+  <div class="feature">
+    <div>
+      <h2 data-reveal>A região não é a sua fazenda.</h2>
+      <p data-reveal>O satélite mostra o entorno: água, solo, relevo, bioma. É o bastante para entender onde a propriedade está, e nada além disso. <b>Divisas saem borradas. A declividade vem estimada.</b></p>
+    </div>
+    <div class="feature-media" data-reveal>
+      <img src="assets/modelo-terreno.png" alt="Modelo de elevação do terreno em cores, do azul nos vales ao vermelho nos topos.">
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURE 02 ============ -->
+<section class="band wrap">
+  <div class="feature flip">
+    <div>
+      <h2 data-reveal>Depois, o chão.</h2>
+      <p data-reveal>O voo devolve um ponto de altitude por metro quadrado e a declividade sai calculada em cima dele, área por área.</p>
+    </div>
+    <div class="feature-media" data-reveal>
+      <img src="assets/equipe-asafixa.png" alt="Piloto agachado ao lado da asa fixa amarela no solo, base RTK ao fundo na lavoura.">
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALLERY: three captions ============ -->
+<section class="band wrap">
+  <div class="campo">
+    <figure class="campo-lead" data-reveal>
+      <img src="assets/voo-cana.jpg" alt="Operador de costas no carreador de terra vermelha com o drone em voo sobre o canavial.">
+      <figcaption>Voo sobre a <b>cana</b></figcaption>
+    </figure>
+    <figure class="campo-near" data-reveal>
+      <img src="assets/equipe-cacamba.png" alt="Dois profissionais preparam o drone na caçamba da caminhonete, base RTK montada ao lado.">
+      <figcaption>Preparo na <b>caçamba</b></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ THREE NUMBERED DETAIL ROWS ============ -->
+<section class="band wrap">
+  <div class="row" data-reveal>
+    <div class="num">01</div>
+    <div>
+      <h3>Falhas de plantio</h3>
+      <p>A gente conta planta por planta e devolve <b>os metros de linha que ficaram vazios</b>, com a posição de cada um.</p>
+    </div>
+    <div class="collage">
+      <img class="collage-a" src="assets/falhas-plantio.jpg" alt="Vista aérea do talhão com polígonos amarelos marcando as manchas de falha no plantio.">
+      <img class="collage-b" src="assets/falhas-linhas.jpg" alt="Detalhe das linhas de plantio com os trechos de falha marcados segmento a segmento.">
+    </div>
+  </div>
+
+  <div class="row rev" data-reveal>
+    <div class="num">02</div>
+    <div>
+      <h3>Alvo de pulverização</h3>
+      <p>O mapa multiespectral separa a mancha fraca da lavoura sadia e sai <b>como arquivo de taxa variável</b>, pronto para o pulverizador ler.</p>
+    </div>
+    <div>
+      <img class="hoverdrone slow" src="assets/drone-pulverizador.png" alt="Drone pulverizador com tanque e barras de bicos.">
+    </div>
+  </div>
+
+  <div class="row" data-reveal>
+    <div class="num">03</div>
+    <div>
+      <h3>Declividade e água</h3>
+      <p>Neste levantamento, <b>359,2 metros</b> separam o ponto mais alto do mais baixo. <span class="plano">26,91 ha</span> ficam abaixo de 5% e <span class="forte">121,76 ha</span> passam de 14%.</p>
+    </div>
+    <div>
+      <img class="half" src="assets/declividade.png" alt="Perímetro do imóvel colorido por classe de declividade, do verde abaixo de 5 por cento ao vermelho acima de 14 por cento.">
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta wrap">
+  <div class="cta-drone" data-reveal>
+    <img class="hoverdrone" src="assets/drone-quad-frente.png" alt="Multirrotor de levantamento visto de frente, pousado.">
+  </div>
+  <p data-reveal>Traga a sua. A gente devolve os números dela.</p>
+  <a class="btn" href="#" data-reveal>Falar com a equipe</a>
+</section>
+
+<footer>
+  <span>Agrostech, aerolevantamento e inteligência territorial</span>
+  <span>agrostech.xyz</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasLib  = window.gsap && window.ScrollTrigger;
+
+  // Real measured altitude range of a surveyed property. Scrolling descends through it.
+  var TOP = 922, BOTTOM = 563;
+  var altEl = document.getElementById('alt'), fillEl = document.getElementById('railFill');
+
+  function descend(p){
+    if(altEl)  altEl.textContent = Math.round(TOP - (TOP - BOTTOM) * p);
+    if(fillEl) fillEl.style.height = (p * 100).toFixed(2) + '%';
+  }
+  function showAll(){
+    var n = document.querySelectorAll('[data-reveal]');
+    for(var i=0;i<n.length;i++) n[i].style.opacity = 1;
+  }
+
+  // ---- altitude readout ----
+  // Bound straight to scroll position, on every path, before any library loads.
+  // A readout of how far down the page you are must not depend on a tween engine.
+  function pageProgress(){
+    var el = document.documentElement;
+    var h  = el.scrollHeight - innerHeight;
+    if(h <= 0) return 0;
+    var y = window.scrollY || el.scrollTop || 0;
+    return Math.min(1, Math.max(0, y / h));
+  }
+  function onDescend(){ descend(pageProgress()); }
+  addEventListener('scroll', onDescend, {passive:true});
+  addEventListener('resize', onDescend);
+  onDescend();
+
+  // ---- hero video: a different cut per breakpoint ----
+  // Both files are pre-trimmed and H.264. The desktop cut already starts at 0:08 of
+  // the source flight, so it loops natively rather than seeking on every pass.
+  var v = document.getElementById('heroVideo');
+  if(v){
+    var isDesktop = matchMedia('(min-width: 900px)').matches;
+    v.src = isDesktop ? 'assets/video/hero-desktop.mp4' : 'assets/video/hero-mobile.mp4';
+    v.loop = true;
+    v.addEventListener('loadedmetadata', function(){
+      var p = v.play(); if(p && p.catch) p.catch(function(){});
+    });
+  }
+
+  if(reduced){ showAll(); return; }
+
+  if(window.Lenis){
+    var lenis = new Lenis({ duration:1.15, smoothWheel:true });
+    window.__lenis = lenis;
+    lenis.on('scroll', onDescend);
+    if(hasLib){
+      lenis.on('scroll', function(){ ScrollTrigger.update(); });
+      gsap.ticker.add(function(t){ lenis.raf(t * 1000); });
+      gsap.ticker.lagSmoothing(0);
+    } else {
+      requestAnimationFrame(function raf(t){ lenis.raf(t); requestAnimationFrame(raf); });
+    }
+  }
+
+  if(!hasLib){ showAll(); return; }
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.to('#heroMedia', {
+    scale:1.18, yPercent:6, ease:'none',
+    scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true }
+  });
+
+  gsap.from(document.querySelectorAll('.hero [data-reveal]'), {
+    opacity:0, y:30, duration:1, ease:'power3.out', stagger:.12, delay:.15
+  });
+
+  // ---- the fixed wing crosses the hero as you lose altitude ----
+  gsap.fromTo('#fly',
+    { xPercent:34, yPercent:-30, rotation:-7 },
+    { xPercent:-186, yPercent:64, rotation:5, ease:'none',
+      scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:1.1 } });
+
+  gsap.utils.toArray('[data-reveal]').forEach(function(el){
+    if(el.closest('.hero')) return;
+    gsap.from(el, {
+      opacity:0, y:26, duration:.85, ease:'power2.out',
+      scrollTrigger:{ trigger:el, start:'top 88%', once:true }
+    });
+  });
+
+  addEventListener('load', function(){ ScrollTrigger.refresh(); });
+
+  // Failsafe: if rAF never ticks (background tab, throttled window), tweens hold their
+  // from-state and the page would read as blank. Content wins over motion.
+  setTimeout(function(){ if(gsap.ticker.frame < 5) showAll(); }, 2500);
+})();
+</script>
