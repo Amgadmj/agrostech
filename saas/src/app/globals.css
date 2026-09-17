@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --dark-void: #050505;
+    --dark-panel: #0a0d10;
+    --card-glass: rgba(10, 13, 16, 0.88);
+    --card-border: #1f242b;
+    --card-border-glow: rgba(0, 230, 118, 0.3);
+    
+    --radar-emerald: #00e676;
+    --telemetry-mint: #00ff85;
+    --orbital-cyan: #00e5ff;
+    
+    --muted-slate: #94a3b8;
+    --pure-white: #ffffff;
+    --tech-gray: #64748b;
+    
+    --alert-amber: #f59e0b;
+    --hazard-red: #ef4444;
+  }
+
+  body {
+    background-color: var(--dark-void);
+    color: var(--muted-slate);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: #1f242b;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--radar-emerald);
+}
+
+/* MapLibre Canvas Container Reset */
+.maplibregl-map {
+  font-family: inherit;
+}
+.maplibregl-ctrl-attrib {
+  display: none !important;
+}
+
+/* Radar Sweep Animation */
+@keyframes radar-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-radar {
+  animation: radar-rotate 2.8s linear infinite;
+}
+
+/* Tactical HUD Utility Classes from dashboard-ui */
+.hud-glass-panel {
+  background: var(--card-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.hud-glass-panel-active {
+  border-color: var(--radar-emerald);
+  box-shadow: 0 0 20px rgba(0, 230, 118, 0.15), inset 0 0 0 1px rgba(0, 230, 118, 0.2);
+}
+
+.reticle-corner {
+  position: relative;
+}
+.reticle-corner::before,
+.reticle-corner::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-color: var(--radar-emerald);
+  pointer-events: none;
+}
+.reticle-corner::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid var(--radar-emerald);
+  border-left: 1px solid var(--radar-emerald);
+}
+.reticle-corner::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid var(--radar-emerald);
+  border-right: 1px solid var(--radar-emerald);
+}
