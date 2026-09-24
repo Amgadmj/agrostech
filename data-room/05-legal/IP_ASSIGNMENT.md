@@ -5,6 +5,15 @@
 Every founder, contractor, and pilot who has touched AgrosTech's core
 assets needs a signed IP assignment covering:
 
+- **The three named proprietary models — top priority.** Per the pitch
+  deck's "Como Funciona" slide, these are the company's core technical
+  asset and the thing 40% of the raise ("Dados e IA") is built to
+  develop further: **M1 (Filtro de Área Útil)**, **M2 (Radar SAR
+  Anti-Fuga)**, **M3 (Protocolo Halo)** — see
+  `09-product/TECH_STACK_OVERVIEW.md` for what each does. Whoever
+  conceived and built these (Amgad? Lucas? a contractor?) needs this
+  nailed down before diligence, since these are exactly what an
+  investor will ask "who owns this, on paper?" about.
 - Code (the `saas/` platform, `runner/` pipeline, any internal tooling)
 - Maps and geospatial outputs produced for clients or internally
 - Models (NDVI/biomass/scoring models, the Passaporte de Crédito Rural

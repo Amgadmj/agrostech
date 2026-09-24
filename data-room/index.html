@@ -77,7 +77,7 @@ footer{color:var(--muted);font-size:13px;padding:0 0 40px}
 <header>
   <div class="wrap">
     <h1>AgrosTech data room</h1>
-    <p>Built for early-stage VC conversations, from the R$4/ha/year Passaporte de Crédito Rural subscription and the R$3M SAFE at a ≈R$20M cap. Each bar below is one document, linked to the actual file. Gold means ready to share; the biggest open blocker is the pitch deck itself and the entity structure (no Delaware C-corp exists yet).</p>
+    <p>Built for early-stage VC conversations, from the US$0.80/ha/year (≈R$4) Passaporte de Crédito Rural subscription and the US$600K SAFE at a US$4M cap. Reconciled against the founder's pitch deck. Each bar below is one document, linked to the actual file. Gold means ready to share; the biggest open blocker now is forming the two entities — a Delaware holding owning a new Brazilian LTDA — the structure is decided, just not executed yet.</p>
     <div class="field" id="field" aria-hidden="true"></div>
     <div class="tally" id="tally"></div>
   </div>
@@ -103,15 +103,16 @@ footer{color:var(--muted);font-size:13px;padding:0 0 40px}
   <div class="terms">
   <table>
     <tr><th>Form</th><td>Post-Money SAFE, Valuation Cap, no Discount<small>The most common version. Skip the MFN-only and discount-only forms.</small></td></tr>
-    <tr><th>Issuer</th><td>AgrosTech's Delaware C-corporation<small>It must be incorporated, and it must own the Brazilian operating company, before anyone signs.</small></td></tr>
-    <tr><th>Round size</th><td>R$3M total across all SAFEs<small>The SAFE is written in US dollars. Fix the USD amount at the exchange rate on signing day.</small></td></tr>
-    <tr><th>Post-money valuation cap</th><td>≈ R$20M (R$3M ÷ 15%)<small>Post-money means the cap already includes the SAFE money. Any option pool created later dilutes the founders, not the SAFE holders. Size the pool now.</small></td></tr>
+    <tr><th>Issuer</th><td>A new Delaware holding company, owning a new Brazilian LTDA 100%<small>Structure decided by the founder — neither entity is formed yet. Must exist, and the holding must own the Brazilian operating company, before anyone signs.</small></td></tr>
+    <tr><th>Round size</th><td>US$600,000 (≈ R$3M at ≈R$5.00/US$1)<small>Confirmed on the deck's "O Pedido" slide — USD is the actual instrument currency, not a conversion.</small></td></tr>
+    <tr><th>Post-money valuation cap</th><td>US$4,000,000 (≈ R$20M) — 15%<small>Post-money means the cap already includes the SAFE money. Any option pool created later dilutes the founders, not the SAFE holders. Size the pool now.</small></td></tr>
     <tr><th>Pro rata rights</th><td>Separate side letter, only for the lead investor<small>Gives them the right to keep their percentage in the Series A.</small></td></tr>
-    <tr><th>Governing law</th><td>Delaware<small>Already in the form.</small></td></tr>
+    <tr><th>Governing law</th><td>Delaware<small>Matches the confirmed holding-company structure.</small></td></tr>
+    <tr><th>Founder vesting</th><td>4 years, 1-year cliff<small>Confirmed on the deck's "O Pedido" slide.</small></td></tr>
     <tr><th>Company signs</th><td>Amgad, as CEO, after a board consent approving the SAFE issuance</td></tr>
   </table>
   </div>
-  <div class="blocked"><b>Blocked today:</b> no Delaware C-corp exists, and the Brazilian CNPJ currently on file is the founder's personal one, not a dedicated company entity. See <a href="03-company-documents/INCORPORATION_STATUS.md" style="color:#f0d9d5">03-company-documents/INCORPORATION_STATUS.md</a> — this has to resolve before the Issuer field can be filled in.</div>
+  <div class="blocked"><b>Blocked today:</b> the Delaware holding and the new Brazilian LTDA are decided but not yet formed — the founder's existing personal CNPJ is a separate, pre-existing registration and will not be the fundraising entity. See <a href="03-company-documents/INCORPORATION_STATUS.md" style="color:#f0d9d5">03-company-documents/INCORPORATION_STATUS.md</a> — this has to resolve before the Issuer field can be filled in.</div>
   <div class="stop">Before signing: have a Brazilian lawyer and a US lawyer review the Delaware–Brazil structure, the currency flow (registro no Banco Central), and tax. This page is a planning checklist, not legal advice.</div>
 </section>
 </div>
@@ -122,25 +123,25 @@ const W={meet:"before the first meeting",dd:"for due diligence",later:"can wait"
 const DATA=[
  {part:"Company fundamentals",secs:[
   {t:"1. Company snapshot",items:[
-   ["One-pager","Problem, product, R$4/ha/year pricing, team, and the ask on one page. Portuguese and English.","meet","ready","01-company-snapshot/ONE_PAGER.md"],
-   ["Pitch deck","Outline built and ready to receive the founder's actual deck content — the real deck has not been supplied yet.","meet","missing","01-company-snapshot/PITCH_DECK_OUTLINE.md"],
-   ["Case study","CAR/SICAR georeferencing survey (client Fabio) + the 35ha weed-scan, kept as two distinct engagements per founder correction.","meet","progress","01-company-snapshot/CASE_STUDY.md"],
+   ["One-pager","Problem, product, US$0.80/ha/year pricing, team, and the ask on one page. Portuguese and English.","meet","ready","01-company-snapshot/ONE_PAGER.md"],
+   ["Pitch deck","The real 17-slide deck, supplied by the founder — plus a slide-by-slide reconciliation map into this data room.","meet","ready","01-company-snapshot/AgrosTech_Pitch_Narrativo.pdf"],
+   ["Case study","220ha CAR/SICAR georeferencing survey, Minas Gerais (deck-confirmed) + the 35ha weed-scan as a separate engagement.","meet","progress","01-company-snapshot/CASE_STUDY.md"],
    ["Long-term vision","The path from field evidence to the Passaporte de Crédito Rural and land viability (LIM).","meet","progress","01-company-snapshot/LONG_TERM_VISION.md"]]},
   {t:"2. Team",items:[
-   ["Team bios","Amgad (CEO, interim CTO), Diana Dutra (CCO), Lucas Costa (CDO).","meet","progress","02-team/TEAM_BIOS.md"],
-   ["Founder vesting and ESOP","Proposed 4-year/1-year-cliff structure — needs founder decision + board consent before the SAFE.","dd","missing","02-team/VESTING_AND_ESOP.md"],
-   ["Advisor agreements","Gilberto Damasceno and Chaim Finziola — equity terms explicitly out of scope for this round of documents.","dd","missing","02-team/ADVISOR_NOTE.md"],
+   ["Team bios","Amgad Salih (CEO, interim CTO), Diana Dutra (CCO), Lucas Costa (CDO) — real bios confirmed by the deck.","meet","ready","02-team/TEAM_BIOS.md"],
+   ["Founder vesting and ESOP","4-year/1-year-cliff vesting confirmed by the deck; option pool size still needs a founder decision + board consent.","dd","progress","02-team/VESTING_AND_ESOP.md"],
+   ["Advisor agreements","Gilberto Damasceno, Chaim Finziola, and Michelle Souza Vilela (CDT/UnB) — equity terms explicitly out of scope for this round of documents.","dd","missing","02-team/ADVISOR_NOTE.md"],
    ["Org design","3-person core team; this repo's AI-agent \"Digital Company OS\" framed honestly as an internal tool, not headcount.","dd","ready","02-team/ORG_DESIGN.md"],
    ["Hiring plan","CTO first, then data engineer, then sales — what the round pays for, in order.","dd","progress","02-team/HIRING_PLAN.md"]]},
   {t:"3. Company documents",items:[
-   ["Delaware incorporation","Does not exist yet. Status doc explains the open structural decision.","dd","missing","03-company-documents/INCORPORATION_STATUS.md"],
-   ["Brazilian company","CNPJ exists but is currently the founder's personal one; a dedicated CNPJ is expected before signing.","dd","progress","03-company-documents/INCORPORATION_STATUS.md"],
+   ["Delaware incorporation","Structure decided: a Delaware holding owning a new Brazilian LTDA 100%. Neither is formed yet.","dd","progress","03-company-documents/INCORPORATION_STATUS.md"],
+   ["Brazilian company","A new LTDA will be formed, owned by the Delaware holding — distinct from the founder's existing personal CNPJ.","dd","progress","03-company-documents/INCORPORATION_STATUS.md"],
    ["Founders' agreement","Checklist of required terms — not drafted or signed.","dd","missing","03-company-documents/FOUNDERS_AGREEMENT.md"],
    ["Board consents","Checklist of consents needed once an entity exists — none executed.","dd","missing","03-company-documents/BOARD_CONSENTS.md"]]},
   {t:"4. Investment documents",items:[
-   ["Cap table","Post-money SAFE mechanics computed live; founder equity split is an illustrative placeholder.","meet","progress","04-investment-documents/CAP_TABLE.md"],
-   ["Use of funds","How R$3M is spent and which milestones it buys before a Series A.","meet","progress","04-investment-documents/USE_OF_FUNDS.md"],
-   ["SAFE","YC post-money SAFE. Terms below — Issuer field blocked on entity structure.","dd","progress","04-investment-documents/SAFE_TERMS.md"],
+   ["Cap table","Post-money SAFE mechanics confirmed by the deck (US$600K, US$4M cap, 15%); founder equity split still an illustrative placeholder.","meet","progress","04-investment-documents/CAP_TABLE.md"],
+   ["Use of funds","40% Dados e IA / 30% Vendas institucionais / 20% Operações / 10% Bacen — confirmed on the deck's ask slide.","meet","ready","04-investment-documents/USE_OF_FUNDS.md"],
+   ["SAFE","YC post-money SAFE, US$600K at a US$4M cap — confirmed. Issuer field still blocked on entity formation.","dd","progress","04-investment-documents/SAFE_TERMS.md"],
    ["Prior rounds","None so far. One line saying so.","dd","ready","04-investment-documents/PRIOR_ROUNDS.md"],
    ["Investor updates","Monthly template, ready to start after the first cheque.","later","ready","04-investment-documents/INVESTOR_UPDATE_TEMPLATE.md"]]},
   {t:"5. Legal",items:[
@@ -154,15 +155,16 @@ const DATA=[
  ]},
  {part:"Traction and financials",secs:[
   {t:"6. Customers",items:[
-   ["Customer contracts","Fabio's CAR/SICAR survey delivered & paid; signed documents to attach.","dd","missing","06-customers/CUSTOMER_CONTRACTS.md"],
-   ["Sales pipeline","Coplacana, and Thales — an independent consultant covering ~30,000 ha of cacao in Bahia.","meet","progress","06-customers/SALES_PIPELINE.md"],
+   ["Customer contracts","220ha CAR/SICAR survey, Minas Gerais, delivered & paid (deck-confirmed hectares); signed documents to attach.","dd","progress","06-customers/CUSTOMER_CONTRACTS.md"],
+   ["Sales pipeline","Coplacana, Thales (~30,000 ha cacao, Bahia, 200+ producers), and an unnamed global trading/barter manager — ~35,000 ha combined per the deck.","meet","progress","06-customers/SALES_PIPELINE.md"],
    ["Testimonials","Two or three short quotes from producers, with permission — none collected yet.","meet","missing","06-customers/TESTIMONIALS.md"],
-   ["Market research","IBGE planted-area and Plano Safra credit-volume figures, sourced and dated.","meet","ready","06-customers/MARKET_RESEARCH.md"],
+   ["Market research","Deck's official TAM/SAM/target (US$880M/US$125M/US$3M) plus independently-sourced IBGE and Plano Safra figures, and the CMN 5.267/2025 regulatory driver.","meet","ready","06-customers/MARKET_RESEARCH.md"],
+   ["Competitive landscape","Agrotools, Serasa Experian Agro, TerraMagna, Traive, Terras — named and framed directly by the deck.","dd","ready","06-customers/COMPETITIVE_LANDSCAPE.md"],
    ["Customer KPIs","Hectares under contract, renewals — no cohort old enough yet to measure.","later","missing","06-customers/CUSTOMER_KPIS.md"]]},
   {t:"7. Financials",items:[
-   ["Financial model","Actuals, 18-month budget, bull/base/bear scenarios — one live spreadsheet, formulas verified.","meet","ready","07-financials/FINANCIAL_MODEL.xlsx"],
-   ["Hypotheses","10 named hypotheses behind the model, with confidence ratings, in the workbook's Hypotheses tab.","dd","ready","07-financials/HYPOTHESES.md"],
-   ["Unit economics","Subscription + survey-services economics, built fresh for the current pricing model.","meet","progress","07-financials/UNIT_ECONOMICS.md"],
+   ["Financial model","Deck's own official 2027-2029 scenarios, plus a supporting bottom-up 18-month build — one live spreadsheet, formulas verified.","meet","ready","07-financials/FINANCIAL_MODEL.xlsx"],
+   ["Hypotheses","11 named hypotheses behind the model, with confidence ratings, in the workbook's Hypotheses tab.","dd","ready","07-financials/HYPOTHESES.md"],
+   ["Unit economics","US$0.80/ha/year confirmed; margin and avg-hectares-per-customer still placeholders.","meet","progress","07-financials/UNIT_ECONOMICS.md"],
    ["Tax and compliance","Blocked on the entity-structure decision (CNPJ vs. Delaware flip).","dd","missing","07-financials/TAX_AND_COMPLIANCE.md"]]},
   {t:"8. GTM and revenue",items:[
    ["GTM strategy","Consultant/cooperative channel (Thales, Coplacana) is outperforming direct-to-farm — lean into it.","meet","ready","08-gtm-revenue/GTM_STRATEGY.md"],
@@ -174,14 +176,14 @@ const DATA=[
   {t:"9. Product",items:[
    ["Demo video","Shot list ready, tied to the actual onboarding flow — not yet recorded.","meet","missing","09-product/DEMO_VIDEO_BRIEF.md"],
    ["Roadmap","Next 18 months, tied to the hiring plan and funded milestones.","meet","progress","09-product/ROADMAP.md"],
-   ["Tech stack overview","Next.js 15 + PostGIS + SICAR/SIGEF enrichment pipeline — pulled straight from the working code.","dd","ready","09-product/TECH_STACK_OVERVIEW.md"],
+   ["Tech stack overview","Next.js 15 + PostGIS + SICAR/SIGEF pipeline, plus the deck's three named models: M1 Filtro de Área Útil, M2 Radar SAR Anti-Fuga, M3 Protocolo Halo.","dd","ready","09-product/TECH_STACK_OVERVIEW.md"],
    ["Security overview","Where client data is stored, who has access, backups — status to confirm.","later","missing","09-product/SECURITY_OVERVIEW.md"]]},
   {t:"10. Press and brand",items:[
    ["Brand assets","Logo files, palette tokens from the live site, and field photography — inventoried.","later","ready","10-press-brand/BRAND_ASSETS.md"],
    ["Press kit","Short company description drafted; founder photos and coverage pending.","later","missing","10-press-brand/PRESS_KIT.md"]]}
  ]}
 ];
-const KEY="agrostech-dataroom-v2";
+const KEY="agrostech-dataroom-v3";
 let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){saved={}}
 const LABEL={missing:"Missing",progress:"In progress",ready:"Ready"};
 const NEXT={missing:"progress",progress:"ready",ready:"missing"};

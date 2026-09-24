@@ -21,13 +21,21 @@ cooperatives who already have standing relationships across thousands of
 hectares — rather than building a farm-by-farm direct sales motion from
 scratch.
 
-## Urgency lever
+## Urgency lever — the regulatory driver is now the strongest one
 
-Producer urgency is tied to credit cycles (Plano Safra financing
-windows) and carbon/ESG reporting deadlines, not to AgrosTech's own
-sales calendar — GTM messaging and timing should track those external
-calendars. See `06-customers/MARKET_RESEARCH.md` for the Plano Safra
-2025/26–2026/27 figures this argument leans on.
+As of March 2026, Banco Central's **Resolução CMN nº 5.267/2025**
+requires rural-credit compliance to be proven by remote sensing, and
+makes the liability non-delegable — see `06-customers/MARKET_RESEARCH.md`
+for the full framing. This changes the sales conversation with banks and
+credit desks from "here's a nice-to-have data product" to "you now have
+a standing legal obligation and need a vendor who can produce an
+auditable, ICP-Brasil-signed dossier." Producer-side urgency is still
+tied to credit cycles (Plano Safra financing windows) and carbon/ESG
+reporting deadlines — but the institutional-buyer urgency (banks,
+cooperatives, credit desks) now has a hard regulatory deadline behind
+it, which is the stronger lever for the "Vendas institucionais" GTM
+motion this round explicitly funds (30% of the raise — see
+`04-investment-documents/USE_OF_FUNDS.md`).
 
 ---
 *AgrosTech — GTM Strategy v1.0 | Confidencial | 2026*

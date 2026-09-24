@@ -1,52 +1,55 @@
 # Incorporation Status
 
-**Status: 🔴 this is the single most important gap to close before a SAFE
-can be signed — the SAFE's Issuer field requires a specific entity, see
-below.**
+**Status: 🟡 structure decided by founder (2026-09-24) — not yet formed. This is the single biggest execution item before the SAFE can be signed.**
 
-## Current state (as of 2026-09-24, confirmed by founder)
+## Current state
 
 | Item | Status |
 |---|---|
-| Delaware C-corporation | **Does not exist.** No US holding entity has been formed. |
-| Brazilian CNPJ | **Exists**, but is currently registered under the founder's (Amgad's) personal name/CPF rather than a dedicated company structure. The founder expects to use a **different, dedicated CNPJ** for AgrosTech going forward rather than this one. |
+| Delaware C-corporation (holding) | **Decided, not yet formed.** The founder confirmed the target structure: a Delaware holding company that will own and control a Brazilian LTDA. |
+| Brazilian operating company | **Decided, not yet formed.** A new LTDA will be incorporated, owned 100% by the Delaware holding. This is **not** the CNPJ the founder currently holds personally — that one is a separate, pre-existing registration and will not be the fundraising entity. |
 
-## Why this matters for the SAFE
+## The confirmed structure
 
-The SAFE terms panel (`04-investment-documents/SAFE_TERMS.md`) specifies:
+```
+        Delaware Holding Co. (C-corp)
+                    │
+                    │ 100% ownership
+                    ▼
+        AgrosTech Brasil LTDA (new entity)
+```
 
-> **Issuer:** AgrosTech's Delaware C-corporation. It must be incorporated,
-> and it must own the Brazilian operating company, before anyone signs.
+This is the standard "Delaware flip" structure referenced in the SAFE
+terms panel (`04-investment-documents/SAFE_TERMS.md`) — the SAFE issuer
+will be the Delaware holding, which in turn owns the Brazilian operating
+company. This resolves the open structural question flagged in the
+previous version of this data room.
 
-Neither half of that is true yet. This is not a documentation gap — it's
-a structural one. **Two decisions are needed before this data room's SAFE
-section can be executed, not just drafted:**
+## What's left to execute (nothing here is done yet)
 
-1. **Does AgrosTech actually need a Delaware flip for this round?**
-   A YC-style post-money SAFE is conventionally a Delaware instrument
-   because that's the standard US venture paper and what most funds have
-   template diligence for. If the target investors are Brazil-based or
-   comfortable with a Brazilian instrument, a **direct Brazilian
-   equivalent** (e.g., a mútuo conversível under Brazilian law, or a
-   SAFE adapted with Brazilian counsel) may avoid the cost and delay of
-   a US flip entirely. **This is a call for the founder + both lawyers
-   (Brazilian and US), not something to default into.**
-2. **If a Delaware flip is the right call:** the sequence is (a) form
-   the Delaware C-corp, (b) have it acquire 100% of a newly formed,
-   dedicated Brazilian operating company (not the founder's personal
-   CNPJ) via a share exchange, (c) issue founder stock in the Delaware
-   entity with the board consent template in `BOARD_CONSENTS.md`, (d)
-   only then can the SAFE issuer field be filled in and the instrument
-   signed.
+1. **Form the Delaware holding company** (C-corp).
+2. **Form the new Brazilian LTDA** (distinct from the founder's existing
+   personal CNPJ).
+3. **Execute the share exchange / capitalization** so the Delaware
+   holding owns 100% of the Brazilian LTDA.
+4. **Issue founder stock** in the Delaware entity, per the cap table
+   split — board consent template in `BOARD_CONSENTS.md`.
+5. **Only then** can the SAFE's Issuer field be filled in and the
+   instrument signed.
 
-## What this data room does in the meantime
+## Why this still needs both counsels involved
 
-Every other section proceeds as if this were resolved, with the
-structural dependency flagged wherever it appears (see
-`04-investment-documents/SAFE_TERMS.md` and `04-investment-documents/CAP_TABLE.md`).
-This file is the single source of truth for "is the entity real yet" —
-update it the moment either the Delaware entity or the new Brazilian
-CNPJ is formed.
+Per the SAFE terms panel: *"Have a Brazilian lawyer and a US lawyer
+review the Delaware–Brazil structure, the currency flow (registro no
+Banco Central), and tax."* Confirming the structure decision doesn't
+remove that step — it makes it concrete and actionable. Specific open
+items for counsel:
+- Brazilian Central Bank registration of the foreign capital flow
+  (registro de capital estrangeiro) once the Delaware holding
+  capitalizes the Brazilian LTDA.
+- Tax treatment on both sides of the flip.
+- Whether the founder's existing personal CNPJ needs to be wound down,
+  contributed, or simply left inactive alongside the new structure.
 
 ---
-*AgrosTech — Incorporation Status v1.0 | Confidencial | 2026 | Not legal advice — consult Brazilian and US counsel before acting on the structure question above*
+*AgrosTech — Incorporation Status v2.0 | Confidencial | 2026 | Not legal advice — consult Brazilian and US counsel before executing*

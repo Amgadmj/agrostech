@@ -1,20 +1,22 @@
 # Cap Table
 
-**Status: 🔴 mechanics are correct; founder equity split and pool size
-are [CONFIRM] placeholders — do not share externally until confirmed.**
+**Status: 🟡 mechanics and vesting are confirmed by the deck; founder equity split and pool size are still [CONFIRM] placeholders — do not share externally until confirmed.**
 A live version with the same formulas is in
 `07-financials/FINANCIAL_MODEL.xlsx` (Cap Table tab).
 
-## Mechanics (fixed by the SAFE terms)
+## Mechanics (fixed by the SAFE terms — confirmed on the deck's ask slide)
 
-- **Raise:** R$ 3,000,000
-- **Post-money valuation cap:** R$ 20,000,000 (= R$3M ÷ 15%)
-- **SAFE holders' post-money ownership:** 3,000,000 / 20,000,000 = **15.0%**
+- **Raise:** US$ 600,000 (≈ R$ 3,000,000 at ≈R$5.00/US$1)
+- **Post-money valuation cap:** US$ 4,000,000 (≈ R$ 20,000,000)
+- **SAFE holders' post-money ownership: 15.0%** — stated directly on the deck, and matches 600,000 / 4,000,000
 - Because this is a **post-money** SAFE, the 15% is fixed regardless of
-  how many separate SAFEs make up the R$3M, and **any option pool must be
-  carved out of the founders' remaining 85%, not the SAFE holders' 15%**
-  — this is why pool sizing has to happen before signing (see
-  `03-company-documents/BOARD_CONSENTS.md`).
+  how many separate SAFEs make up the US$600K, and **any option pool
+  must be carved out of the founders' remaining 85%, not the SAFE
+  holders' 15%** — this is why pool sizing has to happen before signing
+  (see `03-company-documents/BOARD_CONSENTS.md`).
+- **Issuer:** the new Delaware holding company (owns the new Brazilian
+  LTDA 100%) — see `03-company-documents/INCORPORATION_STATUS.md`.
+  Founder vesting: **4 years, 1-year cliff** (confirmed).
 
 ## Today — before the SAFE (fully diluted)
 
@@ -66,4 +68,4 @@ is the company's first fundraise. (See
 `04-investment-documents/PRIOR_ROUNDS.md`.)
 
 ---
-*AgrosTech — Cap Table v1.0 | Confidencial | 2026 | Illustrative until [CONFIRM] fields are replaced*
+*AgrosTech — Cap Table v2.0 | Confidencial | 2026 | Reconciled against the founder's pitch deck (2026-09-24) | Illustrative until [CONFIRM] fields are replaced*

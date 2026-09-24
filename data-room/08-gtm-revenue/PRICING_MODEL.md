@@ -1,6 +1,7 @@
 # Pricing Model
 
-**Status: 🟡 core price is ✅ founder-confirmed; survey-services pricing is [CONFIRM].**
+**Status: ✅ core price confirmed both by the founder and by the deck's
+"O Mercado" slide; survey-services pricing is still [CONFIRM].**
 
 > This supersedes `knowledge-base/PRICING_MODEL.md` for fundraising
 > purposes. That file prices full drone missions per hectare (R$16–120/ha
@@ -12,7 +13,7 @@
 
 | Product | Price | Status |
 |---|---|---|
-| **Subscription — Passaporte de Crédito Rural** | **R$ 4/ha/year** | ✅ confirmed |
+| **Subscription — Passaporte de Crédito Rural** | **US$ 0.80/ha/year** (≈ R$ 4/ha/year) | ✅ confirmed — USD is the deck's primary currency; R$ shown at ≈R$5.00/US$1 |
 | One-off survey services (georeferencing, weed/pest scans, MRV baseline, etc.) | [CONFIRM — per-survey or per-ha pricing for the current model] | 🔴 placeholder used in the financial model: R$15,000/survey average |
 
 ## Why a flat R$/ha/year subscription, not tiered per-hectare bands

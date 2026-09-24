@@ -21,7 +21,11 @@ maps and credit evidence come out"):
 3. **ScoreCard** (`saas/src/components/wizard/ScoreCard.tsx`) — the
    credit-passport output itself: an ESG score, a rural-credit risk
    level, embargo status, and explicit **"Elegível para Passaporte de
-   Crédito Rural AgrosTech"** eligibility flag.
+   Crédito Rural AgrosTech"** eligibility flag. Conceptually, this is
+   where the three proprietary models named in the pitch deck plug in —
+   M1 (Filtro de Área Útil), M2 (Radar SAR Anti-Fuga), M3 (Protocolo
+   Halo) — see `09-product/TECH_STACK_OVERVIEW.md` for what each does
+   and [CONFIRM] which are live in this code today.
 4. **2D/3D visualization** — MapLibre GL + Deck.gl for 2D (`MapView2D.tsx`,
    `MiniMap.tsx`) and Cesium for a full 3D digital-twin terrain view
    (`CesiumViewer.tsx`, `dashboard/land/[id]/3d/page.tsx`).

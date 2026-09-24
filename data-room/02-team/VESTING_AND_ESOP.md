@@ -1,6 +1,6 @@
 # Founder Vesting & ESOP
 
-**Status: 🔴 needs founder decision + board consent — this is a proposed structure, not yet executed.**
+**Status: 🟡 vesting schedule confirmed on the deck's ask slide; pool size still needs a founder decision + board consent.**
 
 ## Why this matters before the SAFE closes
 
@@ -11,9 +11,9 @@ sized **before** signing.
 
 ## Proposed structure (standard, for founder decision)
 
-| Item | Proposed default | Note |
+| Item | Value | Note |
 |---|---|---|
-| Founder vesting | 4 years, 1-year cliff, monthly thereafter | Standard YC/market default for all three founders (Amgad, Diana, Lucas) |
+| Founder vesting | **4 years, 1-year cliff** | ✅ **Confirmed** on the pitch deck's "O Pedido" slide — applies to all three founders (Amgad, Diana, Lucas) |
 | Vesting start date | [CONFIRM — company founding date or a later "reset" date] | |
 | Option pool (ESOP) | [CONFIRM — typical range 10–15% of fully diluted cap table] | Must be sized and carved out of the post-money cap **before** SAFE signing |
 | Acceleration | [CONFIRM — single-trigger vs. double-trigger on acquisition] | |

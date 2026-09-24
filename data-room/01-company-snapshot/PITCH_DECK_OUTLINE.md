@@ -1,39 +1,52 @@
-# Pitch Deck — Outline (pending founder's actual deck)
+# Pitch Deck
 
-**Status: 🔴 blocked on input.** The founder referenced an existing deck
-with "Chaim's fixes" (team logos, bull/base/bear forecast, stated
-hypotheses, cap table slide) that has not been shared in this session.
-This file is a slide-by-slide outline built from everything else in this
-data room, so it can either (a) be filled with the real deck's content
-once shared, or (b) used as the structure for a fresh deck.
+**Status: ✅ the real deck was supplied by the founder (2026-09-24) and is
+saved at `01-company-snapshot/AgrosTech_Pitch_Narrativo.pdf` (17 slides).
+This file is now a reconciliation map, not a placeholder outline.**
 
-Each slide below lists: **purpose**, **content to pull from this data
-room**, and **status**.
+## What the deck contains, and where it's been folded into this data room
 
-| # | Slide | Content source | Status |
-|---|---|---|---|
-| 1 | Cover — AgrosTech, one-line pitch | `ONE_PAGER.md` header line | 🟡 |
-| 2 | Problem | `ONE_PAGER.md` Problem section | 🟡 |
-| 3 | Product — CAR in, NDVI + credit evidence out | `09-product/PRODUCT_OVERVIEW.md`, `saas/` app (Passaporte de Crédito Rural, ScoreCard) | 🟡 |
-| 4 | Demo screenshot(s) | `09-product/DEMO_VIDEO_BRIEF.md` — needs real screenshots or recording | 🔴 |
-| 5 | Case study — CAR/SICAR georeferencing survey | `06-customers/CASE_STUDY.md` | 🟡 |
-| 6 | Market — addressable hectares × R$4/ha | `06-customers/MARKET_RESEARCH.md` | 🟡 |
-| 7 | Business model — subscription + one-off services | `08-gtm-revenue/PRICING_MODEL.md` | 🟡 |
-| 8 | Go-to-market — channels, ICP | `08-gtm-revenue/GTM_STRATEGY.md` | 🟡 |
-| 9 | Traction / pipeline — Coplacana, Thales (30k ha cacao, Bahia), others | `06-customers/SALES_PIPELINE.md` | 🟡 |
-| 10 | Team — Amgad, Diana, Lucas | `02-team/TEAM_BIOS.md` | 🟡 |
-| 11 | Financials — bull/base/bear | `07-financials/FINANCIAL_MODEL.xlsx` | ✅ |
-| 12 | Hypotheses behind the model | `07-financials/HYPOTHESES.md` | ✅ |
-| 13 | Cap table | `04-investment-documents/CAP_TABLE.md` | ✅ |
-| 14 | The ask — R$3M SAFE, R$20M cap, use of funds | `04-investment-documents/USE_OF_FUNDS.md` | ✅ |
-| 15 | Long-term vision — Passaporte de Crédito Rural → LIM | `01-company-snapshot/LONG_TERM_VISION.md` | 🟡 |
-| 16 | Closing / contact | — | 🔴 |
+| # | Slide (Portuguese) | Reconciled into |
+|---|---|---|
+| 1 | Cover — "O banco nunca viu a terra." | `01-company-snapshot/ONE_PAGER.md` |
+| 2 | "Ela nunca pisou e nunca vai pisar lá." (the analyst 2,000km away) | `01-company-snapshot/ONE_PAGER.md` |
+| 3 | "O ponto cego" — PDF vs. living land | `01-company-snapshot/ONE_PAGER.md` |
+| 4 | R$800bi exposed to 4 fraud vectors | `06-customers/MARKET_RESEARCH.md` |
+| 5 | Resolução CMN nº 5.267/2025 — the regulatory driver | `06-customers/MARKET_RESEARCH.md`, `08-gtm-revenue/GTM_STRATEGY.md` |
+| 6 | "De onde viemos" — 200k+ ha overflown, Sudan to Mato Grosso | `02-team/TEAM_BIOS.md` |
+| 7 | "O banco precisa de certeza." | `01-company-snapshot/ONE_PAGER.md` |
+| 8 | "Cada hectare financiado, visto." | `01-company-snapshot/ONE_PAGER.md` |
+| 9 | Passaporte de Crédito Rural — 3 stages | `09-product/PRODUCT_OVERVIEW.md` |
+| 10 | M1/M2/M3 — the three proprietary models | `09-product/TECH_STACK_OVERVIEW.md`, `05-legal/IP_ASSIGNMENT.md` |
+| 11 | Traction — 220ha, 35k ha pipeline, 200k+ ha flown, UnB MOU | `01-company-snapshot/CASE_STUDY.md`, `06-customers/SALES_PIPELINE.md` |
+| 12 | Market — US$0.80/ha, US$880M/US$125M/US$3M | `06-customers/MARKET_RESEARCH.md` |
+| 13 | Revenue scenarios 2027-2029 | `07-financials/FINANCIAL_MODEL.xlsx` (Scenarios (Deck) tab) |
+| 14 | Competitive landscape | `06-customers/COMPETITIVE_LANDSCAPE.md` |
+| 15 | Team + believers (Amgad, Diana, Lucas, Chaim, Gilberto, Michelle) | `02-team/TEAM_BIOS.md`, `02-team/ADVISOR_NOTE.md` |
+| 16 | The ask — US$600K, 40/30/20/10, SAFE terms | `04-investment-documents/USE_OF_FUNDS.md`, `04-investment-documents/SAFE_TERMS.md` |
+| 17 | Closing — "Agora o banco vê a terra." | — |
 
-**Next step:** share the existing deck (PDF, PPTX, or Google Slides link)
-and this outline will be reconciled against it — filling gaps, flagging
-contradictions, and folding in Chaim's noted fixes (team logos,
-bull/base/bear, stated hypotheses, cap table slide) which this data room
-now covers in `07-financials/` and `04-investment-documents/`.
+## What did NOT come from the deck (still open)
+
+- Exact founder equity split (deck doesn't show a cap table slide with
+  real numbers — `04-investment-documents/CAP_TABLE.md` still uses an
+  illustrative equal-thirds placeholder).
+- The weed-stress-scan case study (35 ha, 10 ha affected) — mentioned
+  in the original checklist, not on this deck.
+- Coplacana details — named by the founder verbally, not shown on the
+  deck's pipeline slide.
+- Founder/team compensation, hiring-plan dollar amounts, exact dates for
+  the 220ha project.
+
+## Known internal tension worth resolving before the next pitch
+
+The deck's market-sizing slide states a **US$3M target in 36 months**;
+the scenarios slide's own **2029 Base case is US$3.50M**. Both are the
+founder's numbers from two slides of the same deck — a half-million-
+dollar gap, not a contradiction this data room introduced. See the
+"Scenarios (Deck)" tab in `FINANCIAL_MODEL.xlsx` for the side-by-side.
+Worth deciding which framing to lead with before the next investor
+meeting.
 
 ---
-*AgrosTech — Pitch Deck Outline v1.0 | Confidencial | 2026*
+*AgrosTech — Pitch Deck Reconciliation v2.0 | Confidencial | 2026*

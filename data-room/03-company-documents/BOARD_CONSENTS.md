@@ -1,11 +1,12 @@
 # Board Consents — Checklist
 
-**Status: 🔴 no board consents have been executed yet — entity doesn't
-exist. This is the list of consents needed once it does.**
+**Status: 🔴 no board consents have been executed yet — neither the
+Delaware holding nor the Brazilian LTDA exists yet. This is the list of
+consents needed once they do.**
 
-Once an entity exists (Delaware C-corp or dedicated Brazilian company —
-see `INCORPORATION_STATUS.md`), the following written board consents are
-needed **before** the SAFE can be signed:
+Once the Delaware holding and the new Brazilian LTDA are formed (see
+`INCORPORATION_STATUS.md`), the following written board consents are
+needed at the Delaware holding level **before** the SAFE can be signed:
 
 1. **Consent approving issuance of founder stock** to Amgad, Diana, and
    Lucas at the agreed equity split, subject to the vesting schedule in
