@@ -22,7 +22,7 @@ This file is now a reconciliation map, not a placeholder outline.**
 | 12 | Market — US$0.80/ha, US$880M/US$125M/US$3M | `06-customers/MARKET_RESEARCH.md` |
 | 13 | Revenue scenarios 2027-2029 | `07-financials/FINANCIAL_MODEL.xlsx` (Scenarios (Deck) tab) |
 | 14 | Competitive landscape | `06-customers/COMPETITIVE_LANDSCAPE.md` |
-| 15 | Team + believers (Amgad, Diana, Lucas, Chaim, Gilberto, Michelle) | `02-team/TEAM_BIOS.md`, `02-team/ADVISOR_NOTE.md` |
+| 15 | Team + believers (Amgad, Diana, Lucas, Chaim, Gilberto, Michelle) — **Leonardo Finziola (Qualcomm) added 2026-09-24, not yet reflected on this slide** | `02-team/TEAM_BIOS.md`, `02-team/ADVISOR_NOTE.md` |
 | 16 | The ask — US$600K, 40/30/20/10, SAFE terms | `04-investment-documents/USE_OF_FUNDS.md`, `04-investment-documents/SAFE_TERMS.md` |
 | 17 | Closing — "Agora o banco vê a terra." | — |
 
