@@ -10,6 +10,14 @@ supplied 2026-09-24).
 founder input or legal review · ✅ ready to share as-is / confirmed by
 the deck.
 
+**Word (.docx) versions** of every document exist alongside its
+`.md` source, same filename, same folder (e.g.
+`01-company-snapshot/ONE_PAGER.docx` next to `ONE_PAGER.md`) — use these
+for emailing to lawyers, investors, or anyone who wants to comment/track
+changes in Word rather than read on GitHub. The `.md` files stay the
+source of truth; regenerate the `.docx` files from them (via `pandoc`)
+rather than hand-editing the Word copies, so the two don't drift apart.
+
 ## How this is organized
 
 ```
