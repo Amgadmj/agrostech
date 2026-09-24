@@ -1,0 +1,8 @@
+{
+  "name": "agrostech-dataroom-docx",
+  "private": true,
+  "dependencies": {
+    "docx": "^9.5.1",
+    "marked": "^16.4.0"
+  }
+}
