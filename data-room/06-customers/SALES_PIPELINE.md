@@ -30,6 +30,8 @@ either number in isolation.
 | **Thales** | Independent cacao consultant, Bahia | ~30,000 ha, 200+ cacao producers | [CONFIRM] | At US$0.80/ha/year: ~US$24,000/year if fully converted at the base subscription rate alone | Largest single named relationship |
 | **[Global trading/barter manager]** | Not yet named in this data room — appears in the deck's traction slide as a second pipeline contact | Contributes to the deck's 35,000 ha combined figure | [CONFIRM] | [CONFIRM] | [CONFIRM name/contact with founder] |
 | **Coplacana** | Cooperative (named by founder, not on the current deck slide) | [CONFIRM] | [CONFIRM] | [CONFIRM] | Founder named this separately from the deck's pipeline slide — confirm it's additive, not already counted in the 35,000 ha |
+| **São Martinho** | Major sugar & ethanol producer — already in AgrosTech's own prospect database (`data/clientes_cana.csv`, Rep1-GO territory) | [CONFIRM] | Warm — advisor-driven introduction in progress | [CONFIRM] | Advisor **Leonardo Finziola** (Qualcomm) is actively working to connect AgrosTech to this account — see `02-team/ADVISOR_NOTE.md`. Not a cold lead: already on the target list before this introduction. |
+| **Speedbird** | [CONFIRM — company/sector] | [CONFIRM] | Warm — advisor-driven introduction in progress | [CONFIRM] | Same source as above — Leonardo Finziola |
 
 ## Illustrative math on the Thales opportunity
 
@@ -55,5 +57,16 @@ assumption depends on. Converting even a handful of Thales-or-Coplacana-
 sized relationships gets to that ~8-account base case; this pipeline
 table is the evidence trail for that assumption, not just a wishlist.
 
+## The advisor-driven channel — a second lead source worth tracking separately
+
+Named pipeline above comes from two distinct motions: direct/consultant
+relationship-building (Thales, Coplacana) and **advisor-driven warm
+introductions** (São Martinho, Speedbird — both via Leonardo Finziola).
+Worth tracking these as their own category going forward — an advisor
+who's actively opening doors to named industry accounts, rather than
+just lending a name to a slide, is a real and repeatable source of
+pipeline, not a one-off. If Gilberto, Chaim, or Michelle make similar
+introductions, add them here the same way.
+
 ---
-*AgrosTech — Sales Pipeline v2.0 | Confidencial | 2026 | Reconciled against the founder's pitch deck (2026-09-24)*
+*AgrosTech — Sales Pipeline v2.1 | Confidencial | 2026 | Reconciled against the founder's pitch deck (2026-09-24); São Martinho/Speedbird added 2026-09-24*
