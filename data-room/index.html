@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AgrosTech data room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --field:#1C2A20; --linen:#F2EFE6; --gold:#E5A72C;
+  --bg:#F2EFE6; --ink:#1C2A20; --muted:#5a6a5e; --line:#d9d3c3; --panel:#faf8f2;
+  --prog:#b9c7a4; --miss:#e2dccb;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#151f18;--ink:#EDE9DD;--muted:#9fae9f;--line:#2e3d32;--panel:#1c2a20;--prog:#5f7a52;--miss:#2b392f;}
+}
+:root[data-theme="dark"]{--bg:#151f18;--ink:#EDE9DD;--muted:#9fae9f;--line:#2e3d32;--panel:#1c2a20;--prog:#5f7a52;--miss:#2b392f;}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","IBM Plex Sans",system-ui,sans-serif;margin:0;line-height:1.1}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+
+header{background:var(--field);color:var(--linen);padding:40px 0 28px}
+header h1{font-size:clamp(34px,6vw,60px);font-weight:800;letter-spacing:-.02em}
+header p{max-width:66ch;color:#c9cfbf;margin:10px 0 0}
+.field{display:grid;grid-template-columns:repeat(auto-fill,minmax(10px,1fr));gap:4px;margin-top:28px}
+.field span{height:34px;border-radius:2px;background:#2e4034;transition:background .3s}
+.field span.progress{background:#6d8a5c}
+.field span.ready{background:var(--gold)}
+.tally{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:#c9cfbf}
+.tally b{color:var(--linen);font-weight:600}
+
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.bar .wrap{display:flex;gap:8px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px;align-items:center}
+.bar button{font:500 14px "IBM Plex Sans",sans-serif;border:1px solid var(--line);background:transparent;color:var(--ink);padding:7px 14px;border-radius:999px;cursor:pointer}
+.bar button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.bar .hint{margin-left:auto;font-size:13px;color:var(--muted)}
+
+main{padding:28px 0 60px}
+.part{margin-top:36px}
+.part>h2{font-size:28px;font-weight:700;padding-bottom:10px;border-bottom:3px solid var(--ink)}
+.sec{margin-top:22px}
+.sec h3{font-size:19px;font-weight:700;margin-bottom:6px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.item.hide{display:none}
+.item .name{font-weight:600}
+.item .name a{color:inherit;text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:3px}
+.item .note{grid-column:1;color:var(--muted);font-size:14px;max-width:72ch}
+.item .when{font-size:12.5px;color:var(--muted);margin-left:8px;font-weight:400}
+.item .nolink{color:var(--muted);font-size:12.5px;font-style:italic}
+.status{grid-row:1/span 2;grid-column:2;align-self:center;font:500 13px "IBM Plex Sans",sans-serif;padding:6px 12px;border-radius:6px;border:1px solid var(--line);background:var(--miss);color:var(--ink);cursor:pointer;min-width:104px}
+.status[data-s="progress"]{background:var(--prog)}
+.status[data-s="ready"]{background:var(--gold);border-color:var(--gold);color:#1C2A20}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.safe{margin-top:48px;background:var(--field);color:var(--linen);border-radius:10px;padding:28px 24px}
+.safe h2{font-size:28px;font-weight:700}
+.safe>p{color:#c9cfbf;max-width:66ch;margin:8px 0 18px}
+.terms{overflow-x:auto}
+.terms table{width:100%;border-collapse:collapse;min-width:560px}
+.terms th,.terms td{text-align:left;vertical-align:top;padding:11px 12px 11px 0;border-top:1px solid #34473a;font-size:14.5px}
+.terms th{width:26%;font-weight:600;color:var(--gold)}
+.terms td small{display:block;color:#aab4a2;font-size:13px;margin-top:3px}
+.safe a{color:var(--gold)}
+.safe .stop{margin-top:18px;padding:14px 16px;border-left:4px solid var(--gold);background:#24352a;font-size:14.5px}
+.blocked{margin-top:10px;padding:10px 12px;border-left:4px solid #c0392b;background:#3a2320;font-size:13.5px;color:#f0d9d5}
+footer{color:var(--muted);font-size:13px;padding:0 0 40px}
+@media (prefers-reduced-motion:reduce){.field span{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>AgrosTech data room</h1>
+    <p>Built for early-stage VC conversations, from the US$0.80/ha/year (≈R$4) Passaporte de Crédito Rural subscription and the US$600K SAFE at a US$4M cap. Reconciled against the founder's pitch deck. Each bar below is one document, linked to the actual file. Gold means ready to share; the biggest open blocker now is forming the two entities — a Delaware holding owning a new Brazilian LTDA — the structure is decided, just not executed yet.</p>
+    <div class="field" id="field" aria-hidden="true"></div>
+    <div class="tally" id="tally"></div>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="wrap" role="group" aria-label="Filter documents">
+    <button data-f="all" aria-pressed="true">All</button>
+    <button data-f="meet" aria-pressed="false">Before the first meeting</button>
+    <button data-f="dd" aria-pressed="false">For due diligence</button>
+    <button data-f="later" aria-pressed="false">Can wait</button>
+    <button data-f="open" aria-pressed="false">Not ready yet</button>
+    <span class="hint">Tap a status to change it</span>
+  </div>
+</div>
+
+<main class="wrap" id="main"></main>
+
+<div class="wrap">
+<section class="safe" id="safe">
+  <h2>SAFE term sheet</h2>
+  <p>Based on the YC post-money SAFE (valuation cap, no discount). Download the official form from <a href="https://www.ycombinator.com/documents" target="_blank" rel="noopener">ycombinator.com/documents</a> and fill only the blanks below. Don't edit the body text; investors trust it because it's unmodified. Full detail: <a href="04-investment-documents/SAFE_TERMS.md">04-investment-documents/SAFE_TERMS.md</a></p>
+  <div class="terms">
+  <table>
+    <tr><th>Form</th><td>Post-Money SAFE, Valuation Cap, no Discount<small>The most common version. Skip the MFN-only and discount-only forms.</small></td></tr>
+    <tr><th>Issuer</th><td>A new Delaware holding company, owning a new Brazilian LTDA 100%<small>Structure decided by the founder — neither entity is formed yet. Must exist, and the holding must own the Brazilian operating company, before anyone signs.</small></td></tr>
+    <tr><th>Round size</th><td>US$600,000 (≈ R$3M at ≈R$5.00/US$1)<small>Confirmed on the deck's "O Pedido" slide — USD is the actual instrument currency, not a conversion.</small></td></tr>
+    <tr><th>Post-money valuation cap</th><td>US$4,000,000 (≈ R$20M) — 15%<small>Post-money means the cap already includes the SAFE money. Any option pool created later dilutes the founders, not the SAFE holders. Size the pool now.</small></td></tr>
+    <tr><th>Pro rata rights</th><td>Separate side letter, only for the lead investor<small>Gives them the right to keep their percentage in the Series A.</small></td></tr>
+    <tr><th>Governing law</th><td>Delaware<small>Matches the confirmed holding-company structure.</small></td></tr>
+    <tr><th>Founder vesting</th><td>4 years, 1-year cliff<small>Confirmed on the deck's "O Pedido" slide.</small></td></tr>
+    <tr><th>Company signs</th><td>Amgad, as CEO, after a board consent approving the SAFE issuance</td></tr>
+  </table>
+  </div>
+  <div class="blocked"><b>Blocked today:</b> the Delaware holding and the new Brazilian LTDA are decided but not yet formed — the founder's existing personal CNPJ is a separate, pre-existing registration and will not be the fundraising entity. See <a href="03-company-documents/INCORPORATION_STATUS.md" style="color:#f0d9d5">03-company-documents/INCORPORATION_STATUS.md</a> — this has to resolve before the Issuer field can be filled in.</div>
+  <div class="stop">Before signing: have a Brazilian lawyer and a US lawyer review the Delaware–Brazil structure, the currency flow (registro no Banco Central), and tax. This page is a planning checklist, not legal advice.</div>
+</section>
+</div>
+<div class="wrap"><footer><p>Structure adapted from Mariya Valeva's data-room framework, applied to AgrosTech's actual repo (<a href="README.md">README.md</a> has the full index and core numbers). Statuses are saved in this browser only.</p></footer></div>
+
+<script>
+const W={meet:"before the first meeting",dd:"for due diligence",later:"can wait"};
+const DATA=[
+ {part:"Company fundamentals",secs:[
+  {t:"1. Company snapshot",items:[
+   ["One-pager","Problem, product, US$0.80/ha/year pricing, team, and the ask on one page. Portuguese and English.","meet","ready","01-company-snapshot/ONE_PAGER.md"],
+   ["Pitch deck","The real 17-slide deck, supplied by the founder — plus a slide-by-slide reconciliation map into this data room.","meet","ready","01-company-snapshot/AgrosTech_Pitch_Narrativo.pdf"],
+   ["Case study","220ha CAR/SICAR georeferencing survey, Minas Gerais (deck-confirmed) + the 35ha weed-scan as a separate engagement.","meet","progress","01-company-snapshot/CASE_STUDY.md"],
+   ["Long-term vision","The path from field evidence to the Passaporte de Crédito Rural and land viability (LIM).","meet","progress","01-company-snapshot/LONG_TERM_VISION.md"]]},
+  {t:"2. Team",items:[
+   ["Team bios","Amgad Salih (CEO, interim CTO), Diana Dutra (CCO), Lucas Costa (CDO) — real bios confirmed by the deck.","meet","ready","02-team/TEAM_BIOS.md"],
+   ["Founder vesting and ESOP","4-year/1-year-cliff vesting confirmed by the deck; option pool size still needs a founder decision + board consent.","dd","progress","02-team/VESTING_AND_ESOP.md"],
+   ["Advisor agreements","Gilberto Damasceno, Chaim Finziola, and Michelle Souza Vilela (CDT/UnB) — equity terms explicitly out of scope for this round of documents.","dd","missing","02-team/ADVISOR_NOTE.md"],
+   ["Org design","3-person core team; this repo's AI-agent \"Digital Company OS\" framed honestly as an internal tool, not headcount.","dd","ready","02-team/ORG_DESIGN.md"],
+   ["Hiring plan","CTO first, then data engineer, then sales — what the round pays for, in order.","dd","progress","02-team/HIRING_PLAN.md"]]},
+  {t:"3. Company documents",items:[
+   ["Delaware incorporation","Structure decided: a Delaware holding owning a new Brazilian LTDA 100%. Neither is formed yet.","dd","progress","03-company-documents/INCORPORATION_STATUS.md"],
+   ["Brazilian company","A new LTDA will be formed, owned by the Delaware holding — distinct from the founder's existing personal CNPJ.","dd","progress","03-company-documents/INCORPORATION_STATUS.md"],
+   ["Founders' agreement","Checklist of required terms — not drafted or signed.","dd","missing","03-company-documents/FOUNDERS_AGREEMENT.md"],
+   ["Board consents","Checklist of consents needed once an entity exists — none executed.","dd","missing","03-company-documents/BOARD_CONSENTS.md"]]},
+  {t:"4. Investment documents",items:[
+   ["Cap table","Post-money SAFE mechanics confirmed by the deck (US$600K, US$4M cap, 15%); founder equity split still an illustrative placeholder.","meet","progress","04-investment-documents/CAP_TABLE.md"],
+   ["Use of funds","40% Dados e IA / 30% Vendas institucionais / 20% Operações / 10% Bacen — confirmed on the deck's ask slide.","meet","ready","04-investment-documents/USE_OF_FUNDS.md"],
+   ["SAFE","YC post-money SAFE, US$600K at a US$4M cap — confirmed. Issuer field still blocked on entity formation.","dd","progress","04-investment-documents/SAFE_TERMS.md"],
+   ["Prior rounds","None so far. One line saying so.","dd","ready","04-investment-documents/PRIOR_ROUNDS.md"],
+   ["Investor updates","Monthly template, ready to start after the first cheque.","later","ready","04-investment-documents/INVESTOR_UPDATE_TEMPLATE.md"]]},
+  {t:"5. Legal",items:[
+   ["IP assignment","Checklist of who needs to sign — founders, contractors, pilots. Not yet executed.","dd","missing","05-legal/IP_ASSIGNMENT.md"],
+   ["Trademarks","AgrosTech filing at INPI — status to confirm with founder.","dd","missing","05-legal/TRADEMARKS.md"],
+   ["LGPD and data policies","Legal basis and requirements mapped; formal policy documents pending.","dd","progress","05-legal/LGPD_AND_DATA_POLICIES.md"],
+   ["NDA template","Policy is clear (never send to VCs); template itself pending.","dd","progress","05-legal/NDA_TEMPLATE_NOTE.md"],
+   ["Drone and agro compliance","Full ANAC/DECEA/SARPAS/MAPA framework already documented in this repo.","dd","ready","05-legal/DRONE_AND_AGRO_COMPLIANCE.md"],
+   ["Subcontractor agreements","Freelance pilot and vendor contracts — status to confirm.","dd","missing","05-legal/SUBCONTRACTOR_AGREEMENTS.md"],
+   ["Insurance","RPAS liability and equipment coverage — status to confirm.","dd","missing","05-legal/INSURANCE.md"]]}
+ ]},
+ {part:"Traction and financials",secs:[
+  {t:"6. Customers",items:[
+   ["Customer contracts","220ha CAR/SICAR survey, Minas Gerais, delivered & paid (deck-confirmed hectares); signed documents to attach.","dd","progress","06-customers/CUSTOMER_CONTRACTS.md"],
+   ["Sales pipeline","Coplacana, Thales (~30,000 ha cacao, Bahia, 200+ producers), and an unnamed global trading/barter manager — ~35,000 ha combined per the deck.","meet","progress","06-customers/SALES_PIPELINE.md"],
+   ["Testimonials","Two or three short quotes from producers, with permission — none collected yet.","meet","missing","06-customers/TESTIMONIALS.md"],
+   ["Market research","Deck's official TAM/SAM/target (US$880M/US$125M/US$3M) plus independently-sourced IBGE and Plano Safra figures, and the CMN 5.267/2025 regulatory driver.","meet","ready","06-customers/MARKET_RESEARCH.md"],
+   ["Competitive landscape","Agrotools, Serasa Experian Agro, TerraMagna, Traive, Terras — named and framed directly by the deck.","dd","ready","06-customers/COMPETITIVE_LANDSCAPE.md"],
+   ["Customer KPIs","Hectares under contract, renewals — no cohort old enough yet to measure.","later","missing","06-customers/CUSTOMER_KPIS.md"]]},
+  {t:"7. Financials",items:[
+   ["Financial model","Deck's own official 2027-2029 scenarios, plus a supporting bottom-up 18-month build — one live spreadsheet, formulas verified.","meet","ready","07-financials/FINANCIAL_MODEL.xlsx"],
+   ["Hypotheses","11 named hypotheses behind the model, with confidence ratings, in the workbook's Hypotheses tab.","dd","ready","07-financials/HYPOTHESES.md"],
+   ["Unit economics","US$0.80/ha/year confirmed; margin and avg-hectares-per-customer still placeholders.","meet","progress","07-financials/UNIT_ECONOMICS.md"],
+   ["Tax and compliance","Blocked on the entity-structure decision (CNPJ vs. Delaware flip).","dd","missing","07-financials/TAX_AND_COMPLIANCE.md"]]},
+  {t:"8. GTM and revenue",items:[
+   ["GTM strategy","Consultant/cooperative channel (Thales, Coplacana) is outperforming direct-to-farm — lean into it.","meet","ready","08-gtm-revenue/GTM_STRATEGY.md"],
+   ["Pricing and revenue model","R$4/ha/year subscription plus one-off survey services.","meet","ready","08-gtm-revenue/PRICING_MODEL.md"],
+   ["ICP and segmentation","Who buys, who pays, and who uses the report in each channel.","dd","progress","08-gtm-revenue/ICP_AND_SEGMENTATION.md"],
+   ["Sales playbook","Existing playbook needs updating from the old per-ha mission pricing to the subscription model.","later","progress","08-gtm-revenue/SALES_PLAYBOOK_NOTE.md"]]}
+ ]},
+ {part:"Product and brand",secs:[
+  {t:"9. Product",items:[
+   ["Demo video","Shot list ready, tied to the actual onboarding flow — not yet recorded.","meet","missing","09-product/DEMO_VIDEO_BRIEF.md"],
+   ["Roadmap","Next 18 months, tied to the hiring plan and funded milestones.","meet","progress","09-product/ROADMAP.md"],
+   ["Tech stack overview","Next.js 15 + PostGIS + SICAR/SIGEF pipeline, plus the deck's three named models: M1 Filtro de Área Útil, M2 Radar SAR Anti-Fuga, M3 Protocolo Halo.","dd","ready","09-product/TECH_STACK_OVERVIEW.md"],
+   ["Security overview","Where client data is stored, who has access, backups — status to confirm.","later","missing","09-product/SECURITY_OVERVIEW.md"]]},
+  {t:"10. Press and brand",items:[
+   ["Brand assets","Logo files, palette tokens from the live site, and field photography — inventoried.","later","ready","10-press-brand/BRAND_ASSETS.md"],
+   ["Press kit","Short company description drafted; founder photos and coverage pending.","later","missing","10-press-brand/PRESS_KIT.md"]]}
+ ]}
+];
+const KEY="agrostech-dataroom-v3";
+let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){saved={}}
+const LABEL={missing:"Missing",progress:"In progress",ready:"Ready"};
+const NEXT={missing:"progress",progress:"ready",ready:"missing"};
+const all=[];
+const main=document.getElementById("main");
+DATA.forEach(p=>{
+  const part=document.createElement("section");part.className="part";
+  part.innerHTML=`<h2>${p.part}</h2>`;
+  p.secs.forEach(s=>{
+    const sec=document.createElement("div");sec.className="sec";
+    sec.innerHTML=`<h3>${s.t}</h3>`;
+    s.items.forEach(([name,note,when,init,href])=>{
+      const id=name.toLowerCase().replace(/[^a-z0-9]+/g,"-");
+      const st=saved[id]||init||"missing";
+      const row=document.createElement("div");row.className="item";row.dataset.when=when;
+      const nameHtml = href ? `<a href="${href}">${name}</a>` : name;
+      row.innerHTML=`<div class="name">${nameHtml}<span class="when">${W[when]}</span></div><div class="note">${note}</div>`;
+      const b=document.createElement("button");b.className="status";b.dataset.s=st;b.textContent=LABEL[st];
+      b.setAttribute("aria-label",`${name}: ${LABEL[st]}. Change status`);
+      b.onclick=()=>{const n=NEXT[b.dataset.s];b.dataset.s=n;b.textContent=LABEL[n];b.setAttribute("aria-label",`${name}: ${LABEL[n]}. Change status`);saved[id]=n;try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}render();applyFilter();};
+      row.appendChild(b);sec.appendChild(row);all.push({row,b});
+    });
+    part.appendChild(sec);
+  });
+  main.appendChild(part);
+});
+const field=document.getElementById("field"),tally=document.getElementById("tally");
+function render(){
+  field.innerHTML="";const c={missing:0,progress:0,ready:0};
+  all.forEach(({b})=>{const s=document.createElement("span");s.className=b.dataset.s;field.appendChild(s);c[b.dataset.s]++;});
+  const meet=all.filter(x=>x.row.dataset.when==="meet"),meetReady=meet.filter(x=>x.b.dataset.s==="ready").length;
+  tally.innerHTML=`<span><b>${c.ready}</b> of ${all.length} ready</span><span><b>${c.progress}</b> in progress</span><span><b>${meetReady}/${meet.length}</b> ready for the first meeting</span>`;
+}
+let filter="all";
+function applyFilter(){
+  all.forEach(({row,b})=>{
+    const show=filter==="all"||(filter==="open"?b.dataset.s!=="ready":row.dataset.when===filter);
+    row.classList.toggle("hide",!show);
+  });
+  document.querySelectorAll(".sec").forEach(s=>{s.style.display=[...s.querySelectorAll(".item")].some(i=>!i.classList.contains("hide"))?"":"none"});
+}
+document.querySelectorAll(".bar button").forEach(btn=>btn.onclick=()=>{
+  filter=btn.dataset.f;document.querySelectorAll(".bar button").forEach(x=>x.setAttribute("aria-pressed",x===btn));applyFilter();
+});
+render();
+</script>
+</body>
+</html>
