@@ -48,7 +48,9 @@ see `02-team/ADVISOR_NOTE.md` for the full picture (Chaim Finziola —
 Credix co-founder, $220M+ raised; Gilberto Damasceno — CEO, Shamal
 Aerospace & Defense Hub; Michelle Souza Vilela — PhD Agronomy, CDT/UnB;
 **Leonardo Finziola** — Senior Director, Product, IoT LATAM at
-**Qualcomm**, added 2026-09-24). Per founder instruction, advisor
+**Qualcomm**, added 2026-09-24 — giving technical input on the product
+since day one and actively opening doors to industry stakeholders
+including Speedbird and São Martinho). Per founder instruction, advisor
 equity/compensation terms are **deliberately excluded** from this data
 room.
 

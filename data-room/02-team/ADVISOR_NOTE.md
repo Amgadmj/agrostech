@@ -37,10 +37,19 @@ instruction (2026-09-24).
   entire region, is a serious credibility signal for a company whose
   product depends on sensor fusion (satellite, SAR radar, drone) at
   scale — exactly the hardware/connectivity domain Qualcomm's IoT
-  business lives in. [CONFIRM: any concrete engagement so far — has he
-  reviewed the product, made an introduction, given technical input? If
-  yes, name it here; if it's early-stage relationship-building, that's
-  fine too, just say so rather than imply more.]
+  business lives in. **This is not a name-only advisor:** he's given
+  AgrosTech technical input on the product **since day one**, and is
+  actively working to connect the company to key industry stakeholders
+  — named examples include **Speedbird** and **São Martinho**.
+  [CONFIRM with founder: has either introduction happened yet, or are
+  these targeted/in-progress? Worth being precise about which, since
+  "connected us to São Martinho" and "is working to connect us to São
+  Martinho" are different claims to make to an investor.]
+  **Worth noting:** São Martinho is already in AgrosTech's own prospect
+  database (`data/clientes_cana.csv`, Rep1-GO territory) — one of
+  Brazil's largest sugar and ethanol producers. If Leonardo's
+  introduction lands, it's not a cold new lead, it's a warm path into an
+  account already on the target list. See `06-customers/SALES_PIPELINE.md`.
 
 ## What's confirmed
 
@@ -56,16 +65,18 @@ The instinct to make this list land harder is right — a name like
 Qualcomm's IoT LATAM product lead *should* carry weight in the room. The
 honest way to get that effect is exactly what's above: state the real
 title, the real company, and the real reason it's relevant to this
-specific product (sensor/IoT domain overlap), and let that do the work.
-What this section deliberately does **not** do is invent claims — a
-specific dollar figure, a formal title, an "actively working with us"
-framing — that aren't confirmed. In a data room, a fabricated claim
-about an advisor is one of the fastest ways to lose an investor's trust
-entirely, and once lost it doesn't come back for the rest of the
-raise. If there's real color to add — something Leonardo has actually
-done for AgrosTech, a specific intro he's made, a technical review he's
-given — that's exactly the kind of detail that makes this section land
-without any embellishment. Send it and it goes in.
+specific product (sensor/IoT domain overlap), then add the real,
+specific things he's actually done — technical input since day one,
+active work to connect AgrosTech to Speedbird and São Martinho — and let
+that do the work. What this section deliberately does **not** do is
+invent claims beyond what's confirmed (a completed introduction that
+hasn't happened yet, a formal title, a dollar figure). In a data room, a
+fabricated claim about an advisor is one of the fastest ways to lose an
+investor's trust entirely, and once lost it doesn't come back for the
+rest of the raise. If there's more real color to add for the other
+three advisors too — a specific intro Chaim, Gilberto, or Michelle has
+made, a technical review given, a deal influenced — send it and it goes
+in exactly the same way.
 
 ## What's not in this data room, on purpose
 
@@ -81,4 +92,4 @@ this note should be replaced with signed agreements under
 `03-company-documents/`.
 
 ---
-*AgrosTech — Advisor Note v3.0 | Confidencial | 2026 | Leonardo Finziola added 2026-09-24 — relationship/engagement detail marked [CONFIRM]*
+*AgrosTech — Advisor Note v3.1 | Confidencial | 2026 | Leonardo Finziola added 2026-09-24, engagement detail added 2026-09-24 — relationship to Chaim and introduction status still marked [CONFIRM]*
