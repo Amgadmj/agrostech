@@ -38,7 +38,7 @@ export default function ShieldRJWarRoomPage() {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#12171e] text-cyan-400 border border-[#1f242b] hover:border-cyan-400 transition-all"
           >
             <Box className="w-4 h-4" />
-            <span>Gêmeo 3D Buritis</span>
+            <span>Visão L.I.M Buritis</span>
           </Link>
 
           <div className="flex items-center gap-2">
