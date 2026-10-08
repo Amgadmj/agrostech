@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { UserRole } from "@/types/database";
 import { MOCK_USERS } from "@/lib/mockData";
 import { Logo } from "../ui/Logo";
-import { Layers, Plus, LogOut, ExternalLink, Box, ShieldAlert } from "lucide-react";
+import { Layers, Plus, LogOut, ExternalLink, Box, ShieldAlert, Satellite } from "lucide-react";
 
 interface HeaderProps {
   portalRole?: "b2c" | "b2b";
@@ -83,17 +83,31 @@ export const Header: React.FC<HeaderProps> = ({ portalRole = "b2b" }) => {
             {isB2B ? "Novo Imóvel na Carteira" : "Auditar Imóvel"}
           </Link>
 
-          <Link
-            href="/dashboard/shield-rj"
-            className={`px-3 py-1.5 rounded text-xs font-mono transition-all flex items-center gap-1.5 ${
-              pathname.startsWith("/dashboard/shield-rj")
-                ? "bg-red-950/60 text-red-400 border border-red-500/40"
-                : "text-red-400/80 hover:text-red-400 hover:bg-red-950/30"
-            }`}
-          >
-            <ShieldAlert className="w-3.5 h-3.5 text-red-500 animate-pulse" />
-            Shield RJ 2.0 (Anti-Fraude)
-          </Link>
+          {isB2B ? (
+            <Link
+              href="/dashboard/shield-rj"
+              className={`px-3 py-1.5 rounded text-xs font-mono transition-all flex items-center gap-1.5 ${
+                pathname.startsWith("/dashboard/shield-rj")
+                  ? "bg-red-950/60 text-red-400 border border-red-500/40"
+                  : "text-red-400/80 hover:text-red-400 hover:bg-red-950/30"
+              }`}
+            >
+              <ShieldAlert className="w-3.5 h-3.5 text-red-500 animate-pulse" />
+              Shield RJ 2.0 (Anti-Fraude)
+            </Link>
+          ) : (
+            <Link
+              href="/dashboard/monitoramento?portal=b2c"
+              className={`px-3 py-1.5 rounded text-xs font-mono transition-all flex items-center gap-1.5 ${
+                pathname.startsWith("/dashboard/monitoramento")
+                  ? "bg-[#12171e] text-[#00e676] border border-[#1f242b]"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              <Satellite className="w-3.5 h-3.5 text-[#00e676]" />
+              Agricultura de Precisão
+            </Link>
+          )}
         </nav>
       </div>
 
