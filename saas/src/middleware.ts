@@ -20,6 +20,13 @@ export async function middleware(request: NextRequest) {
   const demoRole = request.cookies.get("agrostech_demo_role")?.value;
   const hasSupabaseAuth = request.cookies.getAll().some((c) => c.name.includes("sb-"));
 
+  // Shield RJ is an internal B2B tool: producers (B2C) never see it
+  const portal = request.cookies.get("agrostech_portal")?.value;
+  const isProducer = portal === "b2c" || demoRole === "b2c";
+  if (isProducer && pathname.startsWith("/dashboard/shield-rj")) {
+    return NextResponse.redirect(new URL("/dashboard/monitoramento?portal=b2c", request.url));
+  }
+
   const isProtectedPath = pathname.startsWith("/dashboard");
 
   if (isProtectedPath) {
