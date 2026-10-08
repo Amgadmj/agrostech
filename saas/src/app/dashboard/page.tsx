@@ -61,12 +61,12 @@ function DashboardContent() {
   }, [accessibleParcels]);
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#050505] overflow-hidden">
+    <div className="flex flex-col h-dvh w-full bg-slate-50 dark:bg-[#050505] overflow-hidden transition-colors">
       {/* Portal Header with Strict Isolation */}
       <Header portalRole={portalRole} />
 
-      {/* Main Workspace */}
-      <div className="flex flex-1 relative overflow-hidden">
+      {/* Main Workspace: map on top + panel below on phones, side by side from md up */}
+      <div className="flex flex-col md:flex-row flex-1 min-h-0 relative overflow-hidden">
         <Sidebar
           parcels={accessibleParcels}
           selectedParcel={selectedParcel}
@@ -74,7 +74,7 @@ function DashboardContent() {
           portalRole={portalRole}
         />
 
-        <main className="flex-1 h-full relative">
+        <main className="absolute inset-0 md:relative md:inset-auto md:flex-1 md:h-full">
           <MapView2D
             parcels={accessibleParcels}
             selectedParcel={selectedParcel}
@@ -90,7 +90,7 @@ export default function DashboardPage() {
   return (
     <Suspense
       fallback={
-        <div className="w-screen h-screen bg-[#050505] flex items-center justify-center">
+        <div className="w-full h-dvh bg-[#050505] flex items-center justify-center">
           <div className="w-8 h-8 rounded-full border-2 border-[#00e676] border-t-transparent animate-spin" />
         </div>
       }

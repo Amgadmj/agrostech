@@ -36,10 +36,10 @@ export const MiniMap: React.FC<MiniMapProps> = ({ data }) => {
       style: {
         version: 8,
         sources: {
-          "carto-dark": {
+          "esri-satellite": {
             type: "raster",
             tiles: [
-              "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
+              "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
             ],
             tileSize: 256,
             attribution: "",
@@ -47,9 +47,9 @@ export const MiniMap: React.FC<MiniMapProps> = ({ data }) => {
         },
         layers: [
           {
-            id: "carto-dark-layer",
+            id: "esri-satellite-layer",
             type: "raster",
-            source: "carto-dark",
+            source: "esri-satellite",
             minzoom: 0,
             maxzoom: 22,
           },
@@ -167,7 +167,7 @@ export const MiniMap: React.FC<MiniMapProps> = ({ data }) => {
       />
 
       {/* Overlay Legend */}
-      <div className="absolute bottom-3 left-3 bg-background/90 backdrop-blur-md border border-surface-border p-2 rounded text-[10px] font-mono space-y-1 z-20">
+      <div className="absolute bottom-3 left-3 bg-background/90 backdrop-blur-md border border-surface-border p-2 rounded text-xs font-mono space-y-1 z-20">
         <div className="flex items-center gap-1.5 text-brand-neon">
           <span className="w-2.5 h-2.5 rounded-sm bg-brand-neon/30 border border-brand-neon" />
           <span>Limite Fazenda</span>

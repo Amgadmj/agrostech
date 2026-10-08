@@ -57,6 +57,9 @@ export const KmlUploader: React.FC<KmlUploaderProps> = ({ onGeoJsonLoaded }) => 
   return (
     <div className="w-full space-y-2">
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="Fazer upload de arquivo KML ou GeoJSON"
         onDragOver={(e) => {
           e.preventDefault();
           setIsDragging(true);
@@ -64,7 +67,13 @@ export const KmlUploader: React.FC<KmlUploaderProps> = ({ onGeoJsonLoaded }) => 
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition-all ${
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            fileInputRef.current?.click();
+          }
+        }}
+        className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
           isDragging
             ? "border-brand-neon bg-brand-neon/10"
             : "border-surface-border bg-surface/50 hover:border-brand-neon/60 hover:bg-surface"

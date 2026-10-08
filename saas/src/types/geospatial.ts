@@ -29,6 +29,7 @@ export interface EnrichmentRequest {
   name?: string;
   owner_id?: string;
   org_id?: string;
+  demo?: boolean;
 }
 
 export interface EnrichmentStepLog {
@@ -58,6 +59,15 @@ export interface EnrichedLandData {
   compliance_sigef: ComplianceSigef;
   compliance_ibama: ComplianceIbama;
   environmental_context: EnvironmentalContext;
+  provenance?: Record<string, {
+    value: any;
+    status: "available" | "unavailable" | "unverified";
+    provider: string;
+    sourceRecordId?: string;
+    observationDate?: string;
+    retrievalDate: string;
+    methodVersion: string;
+  }>;
   scorecard: {
     overall_status: "VERIFICADO" | "ALERTA" | "BLOQUEADO";
     score_esg: number; // 0 to 100

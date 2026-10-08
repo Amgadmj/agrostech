@@ -1,9 +1,33 @@
 "use client";
 
 import React, { use } from "react";
-import Link from "next/link";
+import { notFound } from "next/navigation";
+import dynamic from "next/dynamic";
 import { ALL_PARCELS } from "@/lib/mockData";
-import { ArrowLeft, ExternalLink, Box, RefreshCw } from "lucide-react";
+import { AppShell } from "@/components/layout/AppShell";
+import { formatHa } from "@/lib/format";
+import { Box } from "lucide-react";
+
+// Dynamically import native CesiumViewer with SSR disabled to prevent Node Webpack bundling errors
+const CesiumViewer = dynamic(
+  () => import("@/components/map/CesiumViewer").then((mod) => mod.CesiumViewer),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full bg-background flex flex-col items-center justify-center gap-4 font-mono text-xs">
+        <div className="w-14 h-14 border-2 border-brand-emerald/30 border-t-brand-emerald rounded-full animate-spin shadow-emerald" />
+        <div className="text-center space-y-1">
+          <h3 className="text-foreground font-bold text-sm tracking-wide">
+            Inicializando CesiumJS 3D WebGL Engine
+          </h3>
+          <p className="text-slate-muted text-xs">
+            Carregando WorldTerrain, máscara hídrica e elevação altimétrica...
+          </p>
+        </div>
+      </div>
+    ),
+  }
+);
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -11,59 +35,33 @@ interface PageProps {
 
 export default function LandDigitalTwinPage({ params }: PageProps) {
   const resolvedParams = use(params);
-  const parcel =
-    ALL_PARCELS.find((p) => p.id === resolvedParams.id) || ALL_PARCELS[0];
+  const parcel = ALL_PARCELS.find((p) => p.id === resolvedParams.id);
 
-  const twinUrl = "https://dashboard-ui-liart-ten.vercel.app/";
+  if (!parcel) {
+    notFound();
+  }
 
   return (
-    <div className="w-screen h-screen bg-[#050505] flex flex-col overflow-hidden select-none">
-      {/* Top Floating HUD Control Bar */}
-      <header className="h-14 bg-[#0a0d10]/95 backdrop-blur-md border-b border-[#1f242b] px-5 flex items-center justify-between z-30 flex-shrink-0">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#12171e] text-[#00e676] border border-[#1f242b] hover:border-[#00e676] font-mono text-xs transition-all"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Radar 2D</span>
-          </Link>
-
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#00e676] animate-pulse" />
-            <h1 className="text-sm font-bold text-white font-display">
-              {parcel.name} — Gêmeo Digital 3D
-            </h1>
-            <span className="text-[10px] font-mono text-gray-400 bg-[#12171e] px-2 py-0.5 rounded border border-[#1f242b]">
-              {parcel.municipality}/{parcel.state_uf} • {parcel.metrics_json.total_area_ha.toFixed(2)} ha
-            </span>
-          </div>
+    <AppShell noScroll>
+      {/* 3D Context Sub-bar */}
+      <div className="h-10 bg-surface/90 border-b border-surface-border px-4 sm:px-6 flex items-center justify-between z-20 shrink-0 text-xs font-mono">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse" />
+          <span className="font-semibold text-foreground truncate">{parcel.name}</span>
+          <span className="text-xs text-slate-muted bg-surface-hover px-2 py-0.5 rounded border border-surface-border">
+            {parcel.municipality}/{parcel.state_uf} • {formatHa(parcel.metrics_json.total_area_ha)}
+          </span>
         </div>
-
-        <div className="flex items-center gap-3">
-          <a
-            href={twinUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#00e676] text-black font-bold font-mono text-xs hover:bg-[#00ff85] shadow-[0_0_15px_rgba(0,230,118,0.25)] transition-all"
-          >
-            <Box className="w-3.5 h-3.5 text-black" />
-            <span>Abrir Gêmeo em Tela Cheia</span>
-            <ExternalLink className="w-3 h-3 ml-0.5" />
-          </a>
+        <div className="hidden sm:flex items-center gap-2 text-xs text-slate-muted">
+          <Box className="w-3.5 h-3.5 text-brand-emerald" />
+          <span>Terreno 3D + Prisma Cadastral Extrudado (120m)</span>
         </div>
-      </header>
+      </div>
 
-      {/* Embedded 3D Stage from https://dashboard-ui-liart-ten.vercel.app/ */}
-      <main className="flex-1 w-full h-[calc(100vh-3.5rem)] relative bg-[#050505]">
-        <iframe
-          src={twinUrl}
-          title="AgrosTech Gêmeo Digital 3D - Fazenda Buritis"
-          className="w-full h-full border-0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </main>
-    </div>
+      {/* Native Cesium 3D Viewport */}
+      <div className="flex-1 w-full h-full relative bg-background">
+        <CesiumViewer parcel={parcel} />
+      </div>
+    </AppShell>
   );
 }

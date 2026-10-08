@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Header } from "@/components/layout/Header";
+import { AppShell } from "@/components/layout/AppShell";
 import { KmlUploader } from "@/components/wizard/KmlUploader";
 import { RadarScanner } from "@/components/wizard/RadarScanner";
 import { ScoreCard } from "@/components/wizard/ScoreCard";
@@ -89,9 +89,13 @@ export default function OnboardingWizardPage() {
     }
   };
 
+  const [enrichmentError, setEnrichmentError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const handleStartEnrichment = async () => {
     setCurrentStep(2);
     setActiveStepIndex(0);
+    setEnrichmentError(null);
 
     try {
       // Trigger API Orchestrator
@@ -108,7 +112,7 @@ export default function OnboardingWizardPage() {
 
       const result = await response.json();
 
-      if (result.success && result.data) {
+      if (response.ok && result.success && result.data) {
         // Animate radar steps
         setActiveStepIndex(1);
         await new Promise((r) => setTimeout(r, 600));
@@ -123,11 +127,12 @@ export default function OnboardingWizardPage() {
         }
         setCurrentStep(3);
       } else {
-        alert("Erro no enriquecimento: " + (result.error || "Desconhecido"));
+        setEnrichmentError(result.error || "Falha no enriquecimento geoespacial.");
         setCurrentStep(1);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setEnrichmentError(err.message || "Erro de conexão ao enriquecer dados.");
       setCurrentStep(1);
     }
   };
@@ -136,6 +141,7 @@ export default function OnboardingWizardPage() {
   const handleCommitSave = async () => {
     if (!enrichedData) return;
     setIsSaving(true);
+    setSaveError(null);
 
     try {
       const response = await fetch("/api/land/save", {
@@ -145,32 +151,33 @@ export default function OnboardingWizardPage() {
       });
 
       const res = await response.json();
-      if (res.success) {
+      if (response.ok && res.success) {
         setCurrentStep(4);
         setTimeout(() => {
           router.push("/dashboard");
         }, 1800);
+      } else {
+        setSaveError(res.error || "Falha ao salvar o imóvel na base de dados.");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setSaveError(err.message || "Erro de conexão ao salvar imóvel.");
     } finally {
       setIsSaving(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background text-[#d1d1e0] flex flex-col">
-      <Header />
-
-      <main className="flex-1 max-w-5xl w-full mx-auto p-6 md:p-10">
+    <AppShell noScroll={false}>
+      <div className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 md:p-10">
         {/* Wizard Stepper Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between pb-4 border-b border-surface-border">
             <div>
-              <span className="text-[10px] uppercase font-mono tracking-widest text-brand-neon">
+              <span className="text-xs uppercase font-mono tracking-widest text-brand-neon">
                 Pipeline de Ingestão & Fusão de Dados
               </span>
-              <h1 className="text-2xl font-bold text-white font-display">
+              <h1 className="text-2xl font-bold text-foreground font-display">
                 Onboarding Territorial & Compliance ESG
               </h1>
             </div>
@@ -181,27 +188,27 @@ export default function OnboardingWizardPage() {
                 className={`px-2.5 py-1 rounded ${
                   currentStep === 1
                     ? "bg-brand-neon text-black font-bold shadow-neon"
-                    : "bg-surface text-gray-400"
+                    : "bg-surface text-slate-muted"
                 }`}
               >
                 1. Entrada
               </span>
-              <span className="text-gray-600">&rarr;</span>
+              <span className="text-slate-muted">&rarr;</span>
               <span
                 className={`px-2.5 py-1 rounded ${
                   currentStep === 2
                     ? "bg-brand-neon text-black font-bold shadow-neon animate-pulse"
-                    : "bg-surface text-gray-400"
+                    : "bg-surface text-slate-muted"
                 }`}
               >
                 2. Radar Scanner
               </span>
-              <span className="text-gray-600">&rarr;</span>
+              <span className="text-slate-muted">&rarr;</span>
               <span
                 className={`px-2.5 py-1 rounded ${
                   currentStep === 3
                     ? "bg-brand-neon text-black font-bold shadow-neon"
-                    : "bg-surface text-gray-400"
+                    : "bg-surface text-slate-muted"
                 }`}
               >
                 3. Dossiê & Mini-Map
@@ -213,9 +220,16 @@ export default function OnboardingWizardPage() {
         {/* STEP 1: INPUT DATA (CAR, Matrícula, or KML Upload) */}
         {currentStep === 1 && (
           <div className="space-y-6">
+            {enrichmentError && (
+              <div className="p-3.5 rounded-lg bg-rose-500/10 text-rose-500 border border-rose-500/30 flex items-center gap-2 text-xs font-mono">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>{enrichmentError}</span>
+              </div>
+            )}
+
             {/* Quick Demo Test Buttons */}
             <div className="p-3 bg-surface rounded-lg border border-surface-border flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-              <span className="text-gray-400 flex items-center gap-1.5">
+              <span className="text-slate-muted flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-brand-neon" />
                 Preenchimento Rápido para Demonstração:
               </span>
@@ -240,47 +254,50 @@ export default function OnboardingWizardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left Column: Form Fields */}
               <Card className="space-y-4">
-                <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider flex items-center gap-2">
+                <h3 className="text-sm font-bold text-foreground font-mono uppercase tracking-wider flex items-center gap-2">
                   <FileSearch className="w-4 h-4 text-brand-neon" />
                   Dados Cadastrais do Imóvel
                 </h3>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono text-gray-300">Nome da Propriedade / Gleba:</label>
+                  <label htmlFor="onboard-farm-name" className="text-xs font-mono text-slate-muted">Nome da Propriedade / Gleba:</label>
                   <input
+                    id="onboard-farm-name"
                     type="text"
                     value={farmName}
                     onChange={(e) => setFarmName(e.target.value)}
-                    className="w-full bg-background border border-surface-border rounded px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-brand-neon"
+                    className="w-full bg-background border border-surface-border rounded px-3 py-3 sm:py-2 text-base sm:text-xs text-foreground font-mono focus:outline-none focus:border-brand-neon focus-visible:ring-2 focus-visible:ring-brand-neon"
                     placeholder="Ex: Fazenda Buritis"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono text-gray-300">
+                  <label htmlFor="onboard-car-code" className="text-xs font-mono text-slate-muted">
                     Código do Cadastro Ambiental Rural (CAR):
                   </label>
                   <input
+                    id="onboard-car-code"
                     type="text"
                     value={carCode}
                     onChange={(e) => setCarCode(e.target.value)}
-                    className="w-full bg-background border border-surface-border rounded px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-brand-neon"
+                    className="w-full bg-background border border-surface-border rounded px-3 py-3 sm:py-2 text-base sm:text-xs text-foreground font-mono focus:outline-none focus:border-brand-neon focus-visible:ring-2 focus-visible:ring-brand-neon"
                     placeholder="Ex: MG-3109300-4829A0D7314B4A45A7C49102B94C7192"
                   />
-                  <p className="text-[10px] text-gray-500 font-mono">
+                  <p className="text-xs text-gray-500 font-mono">
                     Usado para consulta federada ao WFS do SICAR nacional.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono text-gray-300">
+                  <label htmlFor="onboard-matricula" className="text-xs font-mono text-slate-muted">
                     Matrícula Imobiliária / CRI:
                   </label>
                   <input
+                    id="onboard-matricula"
                     type="text"
                     value={matriculaCode}
                     onChange={(e) => setMatriculaCode(e.target.value)}
-                    className="w-full bg-background border border-surface-border rounded px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-brand-neon"
+                    className="w-full bg-background border border-surface-border rounded px-3 py-3 sm:py-2 text-base sm:text-xs text-foreground font-mono focus:outline-none focus:border-brand-neon focus-visible:ring-2 focus-visible:ring-brand-neon"
                     placeholder="Ex: Matrícula 18.492 - CRI Buritis/MG"
                   />
                 </div>
@@ -288,7 +305,7 @@ export default function OnboardingWizardPage() {
 
               {/* Right Column: KML / GeoJSON Upload */}
               <Card className="space-y-4">
-                <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider flex items-center gap-2">
+                <h3 className="text-sm font-bold text-foreground font-mono uppercase tracking-wider flex items-center gap-2">
                   <Layers className="w-4 h-4 text-brand-lime" />
                   Importação Vetorial de Limites (Opcional)
                 </h3>
@@ -339,29 +356,38 @@ export default function OnboardingWizardPage() {
               {/* Left 7 Columns: Hydrated Mini Map & Geometry Data */}
               <div className="lg:col-span-7 space-y-4">
                 <Card className="p-0 overflow-hidden">
-                  <div className="p-3 bg-surface border-b border-surface-border flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-white flex items-center gap-2">
+                  <div className="p-3 bg-surface border-b border-surface-border flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-mono font-bold text-foreground flex items-center gap-2">
                       <Layers className="w-4 h-4 text-brand-neon" />
                       Visualização Hidratada (Deck.gl)
                     </span>
-                    <Badge variant={enrichedData.compliance_ibama.is_embargoed ? "embargo" : "regular"}>
-                      {enrichedData.compliance_ibama.is_embargoed
-                        ? "SOBREPOSIÇÃO COM EMBARGO"
-                        : "POLÍGONO VERIFICADO"}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-xs font-mono px-2 py-0.5 rounded border ${
+                        (enrichedData as any).source === "live"
+                          ? "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/30"
+                          : "bg-amber-500/10 text-amber-500 dark:text-amber-400 border-amber-500/30"
+                      }`}>
+                        Origem: {(enrichedData as any).source === "live" ? "Base Homologada (Live)" : "Base de Demonstração (Fixture Offline)"}
+                      </span>
+                      <Badge variant={enrichedData.compliance_ibama.is_embargoed ? "embargo" : "regular"}>
+                        {enrichedData.compliance_ibama.is_embargoed
+                          ? "SOBREPOSIÇÃO COM EMBARGO"
+                          : "POLÍGONO VERIFICADO"}
+                      </Badge>
+                    </div>
                   </div>
                   <MiniMap data={enrichedData} />
                 </Card>
 
                 {/* Recommendations Box */}
                 <Card className="space-y-2 font-mono text-xs">
-                  <h4 className="font-bold text-white uppercase text-[11px] flex items-center gap-1.5">
+                  <h4 className="font-bold text-foreground uppercase text-xs flex items-center gap-1.5">
                     <ShieldCheck className="w-4 h-4 text-brand-neon" />
                     Parecer Técnico Automatizado AgrosTech:
                   </h4>
-                  <ul className="space-y-1.5 list-disc list-inside text-gray-300">
+                  <ul className="space-y-1.5 list-disc list-inside text-slate-muted">
                     {enrichedData.scorecard.recommendations.map((rec, i) => (
-                      <li key={i} className="text-[11px] leading-relaxed">
+                      <li key={i} className="text-xs leading-relaxed">
                         {rec}
                       </li>
                     ))}
@@ -375,27 +401,35 @@ export default function OnboardingWizardPage() {
               </div>
             </div>
 
-            {/* Step 4 CTA: Commit "Gerar Passaporte de Crédito (Save)" */}
-            <div className="flex items-center justify-between p-4 rounded-lg bg-surface border border-surface-border pt-4">
-              <Button
-                variant="secondary"
-                size="md"
-                onClick={() => setCurrentStep(1)}
-                className="font-mono text-xs"
-              >
-                &larr; Refazer Ingestão
-              </Button>
+            {/* Step 4 CTA: Commit "Gerar Passaporte de Crédito" */}
+            <div className="space-y-3">
+              {saveError && (
+                <div className="p-3.5 rounded-lg bg-rose-500/10 text-rose-500 border border-rose-500/30 flex items-center gap-2 text-xs font-mono">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <span>{saveError}</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between p-4 rounded-lg bg-surface border border-surface-border">
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setCurrentStep(1)}
+                  className="font-mono text-xs"
+                >
+                  &larr; Refazer Ingestão
+                </Button>
 
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={handleCommitSave}
-                isLoading={isSaving}
-                className="flex items-center gap-2 font-mono shadow-neon"
-              >
-                <ShieldCheck className="w-5 h-5 text-black" />
-                <span>Gerar Passaporte de Crédito (Save)</span>
-              </Button>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  onClick={handleCommitSave}
+                  isLoading={isSaving}
+                  className="flex items-center gap-2 font-mono shadow-neon"
+                >
+                  <ShieldCheck className="w-5 h-5 text-black" />
+                  <span>Gerar Passaporte de Crédito</span>
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -406,15 +440,15 @@ export default function OnboardingWizardPage() {
             <div className="w-16 h-16 rounded-full bg-brand-neon/20 border border-brand-neon flex items-center justify-center text-brand-neon shadow-neon-lg animate-bounce">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h2 className="text-2xl font-bold text-white font-display">
+            <h2 className="text-2xl font-bold text-foreground font-display">
               Passaporte de Crédito Emitido com Sucesso!
             </h2>
-            <p className="text-sm text-gray-400 font-mono max-w-md">
+            <p className="text-sm text-slate-muted font-mono max-w-md">
               O imóvel foi inserido com sucesso na base de inteligência territorial. Redirecionando para o Radar 2D...
             </p>
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </AppShell>
   );
 }

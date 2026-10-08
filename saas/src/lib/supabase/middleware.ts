@@ -53,8 +53,13 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // Refresh auth token
-  await supabase.auth.getUser();
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    user = null;
+  }
 
-  return response;
+  return { response, user };
 }

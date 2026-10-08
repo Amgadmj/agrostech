@@ -17,7 +17,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-md";
+    "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg";
 
   const sizeStyles = {
     sm: "px-3 py-1.5 text-xs",
@@ -27,15 +27,15 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantStyles = {
     primary:
-      "bg-[#00e676] text-black font-semibold hover:bg-[#00ff85] shadow-[0_0_15px_rgba(0,230,118,0.3)] focus:ring-[#00e676] border border-[#00e676]",
+      "bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-sm dark:bg-[#00e676] dark:text-black dark:hover:bg-[#00ff85] focus:ring-emerald-500",
     secondary:
-      "bg-[#0a0d10] text-white border border-[#1f242b] hover:bg-[#12171e] hover:border-[#00e676]/50 focus:ring-[#00e676]/40",
+      "bg-white text-slate-800 border border-slate-200 hover:bg-slate-50 dark:bg-[#0a0d10] dark:text-white dark:border-[#1f242b] dark:hover:bg-[#12171e] shadow-sm",
     danger:
-      "bg-red-500/15 text-red-400 border border-red-500/50 hover:bg-red-500 hover:text-white focus:ring-red-500",
+      "bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-600 hover:text-white dark:bg-red-500/15 dark:text-red-400 dark:border-red-500/50 shadow-sm",
     ghost:
-      "bg-transparent text-gray-400 hover:text-white hover:bg-[#12171e]",
+      "bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-[#12171e]",
     outline:
-      "bg-transparent text-[#00e676] border border-[#00e676]/60 hover:bg-[#00e676]/10 focus:ring-[#00e676]",
+      "bg-transparent text-emerald-700 border border-emerald-600 hover:bg-emerald-50 dark:text-[#00e676] dark:border-[#00e676]/60 dark:hover:bg-[#00e676]/10",
   };
 
   return (
@@ -70,7 +70,7 @@ export const Button: React.FC<ButtonProps> = ({
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             />
           </svg>
-          Processando...
+          <span>Processando...</span>
         </span>
       ) : (
         children
