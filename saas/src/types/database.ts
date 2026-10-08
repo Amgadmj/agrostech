@@ -1,5 +1,25 @@
 export type UserRole = "b2c" | "b2b_admin" | "b2b_viewer";
 
+export type DepartmentType = "precision_agriculture" | "credit_risk";
+export type CaseState = "open" | "under_review" | "awaiting_evidence" | "closed";
+export type FindingDisposition = "confirmed" | "unconfirmed" | "inconclusive" | "no_action";
+
+export interface DepartmentalCase {
+  id: string;
+  parcel_id: string;
+  org_id: string;
+  department: DepartmentType;
+  crop_season?: string;
+  state: CaseState;
+  finding_disposition?: FindingDisposition;
+  reviewer?: string;
+  evidence_request?: string;
+  decision?: string;
+  action_taken?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Organization {
   id: string;
   name: string;

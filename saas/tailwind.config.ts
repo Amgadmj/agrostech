@@ -10,36 +10,42 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#050505", // --dark-void
+        background: "rgb(var(--bg-page-rgb) / <alpha-value>)",
+        foreground: "rgb(var(--text-primary-rgb) / <alpha-value>)",
         surface: {
-          DEFAULT: "#0a0d10",   // --dark-panel
-          hover: "#12171e",
-          border: "#1f242b",    // --card-border
-          muted: "#0d1117",
+          DEFAULT: "rgb(var(--bg-surface-rgb) / <alpha-value>)",
+          hover: "rgb(var(--bg-surface-elevated-rgb) / <alpha-value>)",
+          border: "rgb(var(--border-subtle-rgb) / <alpha-value>)",
+          muted: "rgb(var(--bg-surface-elevated-rgb) / <alpha-value>)",
         },
         brand: {
+          DEFAULT: "rgb(var(--brand-primary-rgb) / <alpha-value>)",
+          primary: "rgb(var(--brand-primary-rgb) / <alpha-value>)",
+          accent: "rgb(var(--brand-accent-rgb) / <alpha-value>)",
           emerald: "#00e676",   // --radar-emerald
           mint: "#00ff85",      // --telemetry-mint
+          neon: "#00ff85",      // --brand-neon
+          lime: "rgb(var(--brand-lime-rgb) / <alpha-value>)", // fix undefined text-brand-lime
           cyan: "#00e5ff",      // --orbital-cyan
           dark: "#032814",
           glow: "rgba(0, 230, 118, 0.25)",
         },
         slate: {
-          muted: "#94a3b8",     // --muted-slate
-          tech: "#64748b",      // --tech-gray
+          muted: "rgb(var(--text-muted-rgb) / <alpha-value>)",
+          tech: "rgb(var(--text-secondary-rgb) / <alpha-value>)",
         },
         status: {
-          regular: "#00e676",   // Radar Emerald
+          regular: "rgb(var(--status-success-rgb) / <alpha-value>)",
           app: "#00e5ff",       // Orbital Cyan
           reserve: "#00ff85",   // Telemetry Mint
-          warning: "#f59e0b",   // Alert Amber
-          embargo: "#ef4444",   // Hazard Red
+          warning: "rgb(var(--status-warning-rgb) / <alpha-value>)",
+          embargo: "rgb(var(--status-critical-rgb) / <alpha-value>)",
         },
       },
       fontFamily: {
-        mono: ["var(--font-mono)", "JetBrains Mono", "Space Mono", "IBM Plex Mono", "monospace"],
+        mono: ["var(--font-mono)", "IBM Plex Mono", "JetBrains Mono", "Space Mono", "monospace"],
         sans: ["var(--font-sans)", "Inter", "-apple-system", "sans-serif"],
-        display: ["var(--font-display)", "Space Grotesk", "Inter", "sans-serif"],
+        display: ["var(--font-display)", "Bricolage Grotesque", "Space Grotesk", "Inter", "sans-serif"],
       },
       keyframes: {
         "radar-sweep": {
@@ -59,6 +65,8 @@ const config: Config = {
         "emerald": "0 0 15px rgba(0, 230, 118, 0.35)",
         "emerald-lg": "0 0 25px rgba(0, 230, 118, 0.55)",
         "cyan": "0 0 15px rgba(0, 229, 255, 0.35)",
+        "neon": "0 0 15px rgba(0, 255, 133, 0.4)",
+        "neon-lg": "0 0 25px rgba(0, 255, 133, 0.6)",
         "embargo": "0 0 15px rgba(239, 68, 68, 0.4)",
       },
     },

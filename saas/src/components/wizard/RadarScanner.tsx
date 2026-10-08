@@ -76,15 +76,15 @@ export const RadarScanner: React.FC<RadarScannerProps> = ({ currentStepIndex, st
         ))}
 
         {/* Outer Bearing Ticks */}
-        <div className="absolute top-2 text-[9px] font-mono text-[#00e676]/70">000° N</div>
-        <div className="absolute bottom-2 text-[9px] font-mono text-[#00e676]/70">180° S</div>
-        <div className="absolute left-2 text-[9px] font-mono text-[#00e676]/70">270° W</div>
-        <div className="absolute right-2 text-[9px] font-mono text-[#00e676]/70">090° E</div>
+        <div className="absolute top-2 text-xs font-mono text-[#00e676]/70">000° N</div>
+        <div className="absolute bottom-2 text-xs font-mono text-[#00e676]/70">180° S</div>
+        <div className="absolute left-2 text-xs font-mono text-[#00e676]/70">270° W</div>
+        <div className="absolute right-2 text-xs font-mono text-[#00e676]/70">090° E</div>
       </div>
 
       {/* Terminal Telemetry Log Feed */}
       <div className="w-full bg-[#0a0d10] border border-[#1f242b] rounded-lg p-4 font-mono text-xs space-y-2.5 shadow-xl">
-        <div className="flex items-center justify-between text-gray-400 pb-2 border-b border-[#1f242b] text-[11px]">
+        <div className="flex items-center justify-between text-gray-400 pb-2 border-b border-[#1f242b] text-xs">
           <span className="flex items-center gap-1.5 text-[#00e676]">
             <Terminal className="w-3.5 h-3.5" />
             AgrosTech Fusion Engine — Auditoria Territorial (Buritis/MG)
@@ -105,7 +105,7 @@ export const RadarScanner: React.FC<RadarScannerProps> = ({ currentStepIndex, st
                     ? "bg-[#00e676]/10 border border-[#00e676]/40 text-white"
                     : isCompleted
                     ? "text-gray-300"
-                    : "text-gray-600"
+                    : "text-gray-400"
                 }`}
               >
                 {isCompleted ? (
@@ -113,7 +113,7 @@ export const RadarScanner: React.FC<RadarScannerProps> = ({ currentStepIndex, st
                 ) : isCurrent ? (
                   <div className="w-4 h-4 rounded-full border-2 border-[#00e676] border-t-transparent animate-spin flex-shrink-0 mt-0.5" />
                 ) : (
-                  <div className="w-4 h-4 rounded-full border border-gray-700 flex-shrink-0 mt-0.5" />
+                  <div className="w-4 h-4 rounded-full border border-gray-600 flex-shrink-0 mt-0.5" />
                 )}
 
                 <div className="flex-1">
@@ -122,10 +122,10 @@ export const RadarScanner: React.FC<RadarScannerProps> = ({ currentStepIndex, st
                       [{step.layer}] {step.title}
                     </span>
                     {step.duration_ms && (
-                      <span className="text-[10px] text-gray-500">{step.duration_ms}ms</span>
+                      <span className="text-xs text-gray-400">{step.duration_ms}ms</span>
                     )}
                   </div>
-                  <p className="text-[11px] text-gray-400 mt-0.5">{step.detail}</p>
+                  <p className="text-xs text-gray-300 mt-0.5">{step.detail}</p>
                 </div>
               </div>
             );

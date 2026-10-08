@@ -35,7 +35,7 @@ export const Logo: React.FC<LogoProps> = ({
               AGROS<span className="text-[#00e676]">TECH</span>
             </span>
           </div>
-          <span className="text-[9px] text-[#94a3b8] font-mono tracking-widest uppercase mt-0.5">
+          <span className="text-xs text-[#94a3b8] font-mono tracking-widest uppercase mt-0.5">
             Land Intelligence
           </span>
         </div>

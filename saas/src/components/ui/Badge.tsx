@@ -17,17 +17,17 @@ export const Badge: React.FC<BadgeProps> = ({
   const baseStyles = "inline-flex items-center font-mono font-medium rounded border uppercase tracking-wider";
 
   const sizeStyles = {
-    sm: "px-2 py-0.5 text-[10px]",
+    sm: "px-2 py-0.5 text-xs",
     md: "px-2.5 py-1 text-xs",
   };
 
   const variantStyles = {
-    regular: "bg-[#00e676]/10 text-[#00e676] border-[#00e676]/40",
-    warning: "bg-amber-500/10 text-amber-400 border-amber-500/40",
-    embargo: "bg-red-500/10 text-red-400 border-red-500/40 shadow-[0_0_10px_rgba(239,68,68,0.3)]",
-    app: "bg-[#00e5ff]/10 text-[#00e5ff] border-[#00e5ff]/40",
-    neutral: "bg-[#12171e] text-gray-400 border-[#1f242b]",
-    neon: "bg-[#00e676]/15 text-[#00e676] border-[#00e676]",
+    regular: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-[#00e676]/10 dark:text-[#00e676] dark:border-[#00e676]/40",
+    warning: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/40",
+    embargo: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/40 shadow-sm",
+    app: "bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-[#00e5ff]/10 dark:text-[#00e5ff] dark:border-[#00e5ff]/40",
+    neutral: "bg-slate-100 text-slate-600 border-slate-200 dark:bg-[#12171e] dark:text-gray-400 dark:border-[#1f242b]",
+    neon: "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-[#00e676]/15 dark:text-[#00e676] dark:border-[#00e676]",
   };
 
   return (

@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  devIndicators: false,
   transpilePackages: [
     "@deck.gl/core",
     "@deck.gl/layers",
