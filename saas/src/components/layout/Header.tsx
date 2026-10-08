@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { UserRole } from "@/types/database";
 import { MOCK_USERS } from "@/lib/mockData";
 import { Logo } from "../ui/Logo";
-import { Layers, Plus, LogOut, ExternalLink, Box, ShieldAlert } from "lucide-react";
+import { Layers, Plus, LogOut, Box, ShieldAlert } from "lucide-react";
 
 interface HeaderProps {
   portalRole?: "b2c" | "b2b";
@@ -60,16 +60,17 @@ export const Header: React.FC<HeaderProps> = ({ portalRole = "b2b" }) => {
             Radar 2D (Brasil)
           </Link>
 
-          <a
-            href="https://dashboard-ui-liart-ten.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded text-xs font-mono transition-all flex items-center gap-1.5 text-gray-400 hover:text-[#00e676]"
+          <Link
+            href="/dashboard/land/buritis-gleba-sede/3d"
+            className={`px-3 py-1.5 rounded text-xs font-mono transition-all flex items-center gap-1.5 ${
+              pathname.startsWith("/dashboard/land")
+                ? "bg-[#12171e] text-[#00e676] border border-[#1f242b]"
+                : "text-gray-400 hover:text-[#00e676]"
+            }`}
           >
             <Box className="w-3.5 h-3.5 text-[#00e676]" />
-            Gêmeo 3D (Buritis/MG)
-            <ExternalLink className="w-3 h-3 opacity-60" />
-          </a>
+            Visão L.I.M (Buritis/MG)
+          </Link>
 
           <Link
             href={`/dashboard/onboard?portal=${portalRole}`}

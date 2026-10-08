@@ -19,6 +19,47 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
+// Cesium is loaded from its official CDN build instead of being bundled: the npm
+// build breaks under Next's production minifier (octal escapes in template
+// strings -> "Loading chunk failed"), which left the 3D canvas permanently blank.
+const CESIUM_VERSION = "1.127";
+const CESIUM_CDN = `https://cesium.com/downloads/cesiumjs/releases/${CESIUM_VERSION}/Build/Cesium/`;
+
+let cesiumPromise: Promise<any> | null = null;
+
+function loadCesium(): Promise<any> {
+  if (typeof window === "undefined") return Promise.reject(new Error("no window"));
+  if ((window as any).Cesium) return Promise.resolve((window as any).Cesium);
+  if (cesiumPromise) return cesiumPromise;
+
+  (window as any).CESIUM_BASE_URL = CESIUM_CDN;
+
+  if (!document.getElementById("cesium-widgets-css")) {
+    const link = document.createElement("link");
+    link.id = "cesium-widgets-css";
+    link.rel = "stylesheet";
+    link.href = `${CESIUM_CDN}Widgets/widgets.css`;
+    document.head.appendChild(link);
+  }
+
+  cesiumPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = `${CESIUM_CDN}Cesium.js`;
+    script.async = true;
+    script.onload = () =>
+      (window as any).Cesium
+        ? resolve((window as any).Cesium)
+        : reject(new Error("Cesium não disponível após o carregamento"));
+    script.onerror = () => {
+      cesiumPromise = null;
+      script.remove();
+      reject(new Error("Falha ao carregar o CesiumJS (CDN)"));
+    };
+    document.head.appendChild(script);
+  });
+  return cesiumPromise;
+}
+
 interface CesiumViewerProps {
   parcel: LandParcel;
 }
@@ -26,6 +67,10 @@ interface CesiumViewerProps {
 export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<any>(null);
+  const cesiumRef = useRef<any>(null);
+  // Terrain sits ~1 km above the ellipsoid in Buritis; camera heights are offset by it
+  const baseAltRef = useRef<number>(0);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [altitudeM, setAltitudeM] = useState<number>(350);
   const [cameraMode, setCameraMode] = useState<"drone" | "nadir" | "orbit">("drone");
@@ -45,24 +90,39 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
     // Load Cesium dynamically in browser
     const initCesium = async () => {
       try {
-        // Set Cesium base URL to official CDN for workers and assets
-        (window as any).CESIUM_BASE_URL =
-          "https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/";
-
-        const Cesium = await import("cesium");
-        if (typeof document !== "undefined" && !document.getElementById("cesium-widgets-css")) {
-          const link = document.createElement("link");
-          link.id = "cesium-widgets-css";
-          link.rel = "stylesheet";
-          link.href = "https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Widgets/widgets.css";
-          document.head.appendChild(link);
-        }
+        const Cesium = await loadCesium();
+        cesiumRef.current = Cesium;
 
         if (isCancelled || !containerRef.current) return;
 
-        // Custom dark style imagery & terrain
+        // Cesium World Terrain / Bing need an Ion token; without one, fall back to
+        // free Esri satellite imagery on a flat ellipsoid so the scene still renders.
+        const ionToken = process.env.NEXT_PUBLIC_CESIUM_ION_TOKEN;
+        const hasIon = !!ionToken && !ionToken.startsWith("your_");
+        if (hasIon) {
+          Cesium.Ion.defaultAccessToken = ionToken as string;
+        }
+
+        baseAltRef.current = hasIon ? parcel.metrics_json.max_elevation_m || 900 : 0;
+        const baseAlt = baseAltRef.current;
+
+        let fallbackLayer: any = false; // plain dark globe if imagery is unreachable
+        if (!hasIon) {
+          try {
+            fallbackLayer = new Cesium.ImageryLayer(
+              await Cesium.ArcGisMapServerImageryProvider.fromUrl(
+                "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"
+              )
+            );
+          } catch (e) {
+            console.warn("Satellite imagery unavailable, using plain globe:", e);
+          }
+        }
+
         const viewerInstance = new Cesium.Viewer(containerRef.current, {
-          terrain: Cesium.Terrain.fromWorldTerrain(),
+          ...(hasIon
+            ? { terrain: Cesium.Terrain.fromWorldTerrain() }
+            : { baseLayer: fallbackLayer }),
           animation: false,
           timeline: false,
           geocoder: false,
@@ -84,9 +144,9 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
         viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString("#15151e");
 
         // Center on the farmland
-        const targetPos = Cesium.Cartesian3.fromDegrees(lon, lat, 250);
+        const targetPos = Cesium.Cartesian3.fromDegrees(lon, lat, baseAlt + 250);
         viewer.camera.flyTo({
-          destination: Cesium.Cartesian3.fromDegrees(lon, lat - 0.015, 800),
+          destination: Cesium.Cartesian3.fromDegrees(lon, lat - 0.015, baseAlt + 800),
           orientation: {
             heading: Cesium.Math.toRadians(0),
             pitch: Cesium.Math.toRadians(-35),
@@ -111,29 +171,36 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
               flatCoords.filter((_, i) => i % 3 !== 2)
             ),
             material: Cesium.Color.fromCssColorString("#c2ff00").withAlpha(0.25),
-            outline: true,
-            outlineColor: Cesium.Color.fromCssColorString("#c2ff00"),
-            outlineWidth: 3,
-            height: 100,
-            extrudedHeight: 180,
+            ...(hasIon
+              ? {}
+              : {
+                  outline: true,
+                  outlineColor: Cesium.Color.fromCssColorString("#c2ff00"),
+                  outlineWidth: 3,
+                }),
+            ...(hasIon
+              ? { classificationType: Cesium.ClassificationType.TERRAIN }
+              : { height: 100, extrudedHeight: 180 }),
           },
         });
 
         // Load 3D Asset (GLB or 3D Tiles) based on database model_type
-        if (parcel.model_type === "3dtiles" && parcel.model_3d_url) {
+        const modelUrl = parcel.model_3d_url || "";
+        const isModelAsset = /\.(glb|gltf|json)(\?|$)/i.test(modelUrl);
+        if (parcel.model_type === "3dtiles" && isModelAsset) {
           try {
-            const tileset = await Cesium.Cesium3DTileset.fromUrl(parcel.model_3d_url);
+            const tileset = await Cesium.Cesium3DTileset.fromUrl(modelUrl);
             viewer.scene.primitives.add(tileset);
           } catch (e) {
             console.log("3D Tiles loading (demo fallback to extruded polygon terrain):", e);
           }
-        } else if (parcel.model_type === "glb" && parcel.model_3d_url) {
+        } else if (parcel.model_type === "glb" && isModelAsset) {
           try {
             viewer.entities.add({
               name: "Modelo 3D Farmland",
               position: targetPos,
               model: {
-                uri: parcel.model_3d_url,
+                uri: modelUrl,
                 minimumPixelSize: 128,
                 maximumScale: 20000,
               },
@@ -152,7 +219,10 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
         setIsLoaded(true);
       } catch (err) {
         console.error("Cesium initialization error:", err);
-        setIsLoaded(true);
+        if (!isCancelled) {
+          setLoadError(err instanceof Error ? err.message : String(err));
+          setIsLoaded(true);
+        }
       }
     };
 
@@ -165,20 +235,20 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
       }
       viewerRef.current = null;
     };
-  }, [parcel, lon, lat, coords]);
+  }, [parcel, lon, lat, coords]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Camera preset handlers
   const handleSetCamera = (mode: "drone" | "nadir" | "orbit") => {
     setCameraMode(mode);
     if (!viewerRef.current) return;
 
-    const Cesium = (window as any).Cesium;
+    const Cesium = cesiumRef.current;
     if (!Cesium) return;
 
     if (mode === "nadir") {
       // Nadir Top-down Survey
       viewerRef.current.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(lon, lat, 1200),
+        destination: Cesium.Cartesian3.fromDegrees(lon, lat, baseAltRef.current + 1200),
         orientation: {
           heading: Cesium.Math.toRadians(0),
           pitch: Cesium.Math.toRadians(-90),
@@ -189,7 +259,7 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
     } else if (mode === "drone") {
       // Oblique Drone Angle (35 degrees)
       viewerRef.current.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(lon, lat - 0.015, 650),
+        destination: Cesium.Cartesian3.fromDegrees(lon, lat - 0.015, baseAltRef.current + 650),
         orientation: {
           heading: Cesium.Math.toRadians(0),
           pitch: Cesium.Math.toRadians(-35),
@@ -200,7 +270,7 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
     } else if (mode === "orbit") {
       // Low Altitude Flyby
       viewerRef.current.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(lon + 0.01, lat - 0.01, 380),
+        destination: Cesium.Cartesian3.fromDegrees(lon + 0.01, lat - 0.01, baseAltRef.current + 380),
         orientation: {
           heading: Cesium.Math.toRadians(-45),
           pitch: Cesium.Math.toRadians(-20),
@@ -221,7 +291,7 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
         <div className="absolute inset-0 z-50 bg-background flex flex-col items-center justify-center gap-4">
           <div className="w-16 h-16 border-2 border-brand-neon/30 border-t-brand-neon rounded-full animate-spin" />
           <div className="text-center font-mono space-y-1">
-            <h3 className="text-white font-bold text-sm">Carregando Gêmeo Digital 3D</h3>
+            <h3 className="text-white font-bold text-sm">Carregando Visão L.I.M</h3>
             <p className="text-xs text-gray-400">
               Renderizando malha fotogramétrica e elevação altimétrica...
             </p>
@@ -229,8 +299,17 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
         </div>
       )}
 
+      {loadError && (
+        <div className="absolute inset-0 z-40 flex items-center justify-center p-6 pointer-events-none">
+          <div className="max-w-sm text-center font-mono text-xs bg-surface/90 border border-surface-border rounded-lg p-4 text-gray-300">
+            <p className="text-white font-bold mb-1">Não foi possível renderizar a Visão L.I.M</p>
+            <p className="text-gray-400 break-words">{loadError}</p>
+          </div>
+        </div>
+      )}
+
       {/* Top HUD Bar: Return to Dashboard & Asset Info */}
-      <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
+      <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-start gap-2 justify-between pointer-events-none">
         <div className="pointer-events-auto flex items-center gap-3">
           <Link href="/dashboard">
             <Button
@@ -248,7 +327,7 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
             <span className="text-gray-500">|</span>
             <span className="text-gray-400">{parcel.municipality}/{parcel.state_uf}</span>
             <Badge variant="neon" size="sm">
-              {parcel.model_type === "3dtiles" ? "Stream 3D Tiles" : "Single GLB"}
+              Visão L.I.M
             </Badge>
           </div>
         </div>
@@ -267,9 +346,9 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
       </div>
 
       {/* Right Floating Drone Controls */}
-      <div className="absolute top-20 right-4 z-20 pointer-events-auto flex flex-col gap-2">
+      <div className="absolute top-32 sm:top-20 right-4 z-20 pointer-events-auto flex flex-col gap-2">
         <div className="bg-surface/90 backdrop-blur-md border border-surface-border p-2 rounded-lg flex flex-col gap-1.5 shadow-lg">
-          <div className="text-[10px] uppercase font-mono text-gray-400 px-2 py-1 font-semibold">
+          <div className="hidden sm:block text-[10px] uppercase font-mono text-gray-400 px-2 py-1 font-semibold">
             Modos de Câmera
           </div>
 
@@ -282,7 +361,7 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
             }`}
           >
             <Camera className="w-3.5 h-3.5" />
-            Voo Drone (35°)
+            <span className="hidden sm:inline">Voo Drone (35°)</span>
           </button>
 
           <button
@@ -294,7 +373,7 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
             }`}
           >
             <Crosshair className="w-3.5 h-3.5" />
-            Ortofoto Nadir (90°)
+            <span className="hidden sm:inline">Ortofoto Nadir (90°)</span>
           </button>
 
           <button
@@ -306,13 +385,13 @@ export const CesiumViewer: React.FC<CesiumViewerProps> = ({ parcel }) => {
             }`}
           >
             <Eye className="w-3.5 h-3.5" />
-            Órbita Baixa
+            <span className="hidden sm:inline">Órbita Baixa</span>
           </button>
         </div>
       </div>
 
       {/* Bottom Farmland Info Overlay */}
-      <div className="absolute bottom-6 left-6 z-20 pointer-events-auto bg-surface/90 backdrop-blur-md border border-surface-border p-4 rounded-lg text-xs font-mono max-w-sm space-y-2 shadow-xl">
+      <div className="absolute bottom-6 left-4 right-4 sm:right-auto sm:left-6 z-20 pointer-events-auto bg-surface/90 backdrop-blur-md border border-surface-border p-4 rounded-lg text-xs font-mono max-w-sm space-y-2 shadow-xl">
         <div className="flex items-center justify-between">
           <span className="text-[10px] text-brand-neon uppercase tracking-wider font-semibold">
             Digital Twin Telemetry

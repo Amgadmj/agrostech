@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Link from "next/link";
 import { LandParcel } from "@/types/database";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
@@ -16,7 +17,6 @@ import {
   Mountain,
   Compass,
   FileText,
-  ExternalLink,
   SlidersHorizontal,
   X,
 } from "lucide-react";
@@ -175,10 +175,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   </div>
 
                   {/* CRITICAL CTA: View 3D Digital Twin (Direct link to dashboard-ui) */}
-                  <a
-                    href="https://dashboard-ui-liart-ten.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    href={`/dashboard/land/${selectedParcel.id}/3d`}
                     className="block"
                   >
                     <Button
@@ -187,10 +185,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       className="w-full flex items-center justify-center gap-2 group bg-[#00e676] hover:bg-[#00ff85] text-black font-bold shadow-[0_0_15px_rgba(0,230,118,0.35)]"
                     >
                       <Box className="w-4 h-4 text-black group-hover:scale-110 transition-transform" />
-                      <span>Ver Gêmeo Digital 3D</span>
-                      <ExternalLink className="w-3.5 h-3.5 ml-1 opacity-70" />
+                      <span>Ver Visão L.I.M</span>
                     </Button>
-                  </a>
+                  </Link>
                 </div>
 
                 {/* Real Metrics Grid for Buritis */}

@@ -72,7 +72,7 @@ function LoginContent() {
                 <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-[#00e676] group-hover:translate-x-1 transition-all" />
               </div>
               <p className="text-[11px] text-gray-400 font-mono pl-6">
-                Acesso individual: Fazenda Buritis (217,12 ha) • Dossiê, CAR e Gêmeo 3D
+                Acesso individual: Fazenda Buritis (217,12 ha) • Dossiê, CAR e Visão L.I.M
               </p>
             </button>
 
